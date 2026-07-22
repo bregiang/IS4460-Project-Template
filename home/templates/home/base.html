@@ -100,6 +100,20 @@
             border: 1px solid rgba(183, 173, 161, 0.24);
             border-radius: 1.5rem;
             box-shadow: 0 16px 40px rgba(43, 43, 43, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before,
+        .hero-card::before,
+        .luxury-card::before {
+            content: "✿";
+            position: absolute;
+            top: 0.8rem;
+            right: 0.9rem;
+            font-size: 1.15rem;
+            color: rgba(181, 131, 163, 0.24);
+            pointer-events: none;
         }
 
         .hero-card {
