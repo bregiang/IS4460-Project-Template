@@ -1,0 +1,53 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Admin Dashboard | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-7">
+      <span class="badge mb-3">Admin Control Panel</span>
+      <h1 class="display-6 mb-3">Admin Dashboard</h1>
+      <p class="lead text-secondary mb-0">Manage users, inventory, retailer recommendations, and all platform communications from one secure workspace.</p>
+    </div>
+    <div class="col-lg-5">
+      <div class="soft-panel p-4">
+        <p class="mb-2 fw-semibold">Administrative actions</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-primary" href="{% url 'inventory_management' %}">Manage inventory</a>
+          <a class="btn btn-outline-primary" href="{% url 'dashboard' %}">Back to dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-6">
+    <div class="card p-4">
+      <h3 class="h5 mb-3">User accounts</h3>
+      {% for account in user_accounts %}
+        <div class="soft-panel p-3 mb-2">
+          <p class="fw-semibold mb-1">{{ account.username }}</p>
+          <p class="text-secondary small mb-0">Groups: {{ account.groups.all|join:", " }}</p>
+        </div>
+      {% empty %}
+        <p class="text-secondary mb-0">No accounts available.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card p-4">
+      <h3 class="h5 mb-3">Inventory</h3>
+      {% for item in inventory_items %}
+        <div class="soft-panel p-3 mb-2">
+          <p class="fw-semibold mb-1">{{ item.name }}</p>
+          <p class="text-secondary small mb-0">{{ item.brand }} • {{ item.retailer }} • ${{ item.price }}</p>
+        </div>
+      {% empty %}
+        <p class="text-secondary mb-0">No inventory items yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

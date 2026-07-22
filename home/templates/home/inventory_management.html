@@ -1,0 +1,38 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Inventory Management | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <h1 class="display-6 mb-3">Inventory management</h1>
+  <p class="lead text-secondary">Add or update skincare items for retailer recommendations and internal product oversight.</p>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-5">
+    <div class="card p-4">
+      <h3 class="h5 mb-3">Add inventory item</h3>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-terra" type="submit">Save item</button>
+      </form>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <h3 class="h5 mb-3">Existing inventory</h3>
+      {% if items %}
+        {% for item in items %}
+          <div class="soft-panel p-3 mb-2">
+            <p class="fw-semibold mb-1">{{ item.name }}</p>
+            <p class="text-secondary small mb-0">{{ item.brand }} • {{ item.category }} • {{ item.retailer }} • ${{ item.price }}</p>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-secondary mb-0">No inventory items yet.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -36,8 +36,12 @@
                 </div>
                 <span class="badge">Gentle progress</span>
             </div>
-            <p class="text-secondary mb-3">Complete your skincare profile, review recommendations, or manage platform data depending on your role.</p>
-            <a class="btn btn-terra" href="{% url 'profile' %}">Save your skincare profile</a>
+            <p class="text-secondary mb-3">Complete your skincare profile, review recommendations, and keep your routine easy to revisit.</p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-terra" href="{% url 'profile' %}">Save your skincare profile</a>
+                <a class="btn btn-outline-primary" href="{% url 'recommendations' %}">Explore recommendations</a>
+                <a class="btn btn-outline-primary" href="{% url 'skin_history' %}">View skin history</a>
+            </div>
         </div>
     </div>
     <div class="col-md-6">
@@ -49,7 +53,7 @@
                 </div>
                 <span class="badge">Tailored access</span>
             </div>
-            <p class="text-secondary mb-3">Consumers can receive recommendations, dermatologists can review analyses, and administrators can manage the system.</p>
+            <p class="text-secondary mb-3">As a customer, you can review your own profile history, recommendations, and messages. Dermatologists and admins see additional tools based on their role.</p>
             {% if profile %}
                 <div class="soft-panel p-3">
                     <p class="mb-1 fw-semibold">Current profile</p>

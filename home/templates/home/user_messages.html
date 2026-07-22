@@ -1,0 +1,24 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Messages | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <h1 class="display-6 mb-3">Your messages</h1>
+  <p class="lead text-secondary">Stay up to date with notes and recommendations sent by your dermatologist.</p>
+</div>
+
+<div class="card p-4 mt-4">
+  {% if messages_received %}
+    {% for message in messages_received %}
+      <div class="soft-panel p-3 mb-2">
+        <p class="fw-semibold mb-1">{{ message.subject|default:"New note" }}</p>
+        <p class="text-secondary mb-1">{{ message.body }}</p>
+        <p class="small text-muted mb-0">From: {{ message.sender.username }} • {{ message.created_at }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-secondary mb-0">No messages yet. Your dermatologist can send guidance here when needed.</p>
+  {% endif %}
+</div>
+{% endblock %}

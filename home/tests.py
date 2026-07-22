@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
 
@@ -99,3 +99,34 @@ class SkinIdentifierAuthTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Search products")
         self.assertContains(response, "Reset all filters")
+
+    def test_user_cannot_access_dermatologist_dashboard(self):
+        user = User.objects.create_user(username="plainuser", password="StrongPass123!")
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("dermatologist_dashboard"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("dashboard", response.url)
+
+    def test_dermatologist_can_access_dermatologist_dashboard(self):
+        group, _ = Group.objects.get_or_create(name="dermatologist")
+        user = User.objects.create_user(username="doctor", password="StrongPass123!")
+        user.groups.add(group)
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("dermatologist_dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Dermatologist Dashboard")
+
+    def test_admin_can_access_admin_dashboard(self):
+        group, _ = Group.objects.get_or_create(name="admin")
+        user = User.objects.create_user(username="adminuser", password="StrongPass123!")
+        user.groups.add(group)
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("admin_dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Admin Dashboard")

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group, User
 
-from .models import SkincareProfile
+from .models import InventoryItem, Message, SkincareProfile
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -28,9 +28,27 @@ class CustomUserCreationForm(UserCreationForm):
         user.email = self.cleaned_data["email"]
         if commit:
             user.save()
-            role_name = self.cleaned_data["role"]
-            group, _ = Group.objects.get_or_create(name=role_name)
-            user.groups.add(group)
+            role_value = self.cleaned_data["role"]
+            role_map = {
+                "consumer": "user",
+                "user": "user",
+                "dermatologist": "dermatologist",
+                "administrator": "admin",
+                "admin": "admin",
+            }
+            canonical_role = role_map.get(role_value, "user")
+            group_names = [canonical_role]
+            if canonical_role == "user":
+                group_names.append("consumer")
+            elif canonical_role == "admin":
+                group_names.append("administrator")
+            for group_name in group_names:
+                group, _ = Group.objects.get_or_create(name=group_name)
+                user.groups.add(group)
+            if canonical_role == "admin":
+                user.is_staff = True
+                user.is_superuser = True
+                user.save(update_fields=["is_staff", "is_superuser"])
         return user
 
 
@@ -46,3 +64,34 @@ class SkincareProfileForm(forms.ModelForm):
             "allergies": forms.Textarea(attrs={"rows": 2}),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
+
+
+class ProfessionalNoteForm(forms.ModelForm):
+    """Allow dermatologists to attach professional notes to a patient's profile."""
+
+    class Meta:
+        model = SkincareProfile
+        fields = ("professional_notes",)
+        widgets = {
+            "professional_notes": forms.Textarea(attrs={"rows": 4}),
+        }
+
+
+class MessageForm(forms.ModelForm):
+    """Allow dermatologists to send secure messages to users."""
+
+    class Meta:
+        model = Message
+        fields = ("recipient", "subject", "body", "professional_note")
+        widgets = {
+            "body": forms.Textarea(attrs={"rows": 4}),
+            "professional_note": forms.Textarea(attrs={"rows": 3}),
+        }
+
+
+class InventoryItemForm(forms.ModelForm):
+    """Support admin inventory management for retailer recommendations."""
+
+    class Meta:
+        model = InventoryItem
+        fields = ("name", "brand", "category", "price", "retailer", "in_stock", "notes")

@@ -1,0 +1,22 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Skin History | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <h1 class="display-6 mb-3">Skin history</h1>
+  <p class="lead text-secondary">Your profile history stays private to your own account and is only available to approved professional roles when needed.</p>
+</div>
+
+<div class="card p-4 mt-4">
+  <h3 class="h5 mb-3">Your latest profile snapshot</h3>
+  <ul class="list-unstyled mb-0">
+    <li><strong>Skin type:</strong> {{ profile.skin_type|default:"Not provided" }}</li>
+    <li><strong>Concerns:</strong> {{ profile.concerns|default:"Not provided" }}</li>
+    <li><strong>Goals:</strong> {{ profile.goals|default:"Not provided" }}</li>
+    <li><strong>Allergies:</strong> {{ profile.allergies|default:"Not provided" }}</li>
+    <li><strong>Notes:</strong> {{ profile.notes|default:"Not provided" }}</li>
+    <li><strong>Professional notes:</strong> {{ profile.professional_notes|default:"No professional note yet." }}</li>
+  </ul>
+</div>
+{% endblock %}

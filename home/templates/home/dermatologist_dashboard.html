@@ -1,0 +1,56 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Dermatologist Dashboard | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-7">
+      <span class="badge mb-3">Dermatologist Portal</span>
+      <h1 class="display-6 mb-3">Dermatologist Dashboard</h1>
+      <p class="lead text-secondary mb-0">Review patient profiles, leave professional notes, and coordinate follow-up care with a calm, secure workspace.</p>
+    </div>
+    <div class="col-lg-5">
+      <div class="soft-panel p-4">
+        <p class="mb-2 fw-semibold">Professional tools</p>
+        <div class="d-flex flex-wrap gap-2">
+          <a class="btn btn-primary" href="{% url 'dermatologist_messages' %}">Messages</a>
+          <a class="btn btn-outline-primary" href="{% url 'send_message' user.id %}">Send note</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-12">
+    <div class="card p-4">
+      <div class="section-heading">
+        <div>
+          <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">Patient overview</p>
+          <h3 class="h5 mb-0">Access patient history and recommendations</h3>
+        </div>
+        <span class="badge">Protected data</span>
+      </div>
+      <div class="row g-3">
+        {% for patient in patients %}
+        <div class="col-md-6 col-xl-4">
+          <div class="soft-panel p-3 h-100">
+            <p class="fw-semibold mb-1">{{ patient.username }}</p>
+            <p class="text-secondary small mb-3">Patient account</p>
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'dermatologist_patient' patient.id %}">View profile</a>
+              <a class="btn btn-sm btn-terra" href="{% url 'send_message' patient.id %}">Message</a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <p class="text-secondary mb-0">No patient accounts are available yet.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

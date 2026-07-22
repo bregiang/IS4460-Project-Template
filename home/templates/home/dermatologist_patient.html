@@ -1,0 +1,61 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Patient Review | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <div class="row g-4">
+    <div class="col-lg-7">
+      <span class="badge mb-3">Patient review</span>
+      <h1 class="display-6 mb-3">{{ patient.username }}'s profile history</h1>
+      <p class="lead text-secondary mb-0">View saved profile details, add professional guidance, and keep continuity across care.</p>
+    </div>
+    <div class="col-lg-5">
+      <div class="soft-panel p-4">
+        <p class="mb-2 fw-semibold">Clinical notes</p>
+        <p class="text-secondary mb-0">{{ profile.professional_notes|default:"No note yet." }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-7">
+    <div class="card p-4">
+      <h3 class="h5 mb-3">Profile details</h3>
+      <ul class="list-unstyled mb-0">
+        <li><strong>Skin type:</strong> {{ profile.skin_type|default:"Not provided" }}</li>
+        <li><strong>Concerns:</strong> {{ profile.concerns|default:"Not provided" }}</li>
+        <li><strong>Goals:</strong> {{ profile.goals|default:"Not provided" }}</li>
+        <li><strong>Allergies:</strong> {{ profile.allergies|default:"Not provided" }}</li>
+        <li><strong>Notes:</strong> {{ profile.notes|default:"Not provided" }}</li>
+      </ul>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card p-4">
+      <h3 class="h5 mb-3">Add professional note</h3>
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button class="btn btn-terra mt-2" type="submit">Save note</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="card p-4 mt-4">
+  <h3 class="h5 mb-3">Messages for this patient</h3>
+  {% if messages_for_patient %}
+    {% for item in messages_for_patient %}
+      <div class="soft-panel p-3 mb-2">
+        <p class="fw-semibold mb-1">{{ item.subject|default:"Follow-up" }}</p>
+        <p class="text-secondary mb-1">{{ item.body }}</p>
+        <p class="small text-muted mb-0">{{ item.created_at }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-secondary mb-0">No messages yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

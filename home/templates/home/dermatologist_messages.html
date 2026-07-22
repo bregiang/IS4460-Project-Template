@@ -1,0 +1,37 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Dermatologist Messages | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-4 p-md-5">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-7">
+      <span class="badge mb-3">Secure messaging</span>
+      <h1 class="display-6 mb-3">Dermatologist Messages</h1>
+      <p class="lead text-secondary mb-0">Send professional recommendations, follow-up notes, and routine guidance through the in-app message center.</p>
+    </div>
+    <div class="col-lg-5">
+      <div class="soft-panel p-4">
+        <p class="mb-2 fw-semibold">Quick actions</p>
+        <a class="btn btn-primary" href="{% url 'dashboard' %}">Return to dashboard</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card p-4 mt-4">
+  <h3 class="h5 mb-3">Sent messages</h3>
+  {% if sent_messages %}
+    {% for message in sent_messages %}
+      <div class="soft-panel p-3 mb-2">
+        <p class="fw-semibold mb-1">{{ message.subject|default:"Follow-up" }}</p>
+        <p class="text-secondary mb-1">To: {{ message.recipient.username }}</p>
+        <p class="text-secondary mb-1">{{ message.body }}</p>
+        <p class="small text-muted mb-0">{{ message.created_at }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-secondary mb-0">No messages have been sent yet.</p>
+  {% endif %}
+</div>
+{% endblock %}
