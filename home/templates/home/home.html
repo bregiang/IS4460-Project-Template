@@ -14,49 +14,72 @@
             </p>
             <div class="d-flex flex-wrap gap-2">
                 <a href="{% url 'register' %}" class="btn btn-terra btn-lg">Get Started</a>
-                <a href="#roles" class="btn btn-outline-primary btn-lg">Explore Roles</a>
+                <a href="#how-it-works" class="btn btn-outline-primary btn-lg">How It Works</a>
             </div>
         </div>
         <div class="col-lg-5">
             <div class="bg-white rounded-4 p-4 shadow-sm">
-                <h3 class="fw-bold mb-3">What the platform offers</h3>
+                <h3 class="fw-bold mb-3">Why it helps</h3>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item px-0">Personalized skincare recommendations</li>
-                    <li class="list-group-item px-0">Role-based dashboards for consumers, dermatologists, and administrators</li>
-                    <li class="list-group-item px-0">Secure authentication and clear, trustworthy guidance</li>
+                    <li class="list-group-item px-0">Simpler product decisions with less guesswork</li>
+                    <li class="list-group-item px-0">A trustworthy, guided experience from start to finish</li>
                 </ul>
             </div>
         </div>
     </div>
 </div>
 
-<div id="roles" class="row g-4 mt-3">
-    <div class="col-md-4">
-        <div class="card h-100 border-0">
-            <div class="card-body">
-                <div class="feature-icon mb-3">C</div>
-                <h3 class="h5 fw-bold">Consumers</h3>
-                <p class="text-secondary">Complete questionnaires, manage profiles, and receive clear AI-guided product suggestions.</p>
+<section id="how-it-works" class="mt-4">
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 p-4 h-100">
+                <h2 class="h3 fw-bold mb-4">How it works</h2>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-4" style="background: #f4efe8;">
+                            <div class="feature-icon mb-3">1</div>
+                            <h3 class="h6 fw-bold">Complete a short questionnaire</h3>
+                            <p class="text-secondary small mb-0">Share simple details about your skin concerns, routine, and goals.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-4" style="background: #eef4ef;">
+                            <div class="feature-icon mb-3">2</div>
+                            <h3 class="h6 fw-bold">Upload a skin photo</h3>
+                            <p class="text-secondary small mb-0">Optional visuals help support a more complete skin analysis.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="p-3 rounded-4" style="background: #eaf1f4;">
+                            <div class="feature-icon mb-3">3</div>
+                            <h3 class="h6 fw-bold">Receive tailored recommendations</h3>
+                            <p class="text-secondary small mb-0">Gemini helps identify skin type and suggests products that fit.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 p-4 h-100" style="background: linear-gradient(135deg, #f8f2e9 0%, #eef4ef 100%);">
+                <h3 class="fw-bold mb-3">A guided experience</h3>
+                <p class="text-secondary mb-3">The process is designed to feel calm, clear, and personalized from the first question to the final recommendation.</p>
+                <div class="rounded-4 p-3" style="background: rgba(255,255,255,0.7);">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="feature-icon me-2">✓</span>
+                        <span class="small">Simple and intuitive flow</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="feature-icon me-2">✓</span>
+                        <span class="small">Accessible language and layout</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="feature-icon me-2">✓</span>
+                        <span class="small">Supportive guidance for confident choices</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0">
-            <div class="card-body">
-                <div class="feature-icon mb-3">D</div>
-                <h3 class="h5 fw-bold">Dermatologists</h3>
-                <p class="text-secondary">Review AI analyses and provide expert feedback to support more confident skincare decisions.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0">
-            <div class="card-body">
-                <div class="feature-icon mb-3">A</div>
-                <h3 class="h5 fw-bold">Administrators</h3>
-                <p class="text-secondary">Manage products, stores, inventory, and dermatologist accounts with thoughtful controls.</p>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 {% endblock %}
