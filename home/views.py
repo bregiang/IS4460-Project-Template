@@ -5,7 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, SkincareProfileForm
+from .models import SkincareProfile
 
 
 def home_page(request):
@@ -48,7 +49,25 @@ def dashboard_view(request):
     """Display a role-aware dashboard for the authenticated user."""
     user_groups = list(request.user.groups.values_list("name", flat=True))
     role = user_groups[0] if user_groups else "member"
-    return render(request, "home/dashboard.html", {"role": role})
+    profile = SkincareProfile.objects.filter(user=request.user).first()
+    return render(request, "home/dashboard.html", {"role": role, "profile": profile})
+
+
+@login_required
+def profile_view(request):
+    """Allow authenticated users to create or update their skincare profile."""
+    profile, _ = SkincareProfile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        form = SkincareProfileForm(request.POST, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your skincare profile has been saved.")
+            return redirect("profile")
+    else:
+        form = SkincareProfileForm(instance=profile)
+
+    return render(request, "home/profile.html", {"form": form, "profile": profile})
 
 
 @login_required

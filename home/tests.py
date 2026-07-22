@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
+from .models import SkincareProfile
+
 
 class SkinIdentifierAuthTests(TestCase):
     """Tests for registration, login, and role-based access."""
@@ -27,3 +29,45 @@ class SkinIdentifierAuthTests(TestCase):
         response = self.client.get(reverse("dashboard"))
         self.assertEqual(response.status_code, 302)
         self.assertIn("login", response.url)
+
+    def test_profile_page_requires_login(self):
+        response = self.client.get(reverse("profile"))
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("login", response.url)
+
+    def test_login_accepts_forwarded_github_host(self):
+        user = User.objects.create_user(username="forwardeduser", password="StrongPass123!")
+
+        response = self.client.post(
+            reverse("login"),
+            {"username": "forwardeduser", "password": "StrongPass123!"},
+            HTTP_HOST="8001-forwarded.app.github.dev",
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("dashboard"))
+        self.assertTrue(response.context["user"].is_authenticated)
+
+    def test_authenticated_user_can_save_skincare_profile(self):
+        user = User.objects.create_user(username="profileuser", password="StrongPass123!")
+        self.client.force_login(user)
+
+        response = self.client.post(
+            reverse("profile"),
+            {
+                "skin_type": "combination",
+                "concerns": "Dry patches and sensitivity",
+                "goals": "Hydration and barrier support",
+                "allergies": "Fragrance",
+                "notes": "Prefers lightweight products",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, reverse("profile"))
+        profile = SkincareProfile.objects.get(user=user)
+        self.assertEqual(profile.skin_type, "combination")
+        self.assertEqual(profile.concerns, "Dry patches and sensitivity")
+        self.assertEqual(profile.goals, "Hydration and barrier support")
+        self.assertEqual(profile.allergies, "Fragrance")
+        self.assertEqual(profile.notes, "Prefers lightweight products")

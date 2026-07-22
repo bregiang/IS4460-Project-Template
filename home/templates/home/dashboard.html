@@ -13,6 +13,7 @@
                 <div class="card-body">
                     <h3 class="h5 fw-bold">Next steps</h3>
                     <p class="text-secondary mb-0">Complete your skincare profile, review recommendations, or manage platform data depending on your role.</p>
+                    <a class="btn btn-terra mt-3" href="{% url 'profile' %}">Save your skincare profile</a>
                 </div>
             </div>
         </div>
@@ -21,6 +22,9 @@
                 <div class="card-body">
                     <h3 class="h5 fw-bold">Role access</h3>
                     <p class="text-secondary mb-0">Consumers can receive recommendations, dermatologists can review analyses, and administrators can manage the system.</p>
+                    {% if profile %}
+                        <p class="mt-3 mb-0"><strong>Current profile:</strong> {{ profile.skin_type|default:"Not set" }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

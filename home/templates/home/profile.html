@@ -1,0 +1,45 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Profile | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 p-4">
+            <h2 class="mb-3">Skincare profile</h2>
+            <p class="text-secondary">Save your preferences so the app can tailor future recommendations without repeating the analysis.</p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="id_skin_type">Skin type</label>
+                        {{ form.skin_type }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="id_goals">Goals</label>
+                        {{ form.goals }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="id_concerns">Concerns</label>
+                        {{ form.concerns }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="id_allergies">Allergies</label>
+                        {{ form.allergies }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label" for="id_notes">Notes</label>
+                        {{ form.notes }}
+                    </div>
+                </div>
+
+                <div class="mt-4 d-flex gap-2">
+                    <button class="btn btn-primary" type="submit">Save profile</button>
+                    <a class="btn btn-outline-primary" href="{% url 'dashboard' %}">Back to dashboard</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
