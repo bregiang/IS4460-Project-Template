@@ -1,0 +1,4 @@
+{
+  "name": "IS4460 Project Template",
+  "postCreateCommand": "pip install -r requirements.txt"
+}
