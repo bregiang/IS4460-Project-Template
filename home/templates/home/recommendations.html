@@ -1,20 +1,110 @@
 {% extends 'home/base.html' %}
 
 {% block content %}
+<style>
+  .eyebrow {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--mauve);
+    margin-bottom: 0.55rem;
+  }
+
+  .filter-panel {
+    background: rgba(255,255,255,0.86);
+    border: 1px solid rgba(183,173,161,0.25);
+    border-radius: 1.5rem;
+    padding: 1.1rem;
+    box-shadow: 0 14px 34px rgba(31,61,46,0.06);
+  }
+
+  .filter-chip, .pill-chip {
+    border: 1px solid rgba(143,166,136,0.28);
+    background: #f8f3eb;
+    color: var(--forest);
+    border-radius: 999px;
+    padding: 0.5rem 0.85rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .filter-chip:hover, .pill-chip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(31,61,46,0.08);
+  }
+
+  .filter-chip.active, .pill-chip.active {
+    background: var(--forest);
+    color: var(--cream);
+    border-color: var(--forest);
+  }
+
+  .filter-chip.small { font-size: 0.84rem; padding: 0.4rem 0.7rem; }
+
+  .search-input {
+    border-radius: 999px;
+    border: 1px solid rgba(183,173,161,0.35);
+    background: rgba(255,255,255,0.92);
+    padding: 0.8rem 1rem;
+  }
+
+  .result-card {
+    border: 1px solid rgba(183,173,161,0.22);
+    border-radius: 1.25rem;
+    background: var(--ivory);
+    box-shadow: 0 12px 30px rgba(31,61,46,0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    height: 100%;
+  }
+
+  .result-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(31,61,46,0.08);
+  }
+
+  .result-card .card-body { padding: 1.15rem; }
+
+  .tag-list span {
+    display: inline-block;
+    margin: 0.25rem 0.3rem 0 0;
+  }
+
+  .stats-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    background: rgba(143,166,136,0.16);
+    color: var(--forest);
+    padding: 0.4rem 0.65rem;
+    font-size: 0.86rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 767px) {
+    .filter-panel { padding: 0.95rem; }
+    .result-card .card-body { padding: 1rem; }
+  }
+</style>
+
 <div class="container py-5">
   <div class="row justify-content-center">
-    <div class="col-lg-10">
+    <div class="col-12 col-xl-11">
       <div class="hero-card rounded-4 p-4 p-md-5 shadow-sm mb-4">
         <div class="row align-items-center g-4">
           <div class="col-lg-7">
             <span class="eyebrow">Retailer Recommendations</span>
-            <h1 class="display-5 fw-semibold mb-3">Curated skincare picks from trusted third-party partners.</h1>
+            <h1 class="display-5 fw-semibold mb-3">Interactive skincare discovery, tailored to your routine.</h1>
             <p class="lead text-muted mb-0">
-              We pair your skin profile with a refined selection of gentle, effective essentials from boutique and prestige retailers.
+              Explore curated third-party favorites by product type, skin concern, ingredients, and feel — then refine the results instantly.
             </p>
           </div>
           <div class="col-lg-5">
-            <div class="glass-card p-4 rounded-4">
+            <div class="filter-panel">
               <p class="small text-uppercase mb-2">Your profile snapshot</p>
               <ul class="list-unstyled mb-0">
                 <li><strong>Skin type:</strong> {{ profile_context.skin_type|title }}</li>
@@ -26,95 +116,112 @@
         </div>
       </div>
 
-      <div class="row g-4 mb-4">
-        <div class="col-md-4">
-          <div class="glass-card p-4 rounded-4 h-100">
-            <p class="eyebrow">Filter by need</p>
-            <div class="d-flex flex-wrap gap-2">
-              <span class="badge rounded-pill bg-soft">Hydration</span>
-              <span class="badge rounded-pill bg-soft">Barrier Support</span>
-              <span class="badge rounded-pill bg-soft">Glow</span>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="glass-card p-4 rounded-4 h-100">
-            <p class="eyebrow">Most-loved categories</p>
-            <ul class="mb-0 ps-3 text-muted">
-              <li>Gentle cleansers</li>
-              <li>Barrier repair creams</li>
-              <li>Vitamin C serums</li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="glass-card p-4 rounded-4 h-100">
-            <p class="eyebrow">Suggested retailers</p>
-            <p class="mb-0 text-muted">Sephora, Credo, Dermstore, and Cult Beauty.</p>
-          </div>
-        </div>
-      </div>
-
       <div class="row g-4">
-        <div class="col-md-6 col-xl-4">
-          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-            <div class="p-4 bg-soft">
-              <p class="eyebrow mb-2">Best match</p>
-              <h3 class="h5 mb-2">Velour Dew Serum</h3>
-              <p class="text-muted small mb-0">A plush, lightweight serum for dewy hydration and comfort.</p>
+        <div class="col-lg-4 col-xl-3">
+          <div class="filter-panel sticky-top" style="top: 1rem;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="h5 mb-0">Refine your matches</h2>
+              <button type="button" id="resetFilters" class="btn btn-sm btn-outline-primary">Reset all filters</button>
             </div>
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge rounded-pill bg-light text-dark">Hydration</span>
-                <span class="text-muted small">$58</span>
+
+            <label class="form-label fw-semibold" for="searchInput">Search products</label>
+            <input id="searchInput" class="form-control search-input mb-3" type="text" placeholder="Search by name, brand, ingredient...">
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Sort by</label>
+              <select id="sortSelect" class="form-select">
+                <option value="recommended">Recommended match</option>
+                <option value="price_low">Price: low to high</option>
+                <option value="price_high">Price: high to low</option>
+                <option value="highest_rated">Highest rated</option>
+                <option value="sensitive">Best for sensitive skin</option>
+                <option value="hydration">Best for hydration</option>
+                <option value="acne">Best for acne-prone skin</option>
+              </select>
+            </div>
+
+            <div class="mb-3">
+              <p class="fw-semibold mb-2">Active filters</p>
+              <div id="activeFilters" class="d-flex flex-wrap gap-2"></div>
+            </div>
+
+            <div class="mb-3">
+              <p class="fw-semibold mb-2">Product type</p>
+              <div class="d-flex flex-wrap gap-2" id="product_type"></div>
+            </div>
+
+            <div class="mb-3">
+              <p class="fw-semibold mb-2">Skin type</p>
+              <div class="d-flex flex-wrap gap-2" id="skin_type"></div>
+            </div>
+
+            <div class="mb-3">
+              <p class="fw-semibold mb-2">Skin concerns</p>
+              <div class="d-flex flex-wrap gap-2" id="concerns"></div>
+            </div>
+
+            <div class="mb-3">
+              <p class="fw-semibold mb-2">Attributes</p>
+              <div class="d-flex flex-wrap gap-2" id="attributes"></div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label fw-semibold" for="brandSelect">Brand</label>
+                <select id="brandSelect" class="form-select">
+                  <option value="">Any brand</option>
+                </select>
               </div>
-              <p class="small text-muted">Niacinamide, ceramides, and squalane for a soft, resilient barrier.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-warning small">★ 4.8 • Sephora</span>
-                <a href="https://www.sephora.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Shop now</a>
+              <div class="col-6">
+                <label class="form-label fw-semibold" for="retailerSelect">Retailer</label>
+                <select id="retailerSelect" class="form-select">
+                  <option value="">Any retailer</option>
+                </select>
               </div>
+            </div>
+
+            <div class="row g-2 mt-2">
+              <div class="col-6">
+                <label class="form-label fw-semibold" for="priceSelect">Price range</label>
+                <select id="priceSelect" class="form-select">
+                  <option value="">Any price</option>
+                  <option value="under_40">Under $40</option>
+                  <option value="40_70">$40-$70</option>
+                  <option value="over_70">$70+</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold" for="ratingSelect">Rating</label>
+                <select id="ratingSelect" class="form-select">
+                  <option value="">Any rating</option>
+                  <option value="4.5">4.5+</option>
+                  <option value="4.7">4.7+</option>
+                  <option value="4.9">4.9+</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <p class="fw-semibold mb-2">Ingredient focus</p>
+              <div class="d-flex flex-wrap gap-2" id="ingredients"></div>
             </div>
           </div>
         </div>
 
-        <div class="col-md-6 col-xl-4">
-          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-            <div class="p-4 bg-soft">
-              <p class="eyebrow mb-2">Barrier favorite</p>
-              <h3 class="h5 mb-2">Cedar Milk Cleanser</h3>
-              <p class="text-muted small mb-0">A creamy cleanser that removes residue without stripping.</p>
+        <div class="col-lg-8 col-xl-9">
+          <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 mb-3">
+            <div>
+              <p class="eyebrow mb-1">Curated picks</p>
+              <h2 class="h4 mb-1">Products that fit your ritual</h2>
+              <p class="mb-0 text-muted">Showing <span id="resultCount">0</span> products</p>
             </div>
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge rounded-pill bg-light text-dark">Gentle Cleanse</span>
-                <span class="text-muted small">$34</span>
-              </div>
-              <p class="small text-muted">Oat, glycerin, and meadowfoam to comfort and cleanse.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-warning small">★ 4.7 • Credo</span>
-                <a href="https://www.credo.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Shop now</a>
-              </div>
-            </div>
+            <div id="summaryPills" class="d-flex flex-wrap gap-2"></div>
           </div>
-        </div>
-
-        <div class="col-md-6 col-xl-4">
-          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
-            <div class="p-4 bg-soft">
-              <p class="eyebrow mb-2">Glow pick</p>
-              <h3 class="h5 mb-2">Botanical Radiance Elixir</h3>
-              <p class="text-muted small mb-0">A brightening serum with antioxidant support for a luminous finish.</p>
-            </div>
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-center mb-3">
-                <span class="badge rounded-pill bg-light text-dark">Glow</span>
-                <span class="text-muted small">$72</span>
-              </div>
-              <p class="small text-muted">Vitamin C, green tea, and peptides for a fresh, radiant look.</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="text-warning small">★ 4.9 • Dermstore</span>
-                <a href="https://www.dermstore.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Shop now</a>
-              </div>
+          <div id="productGrid" class="row g-4"></div>
+          <div id="emptyState" class="d-none mt-4">
+            <div class="filter-panel text-center py-5">
+              <h3 class="h5">No products matched your selection.</h3>
+              <p class="text-muted mb-0">Try loosening one or two filters or reset everything to see the full collection again.</p>
             </div>
           </div>
         </div>
@@ -122,4 +229,418 @@
     </div>
   </div>
 </div>
+
+<script>
+  const products = [
+    {
+      name: 'Velour Dew Serum',
+      brand: 'Luma Botanics',
+      retailer: 'Sephora',
+      price: 58,
+      rating: 4.8,
+      product_type: 'serum',
+      skin_types: ['dry', 'combination', 'normal'],
+      concerns: ['dehydration', 'dullness', 'barrier repair'],
+      attributes: ['lightweight', 'hydrating', 'brightening', 'vegan'],
+      ingredients: ['hyaluronic acid', 'niacinamide', 'squalane'],
+      description: 'A plush, lightweight serum that leaves skin luminous and comforted.'
+    },
+    {
+      name: 'Cedar Milk Cleanser',
+      brand: 'Silk & Sage',
+      retailer: 'Credo',
+      price: 34,
+      rating: 4.7,
+      product_type: 'cleanser',
+      skin_types: ['sensitive', 'dry', 'normal'],
+      concerns: ['barrier repair', 'redness', 'dehydration'],
+      attributes: ['gentle', 'soothing', 'fragrance-free', 'dermatologist-tested'],
+      ingredients: ['ceramides', 'oat', 'glycerin'],
+      description: 'A creamy cleanser that melts away residue without stripping the skin barrier.'
+    },
+    {
+      name: 'Botanical Radiance Elixir',
+      brand: 'Mira Skin',
+      retailer: 'Dermstore',
+      price: 72,
+      rating: 4.9,
+      product_type: 'serum',
+      skin_types: ['combination', 'oily', 'normal'],
+      concerns: ['dullness', 'dark spots', 'fine lines'],
+      attributes: ['brightening', 'lightweight', 'vegan', 'cruelty-free'],
+      ingredients: ['vitamin C', 'peptides', 'green tea'],
+      description: 'An antioxidant-rich serum that delivers a fresh, radiant finish.'
+    },
+    {
+      name: 'Dewdrop Recovery Cream',
+      brand: 'Aurelia Labs',
+      retailer: 'Cult Beauty',
+      price: 48,
+      rating: 4.6,
+      product_type: 'moisturizer',
+      skin_types: ['dry', 'sensitive', 'combination'],
+      concerns: ['dehydration', 'barrier repair', 'redness'],
+      attributes: ['rich', 'soothing', 'fragrance-free', 'non-comedogenic'],
+      ingredients: ['ceramides', 'squalane', 'peptides'],
+      description: 'A cushiony cream designed to comfort and replenish dry, stressed skin.'
+    },
+    {
+      name: 'Cloud Veil Sunscreen',
+      brand: 'Solstice Skin',
+      retailer: 'Sephora',
+      price: 39,
+      rating: 4.8,
+      product_type: 'sunscreen',
+      skin_types: ['oily', 'combination', 'sensitive'],
+      concerns: ['acne-prone', 'enlarged pores', 'dehydration'],
+      attributes: ['lightweight', 'oil-free', 'mattifying', 'non-comedogenic'],
+      ingredients: ['niacinamide', 'zinc oxide', 'hyaluronic acid'],
+      description: 'An airy mineral sunscreen that feels weightless and comfortable all day.'
+    },
+    {
+      name: 'Calm Clay Mask',
+      brand: 'Bloom Ritual',
+      retailer: 'Credo',
+      price: 28,
+      rating: 4.5,
+      product_type: 'mask',
+      skin_types: ['sensitive', 'combination', 'normal'],
+      concerns: ['redness', 'barrier repair', 'enlarged pores'],
+      attributes: ['calming', 'gentle', 'vegan', 'fragrance-free'],
+      ingredients: ['salicylic acid', 'kaolin', 'ceramides'],
+      description: 'A soothing clay mask that refines texture without over-drying.'
+    },
+    {
+      name: 'Balance Blemish Serum',
+      brand: 'Nurture Skin',
+      retailer: 'Dermstore',
+      price: 44,
+      rating: 4.7,
+      product_type: 'treatment',
+      skin_types: ['oily', 'combination', 'acne-prone'],
+      concerns: ['acne-prone', 'enlarged pores', 'dark spots'],
+      attributes: ['oil-free', 'non-comedogenic', 'gentle', 'exfoliating'],
+      ingredients: ['salicylic acid', 'niacinamide', 'retinol'],
+      description: 'A breakout-friendly treatment that helps smooth and clarify congested skin.'
+    },
+    {
+      name: 'Velvet Eye Cream',
+      brand: 'Luma Botanics',
+      retailer: 'Cult Beauty',
+      price: 42,
+      rating: 4.6,
+      product_type: 'eye cream',
+      skin_types: ['dry', 'sensitive', 'normal'],
+      concerns: ['fine lines', 'dehydration', 'barrier repair'],
+      attributes: ['rich', 'soothing', 'vegan', 'dermatologist-tested'],
+      ingredients: ['peptides', 'squalane', 'hyaluronic acid'],
+      description: 'A cushiony eye cream that hydrates and softens the under-eye area.'
+    }
+  ];
+
+  const optionGroups = {
+    product_type: ['cleanser', 'toner', 'serum', 'moisturizer', 'sunscreen', 'treatment', 'eye cream', 'mask', 'exfoliant', 'spot treatment'],
+    skin_type: ['dry', 'oily', 'combination', 'sensitive', 'normal'],
+    concerns: ['acne-prone', 'redness', 'dullness', 'dehydration', 'enlarged pores', 'fine lines', 'barrier repair', 'dark spots'],
+    attributes: ['lightweight', 'rich', 'hydrating', 'soothing', 'fragrance-free', 'oil-free', 'non-comedogenic', 'vegan', 'cruelty-free', 'dermatologist-tested', 'brightening', 'calming', 'gentle', 'exfoliating', 'mattifying'],
+    ingredients: ['hyaluronic acid', 'niacinamide', 'ceramides', 'salicylic acid', 'vitamin C', 'retinol', 'peptides', 'squalane']
+  };
+
+  const state = {
+    search: '',
+    sort: 'recommended',
+    selected: {
+      product_type: [],
+      skin_type: [],
+      concerns: [],
+      attributes: [],
+      ingredients: []
+    },
+    brand: '',
+    retailer: '',
+    priceRange: '',
+    rating: ''
+  };
+
+  function buildFilterButtons(containerId, group) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = '';
+    optionGroups[group].forEach((value) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'filter-chip small';
+      button.dataset.group = group;
+      button.dataset.value = value;
+      button.textContent = value;
+      button.addEventListener('click', () => toggleFilter(group, value));
+      container.appendChild(button);
+    });
+  }
+
+  function populateSelect(selectId, key) {
+    const select = document.getElementById(selectId);
+    const values = [...new Set(products.map((product) => product[key]).filter(Boolean))].sort();
+    values.forEach((value) => {
+      const option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      select.appendChild(option);
+    });
+  }
+
+  function toggleFilter(group, value) {
+    const selectedValues = state.selected[group];
+    const index = selectedValues.indexOf(value);
+    if (index >= 0) {
+      selectedValues.splice(index, 1);
+    } else {
+      selectedValues.push(value);
+    }
+    updateUI();
+  }
+
+  function updateUI() {
+    updateActiveFilters();
+    renderProducts();
+    updateButtonStates();
+  }
+
+  function updateButtonStates() {
+    Object.keys(optionGroups).forEach((group) => {
+      const buttons = document.querySelectorAll(`[data-group="${group}"]`);
+      buttons.forEach((button) => {
+        const isActive = state.selected[group].includes(button.dataset.value);
+        button.classList.toggle('active', isActive);
+      });
+    });
+  }
+
+  function updateActiveFilters() {
+    const container = document.getElementById('activeFilters');
+    const summaryContainer = document.getElementById('summaryPills');
+    const pills = [];
+
+    Object.entries(state.selected).forEach(([group, values]) => {
+      values.forEach((value) => {
+        pills.push({ group, value });
+      });
+    });
+
+    if (state.brand) pills.push({ group: 'brand', value: state.brand });
+    if (state.retailer) pills.push({ group: 'retailer', value: state.retailer });
+    if (state.priceRange) pills.push({ group: 'priceRange', value: formatPriceLabel(state.priceRange) });
+    if (state.rating) pills.push({ group: 'rating', value: `${state.rating}+` });
+
+    container.innerHTML = '';
+    summaryContainer.innerHTML = '';
+
+    pills.forEach((pill) => {
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.className = 'pill-chip';
+      chip.textContent = pill.value;
+      chip.addEventListener('click', () => removeFilter(pill));
+      container.appendChild(chip);
+    });
+
+    if (pills.length === 0) {
+      container.innerHTML = '<span class="text-muted small">No active filters yet.</span>';
+    }
+
+    if (state.search) {
+      const searchChip = document.createElement('span');
+      searchChip.className = 'stats-pill';
+      searchChip.textContent = `Search: “${state.search}”`;
+      summaryContainer.appendChild(searchChip);
+    }
+
+    const resultSummary = document.createElement('span');
+    resultSummary.className = 'stats-pill';
+    resultSummary.textContent = `${getFilteredProducts().length} results`;
+    summaryContainer.appendChild(resultSummary);
+  }
+
+  function removeFilter(pill) {
+    if (pill.group === 'brand') {
+      state.brand = '';
+    } else if (pill.group === 'retailer') {
+      state.retailer = '';
+    } else if (pill.group === 'priceRange') {
+      state.priceRange = '';
+    } else if (pill.group === 'rating') {
+      state.rating = '';
+    } else {
+      const values = state.selected[pill.group];
+      const index = values.indexOf(pill.value);
+      if (index >= 0) values.splice(index, 1);
+    }
+    updateUI();
+  }
+
+  function getFilteredProducts() {
+    const searchTerm = state.search.toLowerCase().trim();
+
+    return products.filter((product) => {
+      const matchesSearch = !searchTerm || [product.name, product.brand, product.retailer, product.description, ...product.ingredients].join(' ').toLowerCase().includes(searchTerm);
+      const matchesSelected = Object.entries(state.selected).every(([group, values]) => {
+        if (!values.length) return true;
+        const productValues = product[group] || product[group === 'product_type' ? 'product_type' : group === 'skin_type' ? 'skin_types' : group === 'concerns' ? 'concerns' : group === 'attributes' ? 'attributes' : 'ingredients'];
+        const normalizedValues = Array.isArray(productValues) ? productValues : [productValues];
+        return values.some((value) => normalizedValues.includes(value));
+      });
+
+      const matchesBrand = !state.brand || product.brand.toLowerCase() === state.brand.toLowerCase();
+      const matchesRetailer = !state.retailer || product.retailer.toLowerCase() === state.retailer.toLowerCase();
+      const matchesPrice = !state.priceRange || priceMatches(product.price, state.priceRange);
+      const matchesRating = !state.rating || product.rating >= Number(state.rating);
+
+      return matchesSearch && matchesSelected && matchesBrand && matchesRetailer && matchesPrice && matchesRating;
+    });
+  }
+
+  function priceMatches(price, range) {
+    if (range === 'under_40') return price < 40;
+    if (range === '40_70') return price >= 40 && price <= 70;
+    if (range === 'over_70') return price > 70;
+    return true;
+  }
+
+  function sortProducts(productsToSort) {
+    const sorted = [...productsToSort];
+    switch (state.sort) {
+      case 'price_low':
+        return sorted.sort((a, b) => a.price - b.price);
+      case 'price_high':
+        return sorted.sort((a, b) => b.price - a.price);
+      case 'highest_rated':
+        return sorted.sort((a, b) => b.rating - a.rating);
+      case 'sensitive':
+        return sorted.sort((a, b) => scoreForSensitive(b) - scoreForSensitive(a));
+      case 'hydration':
+        return sorted.sort((a, b) => scoreForHydration(b) - scoreForHydration(a));
+      case 'acne':
+        return sorted.sort((a, b) => scoreForAcne(b) - scoreForAcne(a));
+      default:
+        return sorted;
+    }
+  }
+
+  function scoreForSensitive(product) {
+    return Number(product.attributes.includes('fragrance-free')) + Number(product.attributes.includes('gentle')) + Number(product.attributes.includes('soothing')) + Number(product.skin_types.includes('sensitive'));
+  }
+
+  function scoreForHydration(product) {
+    return Number(product.attributes.includes('hydrating')) + Number(product.ingredients.includes('hyaluronic acid')) + Number(product.ingredients.includes('squalane')) + Number(product.concerns.includes('dehydration'));
+  }
+
+  function scoreForAcne(product) {
+    return Number(product.attributes.includes('non-comedogenic')) + Number(product.attributes.includes('oil-free')) + Number(product.ingredients.includes('salicylic acid')) + Number(product.concerns.includes('acne-prone'));
+  }
+
+  function renderProducts() {
+    const filteredProducts = sortProducts(getFilteredProducts());
+    const grid = document.getElementById('productGrid');
+    const emptyState = document.getElementById('emptyState');
+    const count = document.getElementById('resultCount');
+
+    count.textContent = filteredProducts.length;
+    grid.innerHTML = '';
+
+    if (!filteredProducts.length) {
+      emptyState.classList.remove('d-none');
+      return;
+    }
+
+    emptyState.classList.add('d-none');
+
+    filteredProducts.forEach((product) => {
+      const col = document.createElement('div');
+      col.className = 'col-md-6 col-xl-4';
+
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML = `
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+            <div>
+              <p class="eyebrow mb-1">${product.product_type}</p>
+              <h3 class="h5 mb-1">${product.name}</h3>
+            </div>
+            <span class="stats-pill">★ ${product.rating.toFixed(1)}</span>
+          </div>
+          <p class="text-muted small mb-3">${product.description}</p>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="fw-semibold">${product.brand}</span>
+            <span class="text-muted">$${product.price}</span>
+          </div>
+          <div class="tag-list mb-3">
+            ${product.attributes.map((attribute) => `<span class="badge">${attribute}</span>`).join('')}
+          </div>
+          <div class="text-muted small mb-3">Retailer: ${product.retailer}</div>
+          <div class="tag-list mb-3">
+            ${product.ingredients.map((ingredient) => `<span class="badge">${ingredient}</span>`).join('')}
+          </div>
+          <a href="https://www.sephora.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary w-100">Shop this pick</a>
+        </div>
+      `;
+      col.appendChild(card);
+      grid.appendChild(col);
+    });
+  }
+
+  function formatPriceLabel(value) {
+    if (value === 'under_40') return 'Under $40';
+    if (value === '40_70') return '$40-$70';
+    if (value === 'over_70') return '$70+';
+    return value;
+  }
+
+  document.getElementById('searchInput').addEventListener('input', (event) => {
+    state.search = event.target.value;
+    updateUI();
+  });
+
+  document.getElementById('sortSelect').addEventListener('change', (event) => {
+    state.sort = event.target.value;
+    updateUI();
+  });
+
+  ['brandSelect', 'retailerSelect', 'priceSelect', 'ratingSelect'].forEach((id) => {
+    document.getElementById(id).addEventListener('change', (event) => {
+      if (id === 'brandSelect') state.brand = event.target.value;
+      if (id === 'retailerSelect') state.retailer = event.target.value;
+      if (id === 'priceSelect') state.priceRange = event.target.value;
+      if (id === 'ratingSelect') state.rating = event.target.value;
+      updateUI();
+    });
+  });
+
+  document.getElementById('resetFilters').addEventListener('click', () => {
+    state.search = '';
+    state.sort = 'recommended';
+    state.selected = {
+      product_type: [],
+      skin_type: [],
+      concerns: [],
+      attributes: [],
+      ingredients: []
+    };
+    state.brand = '';
+    state.retailer = '';
+    state.priceRange = '';
+    state.rating = '';
+    document.getElementById('searchInput').value = '';
+    document.getElementById('sortSelect').value = 'recommended';
+    document.getElementById('brandSelect').value = '';
+    document.getElementById('retailerSelect').value = '';
+    document.getElementById('priceSelect').value = '';
+    document.getElementById('ratingSelect').value = '';
+    updateUI();
+  });
+
+  Object.keys(optionGroups).forEach((group) => buildFilterButtons(group, group));
+  populateSelect('brandSelect', 'brand');
+  populateSelect('retailerSelect', 'retailer');
+  updateUI();
+</script>
 {% endblock %}

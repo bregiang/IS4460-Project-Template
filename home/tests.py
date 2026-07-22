@@ -92,3 +92,10 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Retailer Recommendations")
+
+    def test_recommendations_page_renders_filter_controls(self):
+        response = self.client.get(reverse("recommendations"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Search products")
+        self.assertContains(response, "Reset all filters")
