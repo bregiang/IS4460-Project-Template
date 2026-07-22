@@ -1,7 +1,7 @@
 # IS4460-Project-Template
 
 This is a simple Django project template for student group projects.
-
+change here
 ## GitHub Codespaces
 
 When the repository is opened in GitHub Codespaces, the development container will install the required Python dependencies automatically using the configuration in [.devcontainer/devcontainer.json](.devcontainer/devcontainer.json).
