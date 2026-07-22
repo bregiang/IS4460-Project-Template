@@ -111,14 +111,30 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand brand-title fs-3" href="{% url 'home' %}">SkinIdentifier</a>
-            <div class="ms-auto">
-                {% if user.is_authenticated %}
-                    <a class="btn btn-outline-primary me-2" href="{% url 'dashboard' %}">Dashboard</a>
-                    <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
-                {% else %}
-                    <a class="btn btn-outline-primary me-2" href="{% url 'login' %}">Login</a>
-                    <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
-                {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto ms-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Skin Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    {% if user.is_authenticated %}
+                        <a class="btn btn-outline-primary me-2" href="{% url 'dashboard' %}">Dashboard</a>
+                        <a class="btn btn-primary" href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                        <a class="btn btn-outline-primary me-2" href="{% url 'login' %}">Login</a>
+                        <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </nav>
