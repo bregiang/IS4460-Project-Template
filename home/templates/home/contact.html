@@ -1,0 +1,130 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Contact Us | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="page-shell">
+    <section class="hero-card p-4 p-md-5 mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <span class="badge mb-3">Contact Us</span>
+                <h1 class="display-5 mb-3">We’re here to help with questions, feedback, and support.</h1>
+                <p class="lead text-secondary mb-0">Whether you have a question about your profile or need help with the experience, our team is ready to assist.</p>
+            </div>
+            <div class="col-lg-5">
+                <div class="soft-panel p-4">
+                    <div class="feature-icon mb-3">💬</div>
+                    <h3 class="h5 mb-2">How we can help</h3>
+                    <p class="mb-0 text-secondary">From product guidance to account support, we’re here to make your skincare journey feel effortless.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="row g-4">
+        <div class="col-lg-7">
+            <div class="card p-4 p-md-5">
+                <div class="section-heading">
+                    <div>
+                        <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">Get in touch</p>
+                        <h2 class="h3 mb-0">Send us a message</h2>
+                    </div>
+                </div>
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="name">Full Name</label>
+                            <input class="form-control" id="name" type="text" placeholder="Your name" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" for="email">Email Address</label>
+                            <input class="form-control" id="email" type="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold" for="subject">Subject</label>
+                            <input class="form-control" id="subject" type="text" placeholder="How can we help?" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label fw-semibold" for="message">Message</label>
+                            <textarea class="form-control" id="message" rows="5" placeholder="Tell us more about your question or feedback." required></textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-wrap gap-2 mt-4">
+                        <button class="btn btn-primary" type="submit">Send Message</button>
+                        <button class="btn btn-outline-primary" type="reset">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card p-4 p-md-5 mb-4">
+                <p class="text-uppercase small fw-semibold mb-2" style="letter-spacing: 0.24em; color: var(--warm-gray);">Contact information</p>
+                <div class="d-grid gap-3">
+                    <div class="soft-panel p-3">
+                        <h6 class="mb-1">Email</h6>
+                        <a href="mailto:support@skinidentifier.com" class="text-decoration-none" style="color: var(--forest);">support@skinidentifier.com</a>
+                    </div>
+                    <div class="soft-panel p-3">
+                        <h6 class="mb-1">Customer Support</h6>
+                        <p class="mb-0 text-secondary small">Available for account and platform questions.</p>
+                    </div>
+                    <div class="soft-panel p-3">
+                        <h6 class="mb-1">Business Inquiries</h6>
+                        <a href="mailto:business@skinidentifier.com" class="text-decoration-none" style="color: var(--forest);">business@skinidentifier.com</a>
+                    </div>
+                    <div class="soft-panel p-3">
+                        <h6 class="mb-1">Office Hours</h6>
+                        <p class="mb-0 text-secondary small">Monday–Friday<br>9:00 AM–5:00 PM</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4">
+                <p class="text-uppercase small fw-semibold mb-2" style="letter-spacing: 0.24em; color: var(--warm-gray);">Frequently asked</p>
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item border-0 mb-2">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse" data-bs-target="#faq1" aria-expanded="false">
+                                How accurate is the skin analysis?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">It provides a thoughtful estimate based on the information you share and is designed to support your routine rather than replace a diagnosis.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-2">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse" data-bs-target="#faq2" aria-expanded="false">
+                                Can I update my profile?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">Yes. Your profile can be updated at any time from the profile page.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-2">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse" data-bs-target="#faq3" aria-expanded="false">
+                                Is my information secure?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">Yes. We protect personal data with secure storage practices and controlled access.</div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed rounded-4" type="button" data-bs-toggle="collapse" data-bs-target="#faq4" aria-expanded="false">
+                                Can I retake the skin questionnaire?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">Absolutely. You can revisit the analysis experience whenever you want to refresh your profile.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

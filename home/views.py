@@ -19,6 +19,21 @@ def skin_analysis_view(request):
     return render(request, "home/skin_analysis.html")
 
 
+def about_page(request):
+    """Render the polished informational about page."""
+    return render(request, "home/about.html")
+
+
+def privacy_page(request):
+    """Render the privacy policy page."""
+    return render(request, "home/privacy.html")
+
+
+def contact_page(request):
+    """Render the contact page with a simple form layout."""
+    return render(request, "home/contact.html")
+
+
 def register_view(request):
     """Allow new users to create an account and select a role."""
     if request.method == "POST":
