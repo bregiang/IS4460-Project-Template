@@ -1,0 +1,29 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Dashboard | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="card shadow-sm border-0 p-4">
+    <h2 class="mb-3">Welcome, {{ user.username }}</h2>
+    <p class="text-secondary">You are signed in as a member of the {{ role }} team.</p>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-6">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold">Next steps</h3>
+                    <p class="text-secondary mb-0">Complete your skincare profile, review recommendations, or manage platform data depending on your role.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold">Role access</h3>
+                    <p class="text-secondary mb-0">Consumers can receive recommendations, dermatologists can review analyses, and administrators can manage the system.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

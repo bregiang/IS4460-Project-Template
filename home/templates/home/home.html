@@ -1,0 +1,62 @@
+{% extends 'home/base.html' %}
+
+{% block title %}SkinIdentifier | AI Skincare Guidance{% endblock %}
+
+{% block content %}
+<div class="card hero-card p-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="badge bg-light text-primary mb-3 px-3 py-2">AI-powered skincare guidance</span>
+            <h1 class="display-4 fw-bold mb-3">Find skincare that truly fits your skin.</h1>
+            <p class="lead text-secondary mb-4">
+                SkinIdentifier helps consumers complete a skincare questionnaire, optionally upload a skin photo,
+                and receive tailored product recommendations backed by Google Gemini.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'register' %}" class="btn btn-primary btn-lg">Get Started</a>
+                <a href="#roles" class="btn btn-outline-primary btn-lg">Explore Roles</a>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="bg-white rounded-4 p-4 shadow-sm">
+                <h3 class="fw-bold mb-3">What the platform offers</h3>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item px-0">Personalized skincare recommendations</li>
+                    <li class="list-group-item px-0">Role-based dashboards for consumers, dermatologists, and administrators</li>
+                    <li class="list-group-item px-0">Secure authentication and permission-based access</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="roles" class="row g-4 mt-2">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="feature-icon mb-3">C</div>
+                <h3 class="h5 fw-bold">Consumers</h3>
+                <p class="text-secondary">Complete questionnaires, manage profiles, and receive AI-guided product recommendations.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="feature-icon mb-3">D</div>
+                <h3 class="h5 fw-bold">Dermatologists</h3>
+                <p class="text-secondary">Review AI analyses and provide expert feedback to support better skincare decisions.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body">
+                <div class="feature-icon mb-3">A</div>
+                <h3 class="h5 fw-bold">Administrators</h3>
+                <p class="text-secondary">Manage products, stores, inventory, and dermatologist accounts with secure controls.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
