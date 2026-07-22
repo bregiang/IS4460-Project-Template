@@ -3,43 +3,568 @@
 {% block title %}Profile | SkinIdentifier{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card shadow-sm border-0 p-4">
-            <h2 class="mb-3">Skincare profile</h2>
-            <p class="text-secondary">Save your preferences so the app can tailor future recommendations without repeating the analysis.</p>
+<div class="profile-shell">
+    <div class="hero-card p-4 p-md-5 mb-4">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-8">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="feature-icon">🌿</span>
+                    <span class="text-uppercase small fw-semibold" style="letter-spacing: 0.2em; color: var(--muted);">Personal skin report</span>
+                </div>
+                <h1 class="mb-3">My Skin Profile</h1>
+                <p class="lead text-secondary mb-0">
+                    Your skin is unique, and this profile is tailored to help you care for it.
+                </p>
+            </div>
+            <div class="col-lg-4">
+                <div class="profile-summary-card p-3 p-md-4">
+                    <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Current snapshot</p>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h3 class="mb-0" id="profileSkinType">Balanced</h3>
+                        <span class="badge rounded-pill px-3 py-2" id="profileBadge">Calm</span>
+                    </div>
+                    <p class="mb-2 text-secondary small">Skin score <strong id="profileScore">88</strong>/100</p>
+                    <p class="mb-0 text-secondary small">Confidence <strong id="profileConfidence">High</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <form method="post">
-                {% csrf_token %}
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <section class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                    <div>
+                        <p class="small text-uppercase fw-semibold mb-1" style="letter-spacing: 0.2em; color: var(--muted);">Main summary</p>
+                        <h2 class="mb-1">Personalized skin profile</h2>
+                    </div>
+                    <span class="badge rounded-pill px-3 py-2" id="summaryBadge">Premium care</span>
+                </div>
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label" for="id_skin_type">Skin type</label>
-                        {{ form.skin_type }}
+                        <div class="profile-panel p-3 h-100">
+                            <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Skin type</p>
+                            <h3 class="mb-2" id="summaryType">Combination</h3>
+                            <p class="text-secondary mb-0" id="summaryDescription">A balanced blend with a slightly oilier T-zone.</p>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label" for="id_goals">Goals</label>
-                        {{ form.goals }}
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label" for="id_concerns">Concerns</label>
-                        {{ form.concerns }}
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label" for="id_allergies">Allergies</label>
-                        {{ form.allergies }}
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label" for="id_notes">Notes</label>
-                        {{ form.notes }}
+                        <div class="profile-panel p-3 h-100">
+                            <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Skin age estimate</p>
+                            <h3 class="mb-2" id="ageEstimate">25</h3>
+                            <p class="text-secondary mb-0">Your skin appears youthful and well supported.</p>
+                        </div>
                     </div>
                 </div>
+                <div class="row g-3 mt-1">
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="profile-panel p-3 h-100">
+                            <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Hydration</p>
+                            <h4 class="mb-1" id="hydrationValue">78%</h4>
+                            <p class="small text-secondary mb-0">Well hydrated with occasional dryness.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="profile-panel p-3 h-100">
+                            <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Oiliness</p>
+                            <h4 class="mb-1" id="oilValue">44%</h4>
+                            <p class="small text-secondary mb-0">Moderate oil production.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <div class="profile-panel p-3 h-100">
+                            <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Sensitivity</p>
+                            <h4 class="mb-1" id="sensitivityValue">32%</h4>
+                            <p class="small text-secondary mb-0">Generally tolerant with some triggers.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                <div class="mt-4 d-flex gap-2">
-                    <button class="btn btn-primary" type="submit">Save profile</button>
-                    <a class="btn btn-outline-primary" href="{% url 'dashboard' %}">Back to dashboard</a>
+            <section class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                    <div>
+                        <p class="small text-uppercase fw-semibold mb-1" style="letter-spacing: 0.2em; color: var(--muted);">Visual skin analysis</p>
+                        <h2 class="mb-1">Area-by-area balance</h2>
+                    </div>
+                    <span class="badge rounded-pill px-3 py-2">Soft glow</span>
                 </div>
-            </form>
+                <div class="skin-map p-3 p-md-4 rounded-4">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-7">
+                            <div class="face-outline">
+                                <div class="face-area forehead">
+                                    <span class="mini-pill">Forehead</span>
+                                    <strong id="foreheadNote">Balanced</strong>
+                                </div>
+                                <div class="face-area cheeks">
+                                    <span class="mini-pill">Cheeks</span>
+                                    <strong id="cheeksNote">Comfortable</strong>
+                                </div>
+                                <div class="face-area nose">
+                                    <span class="mini-pill">T-zone</span>
+                                    <strong id="noseNote">Moderate oil</strong>
+                                </div>
+                                <div class="face-area eyes">
+                                    <span class="mini-pill">Under eyes</span>
+                                    <strong id="eyesNote">Hydrated</strong>
+                                </div>
+                                <div class="face-area jawline">
+                                    <span class="mini-pill">Jawline</span>
+                                    <strong id="jawlineNote">Even</strong>
+                                </div>
+                                <div class="face-area lips">
+                                    <span class="mini-pill">Lips</span>
+                                    <strong id="lipsNote">Smooth</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="area-notes">
+                                <div class="note-card mb-2">
+                                    <div class="d-flex align-items-center gap-2 mb-1"><span class="feature-icon">🫧</span><strong>Texture</strong></div>
+                                    <p class="mb-0 small text-secondary" id="textureNote">Smooth and refined.</p>
+                                </div>
+                                <div class="note-card mb-2">
+                                    <div class="d-flex align-items-center gap-2 mb-1"><span class="feature-icon">✨</span><strong>Glow</strong></div>
+                                    <p class="mb-0 small text-secondary" id="glowNote">Natural radiance with gentle brightness.</p>
+                                </div>
+                                <div class="note-card">
+                                    <div class="d-flex align-items-center gap-2 mb-1"><span class="feature-icon">🧴</span><strong>Barrier</strong></div>
+                                    <p class="mb-0 small text-secondary" id="barrierNote">Comfortable and mostly resilient.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                    <div>
+                        <p class="small text-uppercase fw-semibold mb-1" style="letter-spacing: 0.2em; color: var(--muted);">Detailed features</p>
+                        <h2 class="mb-1">Core skin metrics</h2>
+                    </div>
+                    <span class="badge rounded-pill px-3 py-2">Insightful</span>
+                </div>
+                <div class="row g-3" id="featureCards"></div>
+            </section>
+        </div>
+
+        <div class="col-lg-4">
+            <section class="card p-4 mb-4">
+                <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Recommended routine</p>
+                <h2 class="mb-3">Tailored care</h2>
+                <div class="d-grid gap-2" id="routineList"></div>
+            </section>
+
+            <section class="card p-4 mb-4">
+                <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Strengths & improvements</p>
+                <h2 class="mb-3">Your focus areas</h2>
+                <div class="mb-3">
+                    <h6 class="mb-2">Strengths</h6>
+                    <ul class="mb-0 ps-3 text-secondary" id="strengthList"></ul>
+                </div>
+                <div class="mb-3">
+                    <h6 class="mb-2">Areas to improve</h6>
+                    <ul class="mb-0 ps-3 text-secondary" id="improvementList"></ul>
+                </div>
+                <div>
+                    <h6 class="mb-2">Quick wins</h6>
+                    <ul class="mb-0 ps-3 text-secondary" id="quickWinsList"></ul>
+                </div>
+            </section>
+
+            <section class="card p-4">
+                <p class="small text-uppercase fw-semibold mb-2" style="letter-spacing: 0.2em; color: var(--muted);">Ingredients</p>
+                <h2 class="mb-3">Best fit</h2>
+                <div class="mb-3">
+                    <h6 class="mb-2">Best ingredients</h6>
+                    <ul class="mb-0 ps-3 text-secondary" id="bestIngredientsList"></ul>
+                </div>
+                <div>
+                    <h6 class="mb-2">Avoid if sensitive</h6>
+                    <ul class="mb-0 ps-3 text-secondary" id="avoidIngredientsList"></ul>
+                </div>
+            </section>
         </div>
     </div>
 </div>
+
+<style>
+    .profile-shell .hero-card {
+        background: linear-gradient(135deg, #fcf8f2 0%, #eef4ee 100%);
+    }
+
+    .profile-summary-card,
+    .profile-panel,
+    .note-card,
+    .feature-card {
+        background: rgba(255,255,255,0.78);
+        border: 1px solid rgba(143, 167, 143, 0.18);
+        border-radius: 1.1rem;
+        box-shadow: 0 10px 24px rgba(59,67,56,0.05);
+    }
+
+    .skin-map {
+        background: linear-gradient(135deg, rgba(248,242,233,0.75), rgba(236,243,237,0.85));
+        border: 1px solid rgba(143, 167, 143, 0.15);
+    }
+
+    .face-outline {
+        position: relative;
+        min-height: 310px;
+        border-radius: 50% 50% 42% 42%;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.85), rgba(232, 241, 232, 0.85));
+        border: 1px solid rgba(143, 167, 143, 0.2);
+        margin: 0 auto;
+        max-width: 320px;
+        box-shadow: inset 0 0 0 12px rgba(255,255,255,0.35);
+    }
+
+    .face-outline::before {
+        content: "";
+        position: absolute;
+        inset: 22px;
+        border: 1px solid rgba(143, 167, 143, 0.16);
+        border-radius: 50% 50% 42% 42%;
+    }
+
+    .face-area {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        text-align: center;
+        font-size: 0.82rem;
+        color: var(--olive);
+        background: rgba(255,255,255,0.78);
+        border: 1px solid rgba(143, 167, 143, 0.2);
+        padding: 0.45rem 0.55rem;
+        border-radius: 999px;
+        box-shadow: 0 8px 16px rgba(59,67,56,0.04);
+    }
+
+    .forehead { top: 24px; left: 50%; transform: translateX(-50%); }
+    .cheeks { top: 95px; left: 24px; }
+    .nose { top: 108px; left: 50%; transform: translateX(-50%); }
+    .eyes { bottom: 72px; left: 24px; }
+    .jawline { bottom: 28px; left: 50%; transform: translateX(-50%); }
+    .lips { bottom: 28px; right: 24px; }
+
+    .mini-pill {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.18em;
+        color: var(--muted);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease;
+    }
+
+    @media (max-width: 576px) {
+        .face-outline {
+            min-height: 250px;
+            max-width: 260px;
+        }
+
+        .face-area {
+            font-size: 0.7rem;
+            padding: 0.35rem 0.45rem;
+        }
+    }
+</style>
+
+<script>
+    const profileData = {
+        normal: {
+            skinType: "Normal",
+            badge: "Balanced",
+            score: 88,
+            confidence: "High",
+            ageEstimate: 24,
+            hydration: 82,
+            oiliness: 34,
+            sensitivity: 24,
+            poreVisibility: 28,
+            texture: 86,
+            redness: 20,
+            acne: 18,
+            undertone: "Soft neutral",
+            summary: "A balanced blend with smooth texture and steady comfort.",
+            forehead: "Balanced",
+            cheeks: "Comfortable",
+            nose: "Low oil",
+            eyes: "Hydrated",
+            jawline: "Even",
+            lips: "Smooth",
+            textureNote: "Your skin texture looks smooth and refined.",
+            glowNote: "A soft, natural glow is present without excess shine.",
+            barrierNote: "Barrier support appears strong and resilient.",
+            features: [
+                { title: "Hydration", value: "82%", description: "Well hydrated and comfortable."},
+                { title: "Texture", value: "86%", description: "Smooth and refined surface."},
+                { title: "Pores", value: "28%", description: "Mostly refined and less visible."},
+                { title: "Barrier health", value: "90%", description: "Strong and resilient."},
+                { title: "Glow", value: "84%", description: "Healthy, natural radiance."},
+                { title: "Sensitivity", value: "24%", description: "Usually calm and tolerant."},
+                { title: "Oil balance", value: "66%", description: "Balanced and steady."}
+            ],
+            routine: [
+                { step: "Cleanser", detail: "Gentle cream cleanser for a calm reset." },
+                { step: "Essence", detail: "Light hydrating essence with glycerin." },
+                { step: "Serum", detail: "Niacinamide to support balance and glow." },
+                { step: "Moisturizer", detail: "Lightweight lotion with ceramides." },
+                { step: "Sunscreen", detail: "Daily SPF 50 for everyday protection." }
+            ],
+            strengths: ["Balanced feel", "Reliable hydration", "Comfortable complexion"],
+            improvements: ["Maintain consistency", "Protect against environmental stress"],
+            quickWins: ["Use SPF daily", "Keep your routine simple"],
+            bestIngredients: ["Ceramides", "Glycerin", "Niacinamide"],
+            avoidIngredients: ["Fragrance-heavy products", "Overly harsh scrubs"]
+        },
+        dry: {
+            skinType: "Dry",
+            badge: "Hydration first",
+            score: 79,
+            confidence: "High",
+            ageEstimate: 27,
+            hydration: 58,
+            oiliness: 20,
+            sensitivity: 41,
+            poreVisibility: 22,
+            texture: 64,
+            redness: 33,
+            acne: 12,
+            undertone: "Warm beige",
+            summary: "A softer, more delicate complexion that benefits from rich hydration.",
+            forehead: "Tight",
+            cheeks: "Dry",
+            nose: "Comfortable",
+            eyes: "Dehydrated",
+            jawline: "Flaky at times",
+            lips: "Dry",
+            textureNote: "Texture can feel rougher, especially around the cheeks.",
+            glowNote: "Glow is more subtle and often needs support from hydration.",
+            barrierNote: "Barrier comfort may improve with richer, gentler hydration.",
+            features: [
+                { title: "Hydration", value: "58%", description: "Needs extra nourishment."},
+                { title: "Texture", value: "64%", description: "Can feel slightly uneven."},
+                { title: "Pores", value: "22%", description: "Pores appear less visible."},
+                { title: "Barrier health", value: "72%", description: "Benefit from soothing support."},
+                { title: "Glow", value: "68%", description: "Needs deeper moisture."},
+                { title: "Sensitivity", value: "41%", description: "Can react to stripping products."},
+                { title: "Oil balance", value: "38%", description: "Low oil production."}
+            ],
+            routine: [
+                { step: "Cleanser", detail: "Cream cleanser with ceramides and oat." },
+                { step: "Essence", detail: "Hydrating essence with hyaluronic acid." },
+                { step: "Serum", detail: "Barrier serum with panthenol." },
+                { step: "Moisturizer", detail: "Rich cream with squalane and glycerin." },
+                { step: "Sunscreen", detail: "Comforting mineral SPF 50." }
+            ],
+            strengths: ["Soft texture", "Elegant glow when hydrated"],
+            improvements: ["Prevent tightness", "Reduce patchiness"],
+            quickWins: ["Apply moisturizer on damp skin", "Avoid over-exfoliation"],
+            bestIngredients: ["Hyaluronic acid", "Squalane", "Ceramides"],
+            avoidIngredients: ["Alcohol-heavy toners", "Strong scrubs"]
+        },
+        oily: {
+            skinType: "Oily",
+            badge: "Fresh focus",
+            score: 81,
+            confidence: "High",
+            ageEstimate: 24,
+            hydration: 74,
+            oiliness: 71,
+            sensitivity: 30,
+            poreVisibility: 62,
+            texture: 68,
+            redness: 22,
+            acne: 35,
+            undertone: "Cool rose",
+            summary: "A luminous complexion that benefits from light, balancing care.",
+            forehead: "Shiny",
+            cheeks: "Balanced",
+            nose: "Oily",
+            eyes: "Comfortable",
+            jawline: "Textured",
+            lips: "Smooth",
+            textureNote: "Texture may feel a little uneven, especially in the T-zone.",
+            glowNote: "Brightness is present, but oil can make it look shiny.",
+            barrierNote: "Barrier stays comfortable when you avoid over-stripping.",
+            features: [
+                { title: "Hydration", value: "74%", description: "Needs lightweight hydration."},
+                { title: "Texture", value: "68%", description: "Some congestion can appear."},
+                { title: "Pores", value: "62%", description: "More visible around the T-zone."},
+                { title: "Barrier health", value: "78%", description: "Generally resilient with gentle care."},
+                { title: "Glow", value: "76%", description: "Luminous but can look oily."},
+                { title: "Sensitivity", value: "30%", description: "Usually calm but can react to harsh acids."},
+                { title: "Oil balance", value: "58%", description: "Needs better balance."}
+            ],
+            routine: [
+                { step: "Cleanser", detail: "Salicylic gel cleanser for everyday oil control." },
+                { step: "Essence", detail: "Light watery essence with niacinamide." },
+                { step: "Serum", detail: "Niacinamide or zinc serum for oil balance." },
+                { step: "Moisturizer", detail: "Gel moisturizer with lightweight hydrators." },
+                { step: "Sunscreen", detail: "Non-comedogenic SPF 50." }
+            ],
+            strengths: ["Bright complexion", "Strong natural glow"],
+            improvements: ["Reduce shine", "Support clearer pores"],
+            quickWins: ["Use blotting papers", "Avoid thick occlusives"],
+            bestIngredients: ["Niacinamide", "Salicylic acid", "Clay"],
+            avoidIngredients: ["Heavy rich creams", "Too many exfoliants"]
+        },
+        combination: {
+            skinType: "Combination",
+            badge: "Balanced mix",
+            score: 84,
+            confidence: "High",
+            ageEstimate: 26,
+            hydration: 76,
+            oiliness: 54,
+            sensitivity: 31,
+            poreVisibility: 41,
+            texture: 78,
+            redness: 24,
+            acne: 24,
+            undertone: "Soft peach",
+            summary: "A balanced profile with a more oily T-zone and calmer cheeks.",
+            forehead: "Shiny",
+            cheeks: "Comfortable",
+            nose: "Oily",
+            eyes: "Hydrated",
+            jawline: "Even",
+            lips: "Smooth",
+            textureNote: "Texture appears even overall with some T-zone congestion.",
+            glowNote: "Glow is natural and flattering when the skin is balanced.",
+            barrierNote: "Your barrier stays comfortable with a moderate, flexible routine.",
+            features: [
+                { title: "Hydration", value: "76%", description: "Comfortable with moderate moisture."},
+                { title: "Texture", value: "78%", description: "Mostly smooth with occasional patches."},
+                { title: "Pores", value: "41%", description: "Visible around the T-zone only."},
+                { title: "Barrier health", value: "84%", description: "Generally strong and resilient."},
+                { title: "Glow", value: "80%", description: "Bright but not overly shiny."},
+                { title: "Sensitivity", value: "31%", description: "Low to moderate sensitivity."},
+                { title: "Oil balance", value: "68%", description: "Balanced with some oil at midday."}
+            ],
+            routine: [
+                { step: "Cleanser", detail: "Gentle gel cleanser for a fresh start." },
+                { step: "Essence", detail: "Hydrating essence to keep the cheeks comfortable." },
+                { step: "Serum", detail: "Niacinamide for balanced oil and glow." },
+                { step: "Moisturizer", detail: "Light cream that works for both zones." },
+                { step: "Sunscreen", detail: "Sheer SPF 50 with a comfortable finish." }
+            ],
+            strengths: ["Balanced tone", "Adaptable routine"],
+            improvements: ["Prevent midday shine", "Keep cheeks hydrated"],
+            quickWins: ["Use a lightweight moisturizer", "Avoid overloading the T-zone"],
+            bestIngredients: ["Niacinamide", "Hyaluronic acid", "Ceramides"],
+            avoidIngredients: ["Very thick occlusives", "Harsh exfoliants"]
+        },
+        sensitive: {
+            skinType: "Sensitive",
+            badge: "Gentle care",
+            score: 75,
+            confidence: "High",
+            ageEstimate: 28,
+            hydration: 70,
+            oiliness: 30,
+            sensitivity: 67,
+            poreVisibility: 24,
+            texture: 62,
+            redness: 48,
+            acne: 20,
+            undertone: "Muted rose",
+            summary: "A delicate complexion that responds best to minimal, soothing care.",
+            forehead: "Reactive",
+            cheeks: "Tender",
+            nose: "Gentle",
+            eyes: "Irritated at times",
+            jawline: "Calm",
+            lips: "Sensitive",
+            textureNote: "Texture can feel slightly uneven when the barrier is stressed.",
+            glowNote: "Glow is present but can be dulled by irritation.",
+            barrierNote: "Barrier comfort is the priority for this profile.",
+            features: [
+                { title: "Hydration", value: "70%", description: "Comfort improves with soothing hydration."},
+                { title: "Texture", value: "62%", description: "Can feel uneven when irritated."},
+                { title: "Pores", value: "24%", description: "Usually refined and less visible."},
+                { title: "Barrier health", value: "68%", description: "Needs gentle support."},
+                { title: "Glow", value: "72%", description: "Soft, calm radiance."},
+                { title: "Sensitivity", value: "67%", description: "Reacts easily to harsh products."},
+                { title: "Oil balance", value: "48%", description: "Generally balanced but delicate."}
+            ],
+            routine: [
+                { step: "Cleanser", detail: "Fragrance-free cream cleanser with oat." },
+                { step: "Essence", detail: "Soothing hydrating essence with panthenol." },
+                { step: "Serum", detail: "Centella or oat serum to comfort the skin." },
+                { step: "Moisturizer", detail: "Barrier cream with ceramides and squalane." },
+                { step: "Sunscreen", detail: "Mineral SPF 50 with a calm finish." }
+            ],
+            strengths: ["Soft, calm appearance", "Gentle makeup wear"],
+            improvements: ["Reduce redness", "Build tolerance slowly"],
+            quickWins: ["Patch test new products", "Keep routine simple"],
+            bestIngredients: ["Centella", "Oat", "Panthenol"],
+            avoidIngredients: ["Fragrance", "Strong acids", "Scrubs"]
+        }
+    };
+
+    const profileType = "{{ profile.skin_type|default:'combination' }}";
+    const selectedProfile = profileData[profileType] || profileData.combination;
+
+    document.getElementById("profileSkinType").textContent = selectedProfile.skinType;
+    document.getElementById("profileBadge").textContent = selectedProfile.badge;
+    document.getElementById("profileScore").textContent = selectedProfile.score;
+    document.getElementById("profileConfidence").textContent = selectedProfile.confidence;
+    document.getElementById("summaryType").textContent = selectedProfile.skinType;
+    document.getElementById("summaryDescription").textContent = selectedProfile.summary;
+    document.getElementById("summaryBadge").textContent = selectedProfile.badge;
+    document.getElementById("ageEstimate").textContent = selectedProfile.ageEstimate;
+    document.getElementById("hydrationValue").textContent = `${selectedProfile.hydration}%`;
+    document.getElementById("oilValue").textContent = `${selectedProfile.oiliness}%`;
+    document.getElementById("sensitivityValue").textContent = `${selectedProfile.sensitivity}%`;
+
+    document.getElementById("foreheadNote").textContent = selectedProfile.forehead;
+    document.getElementById("cheeksNote").textContent = selectedProfile.cheeks;
+    document.getElementById("noseNote").textContent = selectedProfile.nose;
+    document.getElementById("eyesNote").textContent = selectedProfile.eyes;
+    document.getElementById("jawlineNote").textContent = selectedProfile.jawline;
+    document.getElementById("lipsNote").textContent = selectedProfile.lips;
+    document.getElementById("textureNote").textContent = selectedProfile.textureNote;
+    document.getElementById("glowNote").textContent = selectedProfile.glowNote;
+    document.getElementById("barrierNote").textContent = selectedProfile.barrierNote;
+
+    const featureCards = document.getElementById("featureCards");
+    featureCards.innerHTML = selectedProfile.features.map((feature) => `
+        <div class="col-sm-6">
+            <div class="feature-card p-3 h-100">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="mb-0">${feature.title}</h6>
+                    <span class="badge rounded-pill">${feature.value}</span>
+                </div>
+                <p class="small text-secondary mb-0">${feature.description}</p>
+            </div>
+        </div>
+    `).join("");
+
+    const routineList = document.getElementById("routineList");
+    routineList.innerHTML = selectedProfile.routine.map((item) => `
+        <div class="p-3 rounded-4" style="background: rgba(255,255,255,0.72); border: 1px solid rgba(143, 167, 143, 0.16);">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="feature-icon">✦</span>
+                <strong>${item.step}</strong>
+            </div>
+            <p class="small text-secondary mb-0">${item.detail}</p>
+        </div>
+    `).join("");
+
+    document.getElementById("strengthList").innerHTML = selectedProfile.strengths.map((item) => `<li>${item}</li>`).join("");
+    document.getElementById("improvementList").innerHTML = selectedProfile.improvements.map((item) => `<li>${item}</li>`).join("");
+    document.getElementById("quickWinsList").innerHTML = selectedProfile.quickWins.map((item) => `<li>${item}</li>`).join("");
+    document.getElementById("bestIngredientsList").innerHTML = selectedProfile.bestIngredients.map((item) => `<li>${item}</li>`).join("");
+    document.getElementById("avoidIngredientsList").innerHTML = selectedProfile.avoidIngredients.map((item) => `<li>${item}</li>`).join("");
+</script>
 {% endblock %}

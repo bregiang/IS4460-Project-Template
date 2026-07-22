@@ -77,3 +77,12 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Skin Analysis")
+
+    def test_profile_page_shows_a_personalized_skin_report(self):
+        user = User.objects.create_user(username="profileuser2", password="StrongPass123!")
+        self.client.force_login(user)
+
+        response = self.client.get(reverse("profile"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "My Skin Profile")
