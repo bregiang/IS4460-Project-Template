@@ -3,27 +3,29 @@
 {% block title %}SkinIdentifier | AI Skincare Guidance{% endblock %}
 
 {% block content %}
-<div class="card hero-card p-5">
+<div class="card hero-card p-4 p-md-5">
     <div class="row align-items-center g-4">
         <div class="col-lg-7">
-            <span class="badge mb-3 px-3 py-2">Calm, intelligent skincare guidance</span>
+            <span class="badge mb-3">Calm, intelligent skincare guidance</span>
             <h1 class="display-5 fw-bold mb-3">A gentler way to discover what your skin needs.</h1>
             <p class="lead text-secondary mb-4">
-                SkinIdentifier helps consumers complete a skincare questionnaire, optionally upload a skin photo,
-                and receive thoughtful product recommendations powered by Google Gemini.
+                SkinIdentifier blends skincare science with a soft, ritual-led experience, helping you understand your skin with clarity and confidence.
             </p>
             <div class="d-flex flex-wrap gap-2">
-                <a href="{% url 'register' %}" class="btn btn-terra btn-lg">Get Started</a>
-                <a href="#how-it-works" class="btn btn-outline-primary btn-lg">How It Works</a>
+                <a href="{% url 'register' %}" class="btn btn-terra btn-lg">Start your ritual</a>
+                <a href="#how-it-works" class="btn btn-outline-primary btn-lg">How it works</a>
             </div>
         </div>
         <div class="col-lg-5">
-            <div class="bg-white rounded-4 p-4 shadow-sm">
-                <h3 class="fw-bold mb-3">Why it helps</h3>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item px-0">Personalized skincare recommendations</li>
-                    <li class="list-group-item px-0">Simpler product decisions with less guesswork</li>
-                    <li class="list-group-item px-0">A trustworthy, guided experience from start to finish</li>
+            <div class="soft-panel p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="feature-icon">✿</span>
+                    <h3 class="h5 mb-0">Why it feels different</h3>
+                </div>
+                <ul class="list-unstyled mb-0">
+                    <li class="d-flex align-items-start gap-2 mb-2"><span class="feature-icon" style="width: 32px; height: 32px;">✓</span><span>Personalized analysis shaped around your skin type and concerns</span></li>
+                    <li class="d-flex align-items-start gap-2 mb-2"><span class="feature-icon" style="width: 32px; height: 32px;">✓</span><span>Thoughtful product guidance without overwhelm or noise</span></li>
+                    <li class="d-flex align-items-start gap-2"><span class="feature-icon" style="width: 32px; height: 32px;">✓</span><span>A premium, wellness-inspired experience from first question to final routine</span></li>
                 </ul>
             </div>
         </div>
@@ -33,50 +35,48 @@
 <section id="how-it-works" class="mt-4">
     <div class="row g-4">
         <div class="col-lg-8">
-            <div class="card border-0 p-4 h-100">
-                <h2 class="h3 fw-bold mb-4">How it works</h2>
-                <div class="row g-4">
+            <div class="card p-4 h-100">
+                <div class="section-heading">
+                    <div>
+                        <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">How it works</p>
+                        <h2 class="h3 mb-0">A guided skincare experience</h2>
+                    </div>
+                    <span class="badge">Soft, simple, expert-led</span>
+                </div>
+                <div class="row g-4 mt-1">
                     <div class="col-md-4">
-                        <div class="p-3 rounded-4" style="background: #f4efe8;">
+                        <div class="p-3 rounded-4" style="background: rgba(231,220,198,.35); min-height: 100%;">
                             <div class="feature-icon mb-3">1</div>
                             <h3 class="h6 fw-bold">Complete a short questionnaire</h3>
-                            <p class="text-secondary small mb-0">Share simple details about your skin concerns, routine, and goals.</p>
+                            <p class="small mb-0">Share the details that matter most about your skin, from hydration to sensitivity.</p>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="p-3 rounded-4" style="background: #eef4ef;">
+                        <div class="p-3 rounded-4" style="background: rgba(157,182,174,.2); min-height: 100%;">
                             <div class="feature-icon mb-3">2</div>
-                            <h3 class="h6 fw-bold">Upload a skin photo</h3>
-                            <p class="text-secondary small mb-0">Optional visuals help support a more complete skin analysis.</p>
+                            <h3 class="h6 fw-bold">Review your skin profile</h3>
+                            <p class="small mb-0">See a calm, personalized analysis that feels more like a beauty consultation than a test.</p>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="p-3 rounded-4" style="background: #eaf1f4;">
+                        <div class="p-3 rounded-4" style="background: rgba(242,214,214,.2); min-height: 100%;">
                             <div class="feature-icon mb-3">3</div>
-                            <h3 class="h6 fw-bold">Receive tailored recommendations</h3>
-                            <p class="text-secondary small mb-0">Gemini helps identify skin type and suggests products that fit.</p>
+                            <h3 class="h6 fw-bold">Receive tailored advice</h3>
+                            <p class="small mb-0">Get relevant products, routines, and care steps inspired by your unique skin behavior.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card border-0 p-4 h-100" style="background: linear-gradient(135deg, #f8f2e9 0%, #eef4ef 100%);">
-                <h3 class="fw-bold mb-3">A guided experience</h3>
-                <p class="text-secondary mb-3">The process is designed to feel calm, clear, and personalized from the first question to the final recommendation.</p>
-                <div class="rounded-4 p-3" style="background: rgba(255,255,255,0.7);">
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="feature-icon me-2">✓</span>
-                        <span class="small">Simple and intuitive flow</span>
-                    </div>
-                    <div class="d-flex align-items-center mb-2">
-                        <span class="feature-icon me-2">✓</span>
-                        <span class="small">Accessible language and layout</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <span class="feature-icon me-2">✓</span>
-                        <span class="small">Supportive guidance for confident choices</span>
-                    </div>
+            <div class="card p-4 h-100" style="background: linear-gradient(135deg, rgba(250,248,243,0.95) 0%, rgba(231,220,198,0.7) 100%);">
+                <p class="text-uppercase small fw-semibold mb-2" style="letter-spacing: 0.24em; color: var(--warm-gray);">Wellness note</p>
+                <h3 class="h4 mb-3">A calm, curated routine</h3>
+                <p class="text-secondary mb-3">Every step is designed to feel thoughtful, trustworthy, and beautifully simple.</p>
+                <div class="soft-panel p-3">
+                    <div class="d-flex align-items-center gap-2 mb-2"><span class="feature-icon" style="width: 32px; height: 32px;">✦</span><span class="small">Gentle and intuitive flow</span></div>
+                    <div class="d-flex align-items-center gap-2 mb-2"><span class="feature-icon" style="width: 32px; height: 32px;">✦</span><span class="small">Clean language and premium presentation</span></div>
+                    <div class="d-flex align-items-center gap-2"><span class="feature-icon" style="width: 32px; height: 32px;">✦</span><span class="small">Supportive guidance for confident choices</span></div>
                 </div>
             </div>
         </div>

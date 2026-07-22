@@ -3,30 +3,59 @@
 {% block title %}Dashboard | SkinIdentifier{% endblock %}
 
 {% block content %}
-<div class="card shadow-sm border-0 p-4">
-    <h2 class="mb-3">Welcome, {{ user.username }}</h2>
-    <p class="text-secondary">You are signed in as a member of the {{ role }} team.</p>
-
-    <div class="row g-4 mt-2">
-        <div class="col-md-6">
-            <div class="card border-0 bg-light h-100">
-                <div class="card-body">
-                    <h3 class="h5 fw-bold">Next steps</h3>
-                    <p class="text-secondary mb-0">Complete your skincare profile, review recommendations, or manage platform data depending on your role.</p>
-                    <a class="btn btn-terra mt-3" href="{% url 'profile' %}">Save your skincare profile</a>
+<div class="card hero-card p-4 p-md-5">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+            <span class="badge mb-3">Skincare journal</span>
+            <h1 class="display-6 mb-3">Welcome back, {{ user.username }}</h1>
+            <p class="lead text-secondary mb-0">You’re signed in as a member of the {{ role }} team. Your dashboard is designed to feel calm, personal, and beautifully organized.</p>
+        </div>
+        <div class="col-lg-5">
+            <div class="soft-panel p-4">
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="feature-icon">☁</span>
+                    <h3 class="h5 mb-0">Today’s focus</h3>
+                </div>
+                <p class="mb-2 text-secondary">Maintain your routine, review progress, and refine your skin profile with ease.</p>
+                <div class="d-flex flex-wrap gap-2">
+                    <a class="btn btn-primary" href="{% url 'skin_analysis' %}">New analysis</a>
+                    <a class="btn btn-outline-primary" href="{% url 'profile' %}">View profile</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card border-0 bg-light h-100">
-                <div class="card-body">
-                    <h3 class="h5 fw-bold">Role access</h3>
-                    <p class="text-secondary mb-0">Consumers can receive recommendations, dermatologists can review analyses, and administrators can manage the system.</p>
-                    {% if profile %}
-                        <p class="mt-3 mb-0"><strong>Current profile:</strong> {{ profile.skin_type|default:"Not set" }}</p>
-                    {% endif %}
+    </div>
+</div>
+
+<div class="row g-4 mt-1">
+    <div class="col-md-6">
+        <div class="card p-4 h-100">
+            <div class="section-heading">
+                <div>
+                    <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">Next steps</p>
+                    <h3 class="h5 mb-0">Your skincare path</h3>
                 </div>
+                <span class="badge">Gentle progress</span>
             </div>
+            <p class="text-secondary mb-3">Complete your skincare profile, review recommendations, or manage platform data depending on your role.</p>
+            <a class="btn btn-terra" href="{% url 'profile' %}">Save your skincare profile</a>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card p-4 h-100">
+            <div class="section-heading">
+                <div>
+                    <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">Role access</p>
+                    <h3 class="h5 mb-0">What you can do</h3>
+                </div>
+                <span class="badge">Tailored access</span>
+            </div>
+            <p class="text-secondary mb-3">Consumers can receive recommendations, dermatologists can review analyses, and administrators can manage the system.</p>
+            {% if profile %}
+                <div class="soft-panel p-3">
+                    <p class="mb-1 fw-semibold">Current profile</p>
+                    <p class="mb-0 text-secondary">{{ profile.skin_type|default:"Not set" }}</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
