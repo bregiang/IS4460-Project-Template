@@ -71,3 +71,9 @@ class SkinIdentifierAuthTests(TestCase):
         self.assertEqual(profile.goals, "Hydration and barrier support")
         self.assertEqual(profile.allergies, "Fragrance")
         self.assertEqual(profile.notes, "Prefers lightweight products")
+
+    def test_skin_analysis_page_is_available(self):
+        response = self.client.get(reverse("skin_analysis"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Skin Analysis")

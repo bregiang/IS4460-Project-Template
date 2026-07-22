@@ -14,6 +14,11 @@ def home_page(request):
     return render(request, "home/home.html")
 
 
+def skin_analysis_view(request):
+    """Render the interactive skin analysis quiz and result experience."""
+    return render(request, "home/skin_analysis.html")
+
+
 def register_view(request):
     """Allow new users to create an account and select a role."""
     if request.method == "POST":
