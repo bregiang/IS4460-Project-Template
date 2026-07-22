@@ -1,0 +1,125 @@
+{% extends 'home/base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10">
+      <div class="hero-card rounded-4 p-4 p-md-5 shadow-sm mb-4">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-7">
+            <span class="eyebrow">Retailer Recommendations</span>
+            <h1 class="display-5 fw-semibold mb-3">Curated skincare picks from trusted third-party partners.</h1>
+            <p class="lead text-muted mb-0">
+              We pair your skin profile with a refined selection of gentle, effective essentials from boutique and prestige retailers.
+            </p>
+          </div>
+          <div class="col-lg-5">
+            <div class="glass-card p-4 rounded-4">
+              <p class="small text-uppercase mb-2">Your profile snapshot</p>
+              <ul class="list-unstyled mb-0">
+                <li><strong>Skin type:</strong> {{ profile_context.skin_type|title }}</li>
+                <li><strong>Concerns:</strong> {{ profile_context.concerns|title }}</li>
+                <li><strong>Goals:</strong> {{ profile_context.goals|title }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="glass-card p-4 rounded-4 h-100">
+            <p class="eyebrow">Filter by need</p>
+            <div class="d-flex flex-wrap gap-2">
+              <span class="badge rounded-pill bg-soft">Hydration</span>
+              <span class="badge rounded-pill bg-soft">Barrier Support</span>
+              <span class="badge rounded-pill bg-soft">Glow</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 rounded-4 h-100">
+            <p class="eyebrow">Most-loved categories</p>
+            <ul class="mb-0 ps-3 text-muted">
+              <li>Gentle cleansers</li>
+              <li>Barrier repair creams</li>
+              <li>Vitamin C serums</li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="glass-card p-4 rounded-4 h-100">
+            <p class="eyebrow">Suggested retailers</p>
+            <p class="mb-0 text-muted">Sephora, Credo, Dermstore, and Cult Beauty.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6 col-xl-4">
+          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+            <div class="p-4 bg-soft">
+              <p class="eyebrow mb-2">Best match</p>
+              <h3 class="h5 mb-2">Velour Dew Serum</h3>
+              <p class="text-muted small mb-0">A plush, lightweight serum for dewy hydration and comfort.</p>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge rounded-pill bg-light text-dark">Hydration</span>
+                <span class="text-muted small">$58</span>
+              </div>
+              <p class="small text-muted">Niacinamide, ceramides, and squalane for a soft, resilient barrier.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-warning small">★ 4.8 • Sephora</span>
+                <a href="https://www.sephora.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Shop now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+            <div class="p-4 bg-soft">
+              <p class="eyebrow mb-2">Barrier favorite</p>
+              <h3 class="h5 mb-2">Cedar Milk Cleanser</h3>
+              <p class="text-muted small mb-0">A creamy cleanser that removes residue without stripping.</p>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge rounded-pill bg-light text-dark">Gentle Cleanse</span>
+                <span class="text-muted small">$34</span>
+              </div>
+              <p class="small text-muted">Oat, glycerin, and meadowfoam to comfort and cleanse.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-warning small">★ 4.7 • Credo</span>
+                <a href="https://www.credo.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Shop now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4">
+          <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+            <div class="p-4 bg-soft">
+              <p class="eyebrow mb-2">Glow pick</p>
+              <h3 class="h5 mb-2">Botanical Radiance Elixir</h3>
+              <p class="text-muted small mb-0">A brightening serum with antioxidant support for a luminous finish.</p>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <span class="badge rounded-pill bg-light text-dark">Glow</span>
+                <span class="text-muted small">$72</span>
+              </div>
+              <p class="small text-muted">Vitamin C, green tea, and peptides for a fresh, radiant look.</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="text-warning small">★ 4.9 • Dermstore</span>
+                <a href="https://www.dermstore.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-dark">Shop now</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

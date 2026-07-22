@@ -34,6 +34,28 @@ def contact_page(request):
     return render(request, "home/contact.html")
 
 
+def recommendations_page(request):
+    """Render personalized third-party retailer skincare recommendations."""
+    profile = None
+    skin_type = "combination"
+    concerns = "hydration"
+    goals = "balanced skincare"
+
+    if request.user.is_authenticated:
+        profile = SkincareProfile.objects.filter(user=request.user).first()
+        if profile:
+            skin_type = profile.skin_type or skin_type
+            concerns = profile.concerns or concerns
+            goals = profile.goals or goals
+
+    profile_context = {
+        "skin_type": skin_type,
+        "concerns": concerns,
+        "goals": goals,
+    }
+    return render(request, "home/recommendations.html", {"profile_context": profile_context})
+
+
 def register_view(request):
     """Allow new users to create an account and select a role."""
     if request.method == "POST":

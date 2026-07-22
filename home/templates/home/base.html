@@ -280,6 +280,9 @@
                         <a class="nav-link" href="{% url 'profile' %}">Profile</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{% url 'recommendations' %}">Recommendations</a>
+                    </li>
+                    <li class="nav-item">
                         {% if user.is_authenticated %}
                             <a class="nav-link" href="{% url 'dashboard' %}">Dashboard</a>
                         {% else %}
@@ -319,7 +322,8 @@
                 <div class="col-md-6 text-md-end">
                     <a href="{% url 'about' %}" class="text-decoration-none me-3" style="color: var(--forest);">About</a>
                     <a href="{% url 'privacy' %}" class="text-decoration-none me-3" style="color: var(--forest);">Privacy</a>
-                    <a href="{% url 'contact' %}" class="text-decoration-none" style="color: var(--forest);">Contact</a>
+                    <a href="{% url 'contact' %}" class="text-decoration-none me-3" style="color: var(--forest);">Contact</a>
+                    <a href="{% url 'recommendations' %}" class="text-decoration-none" style="color: var(--forest);">Recommendations</a>
                 </div>
             </div>
         </div>

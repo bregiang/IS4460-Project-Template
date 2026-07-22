@@ -86,3 +86,9 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "My Skin Profile")
+
+    def test_recommendations_page_is_available(self):
+        response = self.client.get(reverse("recommendations"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Retailer Recommendations")
