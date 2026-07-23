@@ -1,0 +1,83 @@
+{% extends 'home/base.html' %}
+
+{% block title %}Access Restricted | SkinIdentifier{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-10">
+        <div class="card p-4 p-md-5 p-xl-6 shadow-sm" style="background: linear-gradient(135deg, rgba(247,244,238,0.98) 0%, rgba(255,255,255,0.95) 100%); border: 1px solid rgba(183,173,161,0.28); border-radius: 2rem;">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-6">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill mb-3" style="background: rgba(143,166,136,0.16); color: #1f3d2e; font-weight: 700;">
+                        <span style="font-size: 1rem;">🔒</span>
+                        <span>Access restricted</span>
+                    </div>
+                    <h1 class="display-6 fw-bold mb-3" style="color: #1f3d2e; font-family: 'Playfair Display', serif;">Oops! You do not have permission to reach this page.</h1>
+                    <p class="lead mb-4" style="color: #6e6a63;">Please log in or create an account to access your personalized SkinIdentifier experience.</p>
+                    <p class="mb-4" style="color: #6e6a63;">Your personalized skin profile, analysis history, and product recommendations are only available after signing in. Create an account or log in to continue your skincare journey.</p>
+
+                    <div class="d-flex flex-wrap gap-3 mb-4">
+                        <a class="btn btn-primary" href="{% url 'login' %}{% if next_url %}?next={{ next_url }}{% endif %}">Log In</a>
+                        <a class="btn btn-outline-primary" href="{% url 'register' %}{% if next_url %}?next={{ next_url }}{% endif %}">Create Account</a>
+                    </div>
+                    <a class="btn btn-link px-0" href="{% url 'home' %}" style="color: #1f3d2e; font-weight: 600;">Return to Home</a>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="position-relative p-4 rounded-4" style="background: linear-gradient(135deg, rgba(231,220,198,0.7), rgba(242,214,214,0.48)); min-height: 420px; overflow: hidden;">
+                        <div class="position-absolute top-4 end-4 rounded-circle" style="width: 140px; height: 140px; background: rgba(255,255,255,0.55);"></div>
+                        <div class="position-absolute bottom-4 start-4 rounded-circle" style="width: 120px; height: 120px; background: rgba(143,166,136,0.2);"></div>
+                        <div class="position-relative h-100 d-flex align-items-center justify-content-center">
+                            <div class="text-center">
+                                <div class="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle" style="width: 120px; height: 120px; background: rgba(255,255,255,0.8); box-shadow: 0 16px 40px rgba(31,61,46,0.08);">
+                                    <span style="font-size: 3rem;">🔐</span>
+                                </div>
+                                <div class="mx-auto mb-3 rounded-pill px-3 py-2 d-inline-flex align-items-center gap-2" style="background: rgba(255,255,255,0.65); color: #1f3d2e; font-weight: 600;">
+                                    <span>🌿</span> Personalized care awaits
+                                </div>
+                                <div class="row g-2 justify-content-center">
+                                    <div class="col-4">
+                                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.58);">
+                                            <div style="font-size: 1.8rem;">🧴</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.58);">
+                                            <div style="font-size: 1.8rem;">🌸</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.58);">
+                                            <div style="font-size: 1.8rem;">👤</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-5 p-4 rounded-4" style="background: rgba(250,248,243,0.8); border: 1px solid rgba(183,173,161,0.2);">
+                <h2 class="h4 mb-3" style="color: #1f3d2e; font-family: 'Playfair Display', serif;">Why do I need to log in?</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <ul class="mb-0 ps-3" style="color: #6e6a63;">
+                            <li>Save your skin analysis</li>
+                            <li>View your personalized profile</li>
+                            <li>Track skin progress over time</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="mb-0 ps-3" style="color: #6e6a63;">
+                            <li>Receive customized skincare recommendations</li>
+                            <li>Access dermatologist messages (if available)</li>
+                            <li>Manage your skincare journey securely</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

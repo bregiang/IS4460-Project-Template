@@ -1,9 +1,12 @@
+from urllib.parse import urlparse
+
 from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group, User
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
 from .forms import (
     CustomUserCreationForm,
@@ -40,6 +43,25 @@ def contact_page(request):
     return render(request, "home/contact.html")
 
 
+def get_safe_redirect_url(request, default_url):
+    """Return a safe relative redirect target from the request."""
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if not next_url:
+        return default_url
+
+    parsed = urlparse(next_url)
+    if parsed.scheme or parsed.netloc:
+        return default_url
+    return next_url
+
+
+def access_restricted_view(request):
+    """Render a branded page for users who need to sign in first."""
+    next_url = request.GET.get("next", "")
+    return render(request, "home/access_restricted.html", {"next_url": next_url})
+
+
+@login_required(login_url="access_restricted")
 def recommendations_page(request):
     """Render personalized third-party retailer skincare recommendations."""
     profile = None
@@ -80,7 +102,10 @@ def role_required(*roles):
         def _wrapped_view(request, *args, **kwargs):
             if not request.user.is_authenticated:
                 messages.error(request, "Please log in to access this page.")
-                return redirect("login")
+                redirect_url = reverse("access_restricted")
+                if request.get_full_path() not in {"/", ""}:
+                    redirect_url = f"{redirect_url}?next={request.get_full_path()}"
+                return redirect(redirect_url)
             if get_user_role(request.user) not in roles:
                 messages.error(request, "You do not have access to that area.")
                 return redirect("dashboard")
@@ -93,35 +118,37 @@ def role_required(*roles):
 
 def register_view(request):
     """Allow new users to create an account and select a role."""
+    next_url = get_safe_redirect_url(request, reverse("dashboard"))
     if request.method == "POST":
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful. Welcome to SkinIdentifier.")
-            return redirect("dashboard")
+            return redirect(next_url)
     else:
         form = CustomUserCreationForm()
 
-    return render(request, "home/register.html", {"form": form})
+    return render(request, "home/register.html", {"form": form, "next_url": next_url})
 
 
 def login_view(request):
     """Authenticate users with Django's built-in login form."""
+    next_url = get_safe_redirect_url(request, reverse("dashboard"))
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
             login(request, user)
             messages.success(request, "You are now logged in.")
-            return redirect("dashboard")
+            return redirect(next_url)
     else:
         form = AuthenticationForm()
 
-    return render(request, "home/login.html", {"form": form})
+    return render(request, "home/login.html", {"form": form, "next_url": next_url})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 def dashboard_view(request):
     """Display a role-aware dashboard for the authenticated user."""
     role = get_user_role(request.user)
@@ -136,7 +163,7 @@ def dashboard_view(request):
     return render(request, "home/dashboard.html", {"role": role, "profile": profile})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 def profile_view(request):
     """Allow authenticated users to create or update their skincare profile."""
     profile, _ = SkincareProfile.objects.get_or_create(user=request.user)
@@ -153,14 +180,14 @@ def profile_view(request):
     return render(request, "home/profile.html", {"form": form, "profile": profile, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 def skin_history_view(request):
     """Show a secure skin-history view for the current user or a patient when viewed by a dermatologist."""
     profile = get_object_or_404(SkincareProfile, user=request.user)
     return render(request, "home/skin_history.html", {"profile": profile, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 @role_required("dermatologist")
 def dermatologist_dashboard(request):
     """Provide a professional dashboard for dermatologists."""
@@ -168,7 +195,7 @@ def dermatologist_dashboard(request):
     return render(request, "home/dermatologist_dashboard.html", {"patients": patients, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 @role_required("dermatologist")
 def dermatologist_patient_view(request, user_id):
     """Allow dermatologists to review a patient's skin profile and history."""
@@ -186,7 +213,7 @@ def dermatologist_patient_view(request, user_id):
     return render(request, "home/dermatologist_patient.html", {"patient": patient, "profile": profile, "form": form, "messages_for_patient": messages_for_patient, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 @role_required("dermatologist")
 def dermatologist_messages(request):
     """Show messages sent by dermatologists to patients."""
@@ -194,7 +221,7 @@ def dermatologist_messages(request):
     return render(request, "home/dermatologist_messages.html", {"sent_messages": sent_messages, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 @role_required("dermatologist")
 def send_message_to_patient(request, user_id=None):
     """Send a secure message to a user from a dermatologist."""
@@ -213,7 +240,7 @@ def send_message_to_patient(request, user_id=None):
     return render(request, "home/send_message.html", {"form": form, "patient": patient, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 @role_required("admin")
 def admin_dashboard(request):
     """Provide an administrative control panel for superusers."""
@@ -223,7 +250,7 @@ def admin_dashboard(request):
     return render(request, "home/admin_dashboard.html", {"user_accounts": user_accounts, "inventory_items": inventory_items, "messages": all_messages, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 @role_required("admin")
 def inventory_management(request):
     """Allow administrators to manage product inventory and retailer listings."""
@@ -239,7 +266,7 @@ def inventory_management(request):
     return render(request, "home/inventory_management.html", {"items": items, "form": form, "role": get_user_role(request.user)})
 
 
-@login_required
+@login_required(login_url="access_restricted")
 def user_messages(request):
     """Allow standard users to see messages from dermatologists."""
     if get_user_role(request.user) == "admin":
