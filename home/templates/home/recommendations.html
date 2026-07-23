@@ -68,6 +68,106 @@
 
   .result-card .card-body { padding: 1.15rem; }
 
+  .result-card .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-media {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 190px;
+    margin: -0.2rem -0.2rem 1rem;
+    overflow: hidden;
+    border-radius: 1rem;
+    background: radial-gradient(circle at 50% 42%, #fff 0%, var(--product-tone, #ebe3d8) 72%);
+    border: 1px solid rgba(183,173,161,0.18);
+  }
+
+  .product-media::before,
+  .product-media::after {
+    content: "";
+    position: absolute;
+    width: 68px;
+    height: 124px;
+    border: 1px solid rgba(70,98,79,.17);
+    border-radius: 50%;
+    transform: rotate(35deg);
+  }
+
+  .product-media::before { left: -35px; bottom: -45px; }
+  .product-media::after { right: -32px; top: -52px; transform: rotate(-42deg); }
+
+  .product-media > img {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    padding: .7rem;
+    object-fit: contain;
+    background: rgba(255,255,255,.94);
+  }
+
+  .product-packshot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 78px;
+    height: 122px;
+    padding: .65rem .35rem;
+    color: var(--forest);
+    text-align: center;
+    background: rgba(255,255,255,.94);
+    border: 1px solid rgba(49,80,61,.19);
+    border-radius: 12px 12px 20px 20px;
+    box-shadow: 0 18px 28px rgba(31,61,46,.13);
+  }
+
+  .product-packshot::before {
+    content: "";
+    position: absolute;
+    width: 36px;
+    height: 18px;
+    top: -17px;
+    border-radius: 6px 6px 2px 2px;
+    background: var(--product-accent, var(--forest));
+  }
+
+  .format-jar .product-packshot { width: 104px; height: 76px; margin-top: 36px; border-radius: 15px 15px 24px 24px; }
+  .format-jar .product-packshot::before { width: 106px; height: 18px; top: -15px; border-radius: 8px 8px 3px 3px; }
+  .format-tube .product-packshot { width: 72px; transform: rotate(3deg); border-radius: 9px 9px 17px 17px; }
+  .format-dropper .product-packshot::before { width: 24px; height: 26px; top: -25px; border-radius: 9px 9px 2px 2px; }
+  .format-set .product-packshot { width: 128px; height: 104px; border-radius: 18px; }
+  .format-set .product-packshot::before { display: none; }
+
+  .packshot-brand { font-size: .55rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+  .packshot-mark { color: var(--product-accent, var(--forest)); font-family: 'Playfair Display', serif; font-size: 1.55rem; line-height: 1; }
+  .packshot-type { font-size: .48rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
+
+  .retailer-badge,
+  .match-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border-radius: 999px;
+    padding: .35rem .6rem;
+    font-size: .68rem;
+    font-weight: 800;
+  }
+
+  .retailer-badge { color: var(--forest); background: rgba(231,220,198,.58); }
+  .match-badge { color: #fff; background: var(--forest); }
+  .official-badge { color: #704a00; background: #fff2cd; }
+  .match-row { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+  .match-detail { padding: .55rem .65rem; border-radius: .8rem; background: rgba(143,166,136,.1); }
+  .match-detail small { display: block; color: var(--warm-gray); font-size: .64rem; text-transform: uppercase; letter-spacing: .08em; }
+  .match-detail strong { display: block; color: var(--forest); font-size: .75rem; }
+  .external-note { display: block; margin-top: .45rem; color: var(--warm-gray); font-size: .66rem; text-align: center; }
+  .product-card-footer { margin-top: auto; }
+
   .tag-list span {
     display: inline-block;
     margin: 0.25rem 0.3rem 0 0;
@@ -232,6 +332,7 @@
               <p class="eyebrow mb-1">Curated picks</p>
               <h2 class="h4 mb-1">Products that fit your ritual</h2>
               <p class="mb-0 text-muted">Showing <span id="resultCount">0</span> products</p>
+              <p class="small text-muted mb-0 mt-1">Retail links open in a new tab. SkinIdentifier does not process purchases; retailer prices and ratings may change.</p>
             </div>
             <div id="summaryPills" class="d-flex flex-wrap gap-2"></div>
           </div>
@@ -252,117 +353,163 @@
 <script>
   const products = [
     {
-      name: 'Velour Dew Serum',
-      brand: 'Luma Botanics',
-      retailer: 'Sephora',
-      price: 58,
-      rating: 4.8,
-      product_type: 'serum',
-      skin_types: ['dry', 'combination', 'normal'],
-      concerns: ['dehydration', 'dullness', 'barrier repair'],
-      attributes: ['lightweight', 'hydrating', 'brightening', 'vegan'],
-      ingredients: ['hyaluronic acid', 'niacinamide', 'squalane'],
-      description: 'A plush, lightweight serum that leaves skin luminous and comforted.'
+      name: 'Unseen Sunscreen SPF 50', brand: 'Supergoop!', retailer: 'Sephora', price: 38, rating: 4.6,
+      product_type: 'sunscreen', skin_types: ['normal', 'dry', 'oily', 'combination', 'sensitive'],
+      concerns: ['enlarged pores', 'dullness', 'fine lines', 'anti-aging'],
+      attributes: ['lightweight', 'sensitivity-safe', 'fragrance-free', 'oil-free', 'non-comedogenic', 'vegan', 'cruelty-free'],
+      ingredients: ['bisabolol', 'licorice root', 'meadowfoam seed oil'],
+      description: 'An invisible, weightless SPF gel that doubles as a makeup-gripping primer.',
+      url: 'https://www.sephora.com/product/supergoop-unseen-sunscreen-invisible-broad-spectrum-spf-50-pa-P514631',
+      image: 'https://www.sephora.com/productimages/sku/s2837938-main-zoom.jpg',
+      collection: 'Clean SPF', format: 'tube', tone: '#f3edda', accent: '#d9b93d'
     },
     {
-      name: 'Cedar Milk Cleanser',
-      brand: 'Silk & Sage',
-      retailer: 'Credo',
-      price: 34,
-      rating: 4.7,
-      product_type: 'cleanser',
-      skin_types: ['sensitive', 'dry', 'normal'],
-      concerns: ['barrier repair', 'redness', 'dehydration'],
-      attributes: ['gentle', 'soothing', 'fragrance-free', 'dermatologist-tested'],
-      ingredients: ['ceramides', 'oat', 'glycerin'],
-      description: 'A creamy cleanser that melts away residue without stripping the skin barrier.'
+      name: 'Niacinamide 10% + Zinc 1%', brand: 'The Ordinary', retailer: 'Sephora', price: 6, rating: 4.2,
+      product_type: 'serum', skin_types: ['oily', 'combination', 'normal'],
+      concerns: ['acne-prone', 'enlarged pores', 'dullness'],
+      attributes: ['lightweight', 'oil-free', 'fragrance-free', 'vegan', 'cruelty-free'],
+      ingredients: ['niacinamide', 'zinc'],
+      description: 'A water-based serum that supports visible clarity and balances excess shine.',
+      url: 'https://www.sephora.com/product/niacinamide-10-zinc-1-P427417',
+      collection: 'Best value', format: 'dropper', tone: '#eee9e1', accent: '#77736d'
     },
     {
-      name: 'Botanical Radiance Elixir',
-      brand: 'Mira Skin',
-      retailer: 'Dermstore',
-      price: 72,
-      rating: 4.9,
-      product_type: 'serum',
-      skin_types: ['combination', 'oily', 'normal'],
-      concerns: ['dullness', 'dark spots', 'fine lines'],
-      attributes: ['brightening', 'lightweight', 'vegan', 'cruelty-free'],
-      ingredients: ['vitamin C', 'peptides', 'green tea'],
-      description: 'An antioxidant-rich serum that delivers a fresh, radiant finish.'
+      name: 'Hyalu B5 Pure Hyaluronic Acid Serum', brand: 'La Roche-Posay', retailer: 'Ulta Beauty', price: 42.99, rating: 4.3,
+      product_type: 'serum', skin_types: ['dry', 'combination', 'normal', 'sensitive'],
+      concerns: ['dehydration', 'fine lines', 'barrier repair', 'anti-aging'],
+      attributes: ['hydrating', 'soothing', 'oil-free', 'dermatologist-tested'],
+      ingredients: ['hyaluronic acid', 'vitamin B5', 'madecassoside'],
+      description: 'A plumping hydration serum designed to replenish moisture and support the barrier.',
+      url: 'https://www.ulta.com/p/hyalu-b5-pure-hyaluronic-acid-face-serum-pimprod2012178?sku=2556945',
+      image: 'https://media.ulta.com/i/ulta/2556945?w=720&h=720&fmt=webp',
+      collection: 'Derm favorite', format: 'dropper', tone: '#e4eef2', accent: '#4a86a8'
     },
     {
-      name: 'Dewdrop Recovery Cream',
-      brand: 'Aurelia Labs',
-      retailer: 'Cult Beauty',
-      price: 48,
-      rating: 4.6,
-      product_type: 'moisturizer',
-      skin_types: ['dry', 'sensitive', 'combination'],
+      name: 'Resurfacing Retinol Serum', brand: 'CeraVe', retailer: 'Ulta Beauty', price: 21.99, rating: 4.4,
+      product_type: 'treatment', skin_types: ['oily', 'combination', 'normal'],
+      concerns: ['acne-prone', 'dark spots', 'enlarged pores', 'anti-aging'],
+      attributes: ['lightweight', 'fragrance-free', 'non-comedogenic', 'dermatologist-tested'],
+      ingredients: ['retinol', 'ceramides', 'niacinamide'],
+      description: 'An encapsulated retinol treatment for post-acne marks, texture, and visible pores.',
+      url: 'https://www.ulta.com/p/resurfacing-retinol-serum-pimprod2012179',
+      image: 'https://media.ulta.com/i/ulta/2556947?w=720&h=720&fmt=webp',
+      collection: 'Derm favorite', format: 'pump', tone: '#e6f0ed', accent: '#557e76'
+    },
+    {
+      name: 'UV Clear Broad-Spectrum SPF 46', brand: 'EltaMD', retailer: 'Dermstore', price: 45, rating: 4.8,
+      product_type: 'sunscreen', skin_types: ['oily', 'combination', 'sensitive', 'normal'],
+      concerns: ['acne-prone', 'redness', 'dark spots', 'anti-aging'],
+      attributes: ['lightweight', 'sensitivity-safe', 'oil-free', 'fragrance-free', 'non-comedogenic', 'dermatologist-tested'],
+      ingredients: ['zinc oxide', 'niacinamide', 'hyaluronic acid'],
+      description: 'A transparent mineral face sunscreen made for acne- and redness-prone skin.',
+      url: 'https://www.dermstore.com/p/eltamd-uv-clear-broad-spectrum-spf46-48g/11370303/',
+      collection: 'Derm favorite', format: 'pump', tone: '#f0ece7', accent: '#ba453f'
+    },
+    {
+      name: 'C E Ferulic Vitamin C Serum', brand: 'SkinCeuticals', retailer: 'Dermstore', price: 182, rating: 4.7,
+      product_type: 'serum', skin_types: ['dry', 'normal', 'combination'],
+      concerns: ['dullness', 'dark spots', 'fine lines', 'anti-aging', 'brightening'],
+      attributes: ['brightening', 'dermatologist-tested'],
+      ingredients: ['vitamin C', 'vitamin E', 'ferulic acid'],
+      description: 'A premium antioxidant serum targeting visible radiance, firmness, and uneven tone.',
+      url: 'https://www.dermstore.com/p/skinceuticals-c-e-ferulic-with-15-l-ascorbic-acid-vitamin-c-serum-30ml/11289609/',
+      collection: 'Luxury', format: 'dropper', tone: '#eee7d8', accent: '#8a6d3d'
+    },
+    {
+      name: 'Barrier Bounce', brand: 'Naturium', retailer: 'Target', price: 25.49, rating: 4.4,
+      product_type: 'serum', skin_types: ['dry', 'oily', 'combination', 'sensitive', 'normal'],
+      concerns: ['dehydration', 'dullness', 'barrier repair', 'brightening'],
+      attributes: ['hydrating', 'soothing', 'vegan'],
+      ingredients: ['squalane', 'urea', 'ceramides'],
+      description: 'A nourishing oil-serum that plumps, brightens, and supports the moisture barrier.',
+      url: 'https://www.target.com/p/-/A-91941489',
+      collection: 'Barrier care', format: 'pump', tone: '#eee3d7', accent: '#9e6b56'
+    },
+    {
+      name: 'Clarifying Starter Skincare Kit', brand: 'BYOMA', retailer: 'Target', price: 21.99, rating: 4.6,
+      product_type: 'treatment', skin_types: ['oily', 'combination', 'sensitive', 'normal'],
+      concerns: ['acne-prone', 'redness', 'barrier repair', 'enlarged pores'],
+      attributes: ['lightweight', 'sensitivity-safe', 'fragrance-free', 'non-comedogenic', 'vegan', 'cruelty-free', 'dermatologist-tested'],
+      ingredients: ['ceramides', 'niacinamide', 'green tea', 'PHA'],
+      description: 'A three-step mini routine that gently clarifies while protecting barrier comfort.',
+      url: 'https://www.target.com/p/-/A-85238091',
+      collection: 'Starter routine', format: 'set', tone: '#f3d9df', accent: '#e87595'
+    },
+    {
+      name: 'PM Facial Moisturizing Lotion', brand: 'CeraVe', retailer: 'CVS Pharmacy', price: 19.49, rating: 4.6,
+      product_type: 'moisturizer', skin_types: ['dry', 'combination', 'sensitive', 'normal'],
       concerns: ['dehydration', 'barrier repair', 'redness'],
-      attributes: ['rich', 'soothing', 'fragrance-free', 'non-comedogenic'],
-      ingredients: ['ceramides', 'squalane', 'peptides'],
-      description: 'A cushiony cream designed to comfort and replenish dry, stressed skin.'
+      attributes: ['lightweight', 'hydrating', 'sensitivity-safe', 'fragrance-free', 'oil-free', 'non-comedogenic', 'dermatologist-tested'],
+      ingredients: ['ceramides', 'niacinamide', 'hyaluronic acid'],
+      description: 'A lightweight overnight lotion with ceramides and niacinamide for barrier support.',
+      url: 'https://www.cvs.com/shop/cerave-pm-facial-moisturizing-lotion-3-oz-prodid-731309',
+      collection: 'Drugstore staple', format: 'pump', tone: '#e9eef2', accent: '#4b7491'
     },
     {
-      name: 'Cloud Veil Sunscreen',
-      brand: 'Solstice Skin',
-      retailer: 'Sephora',
-      price: 39,
-      rating: 4.8,
-      product_type: 'sunscreen',
-      skin_types: ['oily', 'combination', 'sensitive'],
-      concerns: ['acne-prone', 'enlarged pores', 'dehydration'],
-      attributes: ['lightweight', 'oil-free', 'mattifying', 'non-comedogenic'],
-      ingredients: ['niacinamide', 'zinc oxide', 'hyaluronic acid'],
-      description: 'An airy mineral sunscreen that feels weightless and comfortable all day.'
+      name: 'Resurfacing Retinol Serum', brand: 'CeraVe', retailer: 'CVS Pharmacy', price: 24.49, rating: 4.5,
+      product_type: 'treatment', skin_types: ['oily', 'combination', 'normal'],
+      concerns: ['acne-prone', 'dark spots', 'enlarged pores', 'anti-aging'],
+      attributes: ['lightweight', 'fragrance-free', 'non-comedogenic', 'dermatologist-tested'],
+      ingredients: ['retinol', 'ceramides', 'niacinamide'],
+      description: 'A gentle resurfacing option for post-acne marks and uneven-looking texture.',
+      url: 'https://www.cvs.com/shop/cerave-resurfacing-retinol-serum-1-oz-prodid-283276?skuId=283276',
+      collection: 'Drugstore treatment', format: 'pump', tone: '#e7f0ed', accent: '#4d7c70'
     },
     {
-      name: 'Calm Clay Mask',
-      brand: 'Bloom Ritual',
-      retailer: 'Credo',
-      price: 28,
-      rating: 4.5,
-      product_type: 'mask',
-      skin_types: ['sensitive', 'combination', 'normal'],
-      concerns: ['redness', 'barrier repair', 'enlarged pores'],
-      attributes: ['calming', 'gentle', 'vegan', 'fragrance-free'],
-      ingredients: ['salicylic acid', 'kaolin', 'ceramides'],
-      description: 'A soothing clay mask that refines texture without over-drying.'
+      name: 'Resurfacing Retinol Serum', brand: 'CeraVe', retailer: 'Amazon', price: 19.97, rating: 4.7,
+      product_type: 'treatment', skin_types: ['oily', 'combination', 'normal'],
+      concerns: ['acne-prone', 'dark spots', 'enlarged pores', 'anti-aging'],
+      attributes: ['lightweight', 'fragrance-free', 'non-comedogenic', 'dermatologist-tested'],
+      ingredients: ['retinol', 'ceramides', 'niacinamide'],
+      description: 'The CeraVe retinol treatment, linked only through the brand’s official Amazon storefront.',
+      url: 'https://us.amazon.com/stores/page/1CA06896-0E6B-4DE2-B49F-E9B7094CA7A1', amazonOfficial: true,
+      collection: 'Official brand store', format: 'pump', tone: '#eee8dc', accent: '#e2a928'
     },
     {
-      name: 'Balance Blemish Serum',
-      brand: 'Nurture Skin',
-      retailer: 'Dermstore',
-      price: 44,
-      rating: 4.7,
-      product_type: 'treatment',
-      skin_types: ['oily', 'combination', 'acne-prone'],
-      concerns: ['acne-prone', 'enlarged pores', 'dark spots'],
-      attributes: ['oil-free', 'non-comedogenic', 'gentle', 'exfoliating'],
-      ingredients: ['salicylic acid', 'niacinamide', 'retinol'],
-      description: 'A breakout-friendly treatment that helps smooth and clarify congested skin.'
+      name: 'Hydro Boost Water Gel', brand: 'Neutrogena', retailer: 'Walmart', price: 19.97, rating: 4.4,
+      product_type: 'moisturizer', skin_types: ['normal', 'oily', 'combination', 'acne-prone'],
+      concerns: ['dehydration', 'dullness', 'barrier repair'],
+      attributes: ['lightweight', 'hydrating', 'oil-free', 'non-comedogenic'],
+      ingredients: ['hyaluronic acid', 'glycerin'],
+      description: 'A quick-absorbing water gel that provides lightweight hydration without heaviness.',
+      url: 'https://www.walmart.com/ip/40488263',
+      collection: 'Best value', format: 'jar', tone: '#dceef2', accent: '#4f9eb2'
     },
     {
-      name: 'Velvet Eye Cream',
-      brand: 'Luma Botanics',
-      retailer: 'Cult Beauty',
-      price: 42,
-      rating: 4.6,
-      product_type: 'eye cream',
-      skin_types: ['dry', 'sensitive', 'normal'],
-      concerns: ['fine lines', 'dehydration', 'barrier repair'],
-      attributes: ['rich', 'soothing', 'vegan', 'dermatologist-tested'],
-      ingredients: ['peptides', 'squalane', 'hyaluronic acid'],
-      description: 'A cushiony eye cream that hydrates and softens the under-eye area.'
+      name: 'Perfect Cleanse', brand: 'M-61', retailer: 'Bluemercury', price: 32, rating: 4.7,
+      product_type: 'cleanser', skin_types: ['dry', 'oily', 'combination', 'sensitive', 'normal'],
+      concerns: ['redness', 'dehydration', 'dullness'],
+      attributes: ['gentle', 'hydrating', 'soothing', 'dermatologist-tested'],
+      ingredients: ['aloe', 'green tea', 'vitamin E'],
+      description: 'A gentle gel cleanser with aloe and green tea for a fresh, comfortable cleanse.',
+      url: 'https://bluemercury.com/products/m-61-perfect-cleanse-1',
+      image: 'https://bluemercury.com/cdn/shop/files/global_images-p817237012931-1.jpg',
+      collection: 'Clean beauty', format: 'tube', tone: '#e5eee8', accent: '#6b8e70'
+    },
+    {
+      name: 'Triple Lipid Restore 2:4:2', brand: 'SkinCeuticals', retailer: 'Bluemercury', price: 155, rating: 4.8,
+      product_type: 'moisturizer', skin_types: ['dry', 'normal', 'combination'],
+      concerns: ['dehydration', 'barrier repair', 'fine lines', 'anti-aging'],
+      attributes: ['rich', 'hydrating', 'dermatologist-tested'],
+      ingredients: ['ceramides', 'cholesterol', 'fatty acids'],
+      description: 'A rich luxury cream formulated around a skin-supporting lipid ratio.',
+      url: 'https://bluemercury.com/products/skinceuticals-triple-lipid-restore-2-4-2',
+      image: 'https://bluemercury.com/cdn/shop/files/global_images-3606000434967-1.jpg?v=1759527034',
+      collection: 'Luxury', format: 'jar', tone: '#ece7dc', accent: '#766b59'
     }
   ];
+
+  const userProfile = {
+    skinType: '{{ profile_context.skin_type|default:"combination"|escapejs }}'.toLowerCase(),
+    context: '{{ profile_context.concerns|default:"hydration"|escapejs }} {{ profile_context.goals|default:"balanced skincare"|escapejs }}'.toLowerCase()
+  };
 
   const optionGroups = {
     product_type: ['cleanser', 'toner', 'serum', 'moisturizer', 'sunscreen', 'treatment', 'eye cream', 'mask', 'exfoliant', 'spot treatment'],
     skin_type: ['dry', 'oily', 'combination', 'sensitive', 'normal'],
-    concerns: ['acne-prone', 'redness', 'dullness', 'dehydration', 'enlarged pores', 'fine lines', 'barrier repair', 'dark spots'],
-    attributes: ['lightweight', 'rich', 'hydrating', 'soothing', 'fragrance-free', 'oil-free', 'non-comedogenic', 'vegan', 'cruelty-free', 'dermatologist-tested', 'brightening', 'calming', 'gentle', 'exfoliating', 'mattifying'],
-    ingredients: ['hyaluronic acid', 'niacinamide', 'ceramides', 'salicylic acid', 'vitamin C', 'retinol', 'peptides', 'squalane']
+    concerns: ['acne-prone', 'redness', 'dullness', 'dehydration', 'enlarged pores', 'fine lines', 'barrier repair', 'dark spots', 'anti-aging', 'brightening'],
+    attributes: ['lightweight', 'rich', 'hydrating', 'soothing', 'sensitivity-safe', 'fragrance-free', 'oil-free', 'non-comedogenic', 'vegan', 'cruelty-free', 'dermatologist-tested', 'brightening', 'gentle'],
+    ingredients: ['hyaluronic acid', 'niacinamide', 'ceramides', 'vitamin C', 'retinol', 'squalane', 'zinc oxide', 'green tea', 'glycerin']
   };
 
   const state = {
@@ -500,7 +647,11 @@
     const searchTerm = state.search.toLowerCase().trim();
 
     return products.filter((product) => {
-      const matchesSearch = !searchTerm || [product.name, product.brand, product.retailer, product.description, ...product.ingredients].join(' ').toLowerCase().includes(searchTerm);
+      const searchableText = [
+        product.name, product.brand, product.retailer, product.description, product.product_type,
+        ...product.ingredients, ...product.concerns, ...product.skin_types, ...product.attributes
+      ].join(' ').toLowerCase();
+      const matchesSearch = !searchTerm || searchableText.includes(searchTerm);
       const matchesSelected = Object.entries(state.selected).every(([group, values]) => {
         if (!values.length) return true;
         const productValues = product[group] || product[group === 'product_type' ? 'product_type' : group === 'skin_type' ? 'skin_types' : group === 'concerns' ? 'concerns' : group === 'attributes' ? 'attributes' : 'ingredients'];
@@ -540,12 +691,36 @@
       case 'acne':
         return sorted.sort((a, b) => scoreForAcne(b) - scoreForAcne(a));
       default:
-        return sorted;
+        return sorted.sort((a, b) => productMatchScore(b) - productMatchScore(a) || b.rating - a.rating);
     }
   }
 
+  function productMatchScore(product) {
+    let score = product.skin_types.includes(userProfile.skinType) ? 4 : 0;
+    const context = userProfile.context;
+    const concernAliases = {
+      'dehydration': ['dehydration', 'dehydrated', 'hydration', 'dryness'],
+      'acne-prone': ['acne', 'breakout', 'blemish'],
+      'enlarged pores': ['pore', 'texture'],
+      'barrier repair': ['barrier', 'repair'],
+      'dark spots': ['dark spot', 'hyperpigmentation'],
+      'fine lines': ['fine line', 'wrinkle'],
+      'anti-aging': ['anti-aging', 'aging', 'wrinkle'],
+      'brightening': ['brightening', 'brighten', 'radiance'],
+      'dullness': ['dullness', 'dull', 'glow'],
+      'redness': ['redness', 'sensitive', 'irritation']
+    };
+
+    product.concerns.forEach((concern) => {
+      const aliases = concernAliases[concern] || [concern];
+      if (aliases.some((alias) => context.includes(alias))) score += 2;
+    });
+    if (userProfile.skinType === 'sensitive' && product.attributes.includes('sensitivity-safe')) score += 2;
+    return score;
+  }
+
   function scoreForSensitive(product) {
-    return Number(product.attributes.includes('fragrance-free')) + Number(product.attributes.includes('gentle')) + Number(product.attributes.includes('soothing')) + Number(product.skin_types.includes('sensitive'));
+    return Number(product.attributes.includes('sensitivity-safe')) + Number(product.attributes.includes('fragrance-free')) + Number(product.attributes.includes('gentle')) + Number(product.attributes.includes('soothing')) + Number(product.skin_types.includes('sensitive'));
   }
 
   function scoreForHydration(product) {
@@ -572,14 +747,41 @@
 
     emptyState.classList.add('d-none');
 
+    const highestMatchScore = Math.max(...filteredProducts.map(productMatchScore));
+
     filteredProducts.forEach((product) => {
       const col = document.createElement('div');
       col.className = 'col-md-6 col-xl-4';
 
+      const matchScore = productMatchScore(product);
+      const isBestMatch = highestMatchScore > 0 && matchScore === highestMatchScore;
+      const skinMatch = product.skin_types.includes(userProfile.skinType) ? userProfile.skinType : product.skin_types[0];
+      const concernMatch = product.concerns.find((concern) => {
+        const simpleConcern = concern.replace('-', ' ').split(' ')[0];
+        return userProfile.context.includes(simpleConcern);
+      }) || product.concerns[0];
+      const initials = product.brand.split(/\s+/).map((word) => word[0]).join('').replace(/[^a-z0-9]/gi, '').slice(0, 3);
+
       const card = document.createElement('div');
       card.className = 'result-card';
+      card.style.setProperty('--product-tone', product.tone);
+      card.style.setProperty('--product-accent', product.accent);
       card.innerHTML = `
         <div class="card-body">
+          <div class="product-media format-${product.format}" role="img" aria-label="Illustrated packshot for ${product.name} by ${product.brand}">
+            ${product.image ? `<img src="${product.image}" alt="${product.name} by ${product.brand}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ''}
+            <div class="product-packshot">
+              <span class="packshot-brand">${product.brand}</span>
+              <span class="packshot-mark">${initials}</span>
+              <span class="packshot-type">${product.product_type}</span>
+            </div>
+          </div>
+          <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+            <span class="retailer-badge">${product.retailer}</span>
+            <span class="retailer-badge">${product.collection}</span>
+            ${isBestMatch ? '<span class="match-badge">✦ Best match</span>' : ''}
+            ${product.amazonOfficial ? '<span class="retailer-badge official-badge">✓ Official brand storefront</span>' : ''}
+          </div>
           <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
             <div>
               <p class="eyebrow mb-1">${product.product_type}</p>
@@ -590,16 +792,23 @@
           <p class="text-muted small mb-3">${product.description}</p>
           <div class="d-flex justify-content-between align-items-center mb-3">
             <span class="fw-semibold">${product.brand}</span>
-            <span class="text-muted">$${product.price}</span>
+            <span class="text-muted fw-semibold">$${product.price.toFixed(2)}</span>
+          </div>
+          <div class="match-row mb-3">
+            <div class="match-detail"><small>Skin match</small><strong>${skinMatch}</strong></div>
+            <div class="match-detail"><small>Concern match</small><strong>${concernMatch}</strong></div>
           </div>
           <div class="tag-list mb-3">
-            ${product.attributes.map((attribute) => `<span class="badge">${attribute}</span>`).join('')}
+            ${product.attributes.slice(0, 4).map((attribute) => `<span class="badge">${attribute}</span>`).join('')}
           </div>
-          <div class="text-muted small mb-3">Retailer: ${product.retailer}</div>
-          <div class="tag-list mb-3">
+          <div class="product-card-footer">
+            <p class="small fw-semibold mb-1" style="color: var(--forest);">Key ingredients</p>
+            <div class="tag-list mb-3">
             ${product.ingredients.map((ingredient) => `<span class="badge">${ingredient}</span>`).join('')}
+            </div>
+            <a href="${product.url}" target="_blank" rel="noopener noreferrer external" class="btn btn-sm btn-outline-primary w-100" aria-label="Shop ${product.name} at ${product.retailer}; opens in a new tab">Shop this pick&nbsp; ↗</a>
+            <small class="external-note">Opens ${product.retailer} in a new tab</small>
           </div>
-          <a href="https://www.sephora.com" target="_blank" rel="noopener" class="btn btn-sm btn-outline-primary w-100">Shop this pick</a>
         </div>
       `;
       col.appendChild(card);

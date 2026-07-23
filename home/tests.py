@@ -121,6 +121,20 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, "How each step supports your skin")
+        for retailer in (
+            "Sephora",
+            "Ulta Beauty",
+            "Dermstore",
+            "Target",
+            "CVS Pharmacy",
+            "Amazon",
+            "Walmart",
+            "Bluemercury",
+        ):
+            self.assertContains(response, f"retailer: '{retailer}'")
+        self.assertContains(response, "Official brand storefront")
+        self.assertContains(response, 'rel="noopener noreferrer external"')
+        self.assertEqual(response.content.decode().count("url: 'https://"), 14)
 
     def test_recommendations_page_redirects_anonymous_users_to_access_restricted_page(self):
         response = self.client.get(reverse("recommendations"))
