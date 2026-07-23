@@ -106,7 +106,9 @@
         </div>
     </section>
 
-    {% include 'home/partials/routine_visuals.html' %}
+    <div id="ritualResultsSection" hidden>
+        {% include 'home/partials/routine_visuals.html' %}
+    </div>
 </div>
 
 <style>
@@ -350,6 +352,7 @@
     const prevBtn = document.getElementById("prevBtn");
     const nextBtn = document.getElementById("nextBtn");
     const resultsSection = document.getElementById("resultsSection");
+    const ritualResultsSection = document.getElementById("ritualResultsSection");
     const resultTitle = document.getElementById("resultTitle");
     const resultSummary = document.getElementById("resultSummary");
     const resultName = document.getElementById("resultName");
@@ -460,6 +463,7 @@
 
         quizSection.style.display = "none";
         resultsSection.style.display = "block";
+        ritualResultsSection.hidden = false;
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 </script>
