@@ -1,3 +1,6 @@
+import json
+import os
+from urllib import error, request as urllib_request
 from urllib.parse import urlparse
 
 from django.contrib import messages
@@ -5,6 +8,7 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group, User
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -26,6 +30,69 @@ def home_page(request):
 def skin_analysis_view(request):
     """Render the interactive skin analysis quiz and result experience."""
     return render(request, "home/skin_analysis.html")
+
+
+def generate_ai_recommendation(request):
+    """Use Gemini to turn a skin-analysis result into a personalized product recommendation plan."""
+    if request.method != "POST":
+        return JsonResponse({"error": "Only POST requests are supported."}, status=405)
+
+    try:
+        payload = json.loads(request.body.decode("utf-8") or "{}")
+    except json.JSONDecodeError:
+        payload = {}
+
+    profile_type = (payload.get("profile_type") or "normal").strip().lower() or "normal"
+    concern_hint = (payload.get("concern_hint") or "").strip()
+    product_goal = (payload.get("product_goal") or "balanced routine").strip() or "balanced routine"
+
+    prompt = (
+        f"You are a skincare retail advisor. Create a concise, practical product recommendation plan for a user with {profile_type} skin. "
+        f"Their stated goal is {product_goal}. "
+        f"Keep the advice useful for a skincare shopping experience and include 3 product categories with clear reasons. "
+        f"Mention one calming ingredient for each recommendation. "
+        f"If the user added details, use them: {concern_hint or 'No extra details provided.'}"
+    )
+
+    api_key = os.getenv("GEMINI_API_KEY")
+    if api_key:
+        try:
+            gemini_payload = {
+                "contents": [
+                    {
+                        "parts": [
+                            {"text": prompt}
+                        ]
+                    }
+                ],
+                "generationConfig": {
+                    "temperature": 0.7,
+                    "maxOutputTokens": 260,
+                },
+            }
+            req = urllib_request.Request(
+                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}",
+                data=json.dumps(gemini_payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib_request.urlopen(req, timeout=20) as response:
+                result = json.load(response)
+            candidates = result.get("candidates") or []
+            if candidates:
+                parts = candidates[0].get("content", {}).get("parts") or []
+                text = "".join(part.get("text", "") for part in parts if isinstance(part, dict))
+                if text.strip():
+                    return JsonResponse({"recommendation": text.strip(), "source": "gemini"})
+        except (error.HTTPError, error.URLError, TimeoutError, ValueError, KeyError):
+            pass
+
+    fallback = (
+        f"For {profile_type} skin, start with a gentle cleanser, a lightweight moisturizer, and daily sunscreen. "
+        f"If your goal is {product_goal}, choose fragrance-free formulas with barrier-friendly ingredients like ceramides, niacinamide, or hyaluronic acid. "
+        f"{concern_hint if concern_hint else 'Keep the routine simple, patch test new products, and increase actives slowly.'}"
+    )
+    return JsonResponse({"recommendation": fallback, "source": "fallback"})
 
 
 def about_page(request):

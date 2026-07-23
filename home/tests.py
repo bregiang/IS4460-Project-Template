@@ -93,6 +93,13 @@ class SkinIdentifierAuthTests(TestCase):
         self.assertContains(response, "Facial skin mapping")
         self.assertContains(response, "How each step supports your skin")
 
+    def test_skin_analysis_page_includes_ai_recommendation_assistant(self):
+        response = self.client.get(reverse("skin_analysis"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "AI routine coach")
+        self.assertContains(response, "Generate AI plan")
+
     def test_homepage_includes_botanical_and_skin_mapping_visuals(self):
         response = self.client.get(reverse("home"))
 
