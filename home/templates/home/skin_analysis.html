@@ -6,7 +6,7 @@
 <div class="analysis-page">
     <section class="hero-card p-4 p-md-5 mb-4">
         <div class="row align-items-center g-4">
-            <div class="col-lg-8">
+            <div class="col-lg-7">
                 <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-pill mb-3" style="background: rgba(143, 167, 143, 0.16); color: var(--olive);">
                     <span style="font-size: 1rem;">🌿</span>
                     <span class="fw-semibold small text-uppercase tracking">Gentle skin check</span>
@@ -20,21 +20,25 @@
                     <a class="btn btn-outline-primary" href="{% url 'profile' %}">Save to profile</a>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="analysis-preview card p-3 p-md-4 border-0">
-                    <div class="d-flex align-items-center gap-3 mb-3">
-                        <div class="feature-icon">✨</div>
-                        <div>
-                            <h5 class="mb-0">Your skincare story</h5>
-                            <p class="mb-0 text-secondary small">Balanced, elegant, and tailored</p>
-                        </div>
-                    </div>
-                    <ul class="list-unstyled mb-0 small text-secondary">
-                        <li class="mb-2">• Quick guided questions</li>
-                        <li class="mb-2">• Thoughtful result card</li>
-                        <li>• Personalized care tips</li>
-                    </ul>
+            <div class="col-lg-5">
+                {% include 'home/partials/botanical_art.html' %}
+            </div>
+        </div>
+    </section>
+
+    <section class="card education-card mb-4" aria-labelledby="analysis-map-title">
+        <div class="row g-4 align-items-center">
+            <div class="col-lg-4 education-intro">
+                <span class="botanical-eyebrow"><span aria-hidden="true">✦</span> Facial skin mapping</span>
+                <h2 id="analysis-map-title" class="h2 mb-3">One face, several skin environments.</h2>
+                <p>This example shows how we describe common facial zones. Your forehead and nose form the T-zone, while cheeks, under eyes, chin, and jawline can each need different care.</p>
+                <div class="soft-panel mt-3">
+                    <strong class="d-block mb-1" style="color: var(--forest);">Look, don’t diagnose</strong>
+                    <p class="small mb-0">Use the map as an educational guide. Persistent irritation or changing symptoms deserve professional advice.</p>
                 </div>
+            </div>
+            <div class="col-lg-8">
+                {% include 'home/partials/face_map.html' %}
             </div>
         </div>
     </section>
@@ -101,6 +105,8 @@
             </div>
         </div>
     </section>
+
+    {% include 'home/partials/routine_visuals.html' %}
 </div>
 
 <style>

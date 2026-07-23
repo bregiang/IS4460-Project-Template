@@ -90,6 +90,16 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Skin Analysis")
+        self.assertContains(response, "Facial skin mapping")
+        self.assertContains(response, "How each step supports your skin")
+
+    def test_homepage_includes_botanical_and_skin_mapping_visuals(self):
+        response = self.client.get(reverse("home"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "botanical-art")
+        self.assertContains(response, "Example facial skin analysis map")
+        self.assertContains(response, "Cleanser lifting dirt from the skin surface")
 
     def test_profile_page_shows_a_personalized_skin_report(self):
         user = User.objects.create_user(username="profileuser2", password="StrongPass123!")
@@ -99,6 +109,8 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "My Skin Profile")
+        self.assertContains(response, "Area-by-area balance")
+        self.assertContains(response, "skin-map-visual")
 
     def test_recommendations_page_redirects_anonymous_users_to_access_restricted_page(self):
         response = self.client.get(reverse("recommendations"))

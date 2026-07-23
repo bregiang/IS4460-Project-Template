@@ -17,20 +17,25 @@
             </div>
         </div>
         <div class="col-lg-5">
-            <div class="soft-panel p-4">
-                <div class="d-flex align-items-center gap-2 mb-3">
-                    <span class="feature-icon">✿</span>
-                    <h3 class="h5 mb-0">Why it feels different</h3>
-                </div>
-                <ul class="list-unstyled mb-0">
-                    <li class="d-flex align-items-start gap-2 mb-2"><span class="feature-icon" style="width: 32px; height: 32px;">✓</span><span>Personalized analysis shaped around your skin type and concerns</span></li>
-                    <li class="d-flex align-items-start gap-2 mb-2"><span class="feature-icon" style="width: 32px; height: 32px;">✓</span><span>Thoughtful product guidance without overwhelm or noise</span></li>
-                    <li class="d-flex align-items-start gap-2"><span class="feature-icon" style="width: 32px; height: 32px;">✓</span><span>A premium, wellness-inspired experience from first question to final routine</span></li>
-                </ul>
-            </div>
+            {% include 'home/partials/botanical_art.html' %}
         </div>
     </div>
 </div>
+
+<section class="card education-card mt-4" aria-labelledby="home-skin-map-title">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-4 education-intro">
+            <span class="botanical-eyebrow"><span aria-hidden="true">✦</span> Your complexion, decoded</span>
+            <h2 id="home-skin-map-title" class="h2 mb-3">See what your skin is telling you.</h2>
+            <p>Skin rarely behaves the same everywhere. Our visual analysis turns forehead shine, cheek sensitivity, visible pores, dry areas, and breakouts into a map you can understand at a glance.</p>
+            <p class="small"><strong style="color: var(--forest);">Color is used with labels</strong> so every insight remains clear and accessible.</p>
+            <a href="{% url 'skin_analysis' %}" class="btn btn-outline-primary mt-2">Explore your facial zones</a>
+        </div>
+        <div class="col-lg-8">
+            {% include 'home/partials/face_map.html' %}
+        </div>
+    </div>
+</section>
 
 <section id="how-it-works" class="mt-4">
     <div class="row g-4">
@@ -82,4 +87,6 @@
         </div>
     </div>
 </section>
+
+{% include 'home/partials/routine_visuals.html' %}
 {% endblock %}

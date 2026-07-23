@@ -116,7 +116,27 @@
         </div>
       </div>
 
-      <div class="row g-4">
+      <section class="botanical-banner p-4 p-md-5 mb-4" aria-labelledby="ingredient-garden-title">
+        <div class="row align-items-center g-4">
+          <div class="col-lg-7">
+            <span class="botanical-eyebrow" style="color: #d7c3bc;"><span aria-hidden="true">✦</span> Ingredient garden</span>
+            <h2 id="ingredient-garden-title" class="h2 mb-2">Choose by the support your skin needs.</h2>
+            <p class="mb-0">Hydrators draw in water, barrier lipids help hold it there, soothing botanicals support comfort, and sunscreen protects the progress you make.</p>
+          </div>
+          <div class="col-lg-5">
+            <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+              <span class="badge bg-light">💧 Hyaluronic acid · hydration</span>
+              <span class="badge bg-light">◒ Oat · comfort</span>
+              <span class="badge bg-light">❧ Green tea · antioxidant</span>
+              <span class="badge bg-light">✦ Ceramides · barrier</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {% include 'home/partials/routine_visuals.html' %}
+
+      <div class="row g-4 mt-1">
         <div class="col-lg-4 col-xl-3">
           <div class="filter-panel sticky-top" style="top: 1rem;">
             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -219,7 +239,8 @@
           </div>
           <div id="productGrid" class="row g-4"></div>
           <div id="emptyState" class="d-none mt-4">
-            <div class="filter-panel text-center py-5">
+            <div class="filter-panel text-center py-5 botanical-empty-state">
+              <div class="feature-icon mb-3" aria-hidden="true">❧</div>
               <h3 class="h5">No products matched your selection.</h3>
               <p class="text-muted mb-0">Try loosening one or two filters or reset everything to see the full collection again.</p>
             </div>

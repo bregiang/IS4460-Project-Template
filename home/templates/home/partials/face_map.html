@@ -1,0 +1,40 @@
+<div class="skin-map-visual">
+    <div class="face-map-canvas">
+        <svg viewBox="0 0 520 560" role="img" aria-labelledby="face-map-title face-map-desc">
+            <title id="face-map-title">Example facial skin analysis map</title>
+            <desc id="face-map-desc">A face diagram highlights an oily forehead and T-zone, sensitive cheeks, visible pores on the nose, delicate under eyes, an acne-prone chin, and the jawline.</desc>
+            <path d="M211 470c-5 36-21 56-45 72h188c-25-16-40-36-45-72" fill="#f0d8cd" opacity=".78"/>
+            <path d="M260 42c-99 0-151 75-144 195 7 119 63 252 144 252s137-133 144-252C411 117 359 42 260 42Z" fill="#faeee7" stroke="#46624f" stroke-width="3"/>
+            <path d="M122 225c-20-12-29 5-22 36 6 29 20 46 38 44M398 225c20-12 29 5 22 36-6 29-20 46-38 44" fill="#faeee7" stroke="#46624f" stroke-width="3"/>
+            <path d="M150 163c23-49 67-77 110-77s87 28 110 77" fill="none" stroke="#d9c4b6" stroke-width="3" stroke-linecap="round"/>
+            <path class="zone zone-oil" d="M174 116c50-30 122-30 172 0l-9 73H183Z"/>
+            <path class="zone zone-tzone" d="M235 116h50l18 211-43 34-43-34Z"/>
+            <path class="zone zone-sensitive" d="M143 241c19-31 57-46 91-26l-17 90c-28 30-70 10-74-64ZM377 241c-19-31-57-46-91-26l17 90c28 30 70 10 74-64Z"/>
+            <path class="zone zone-dry" d="M164 211c19-20 48-21 72-5-20 21-45 27-72 5ZM356 211c-19-20-48-21-72-5 20 21 45 27 72 5Z"/>
+            <path class="zone zone-acne" d="M213 394c31-17 63-17 94 0l-12 54c-21 20-49 20-70 0Z"/>
+            <path class="zone-jaw" d="M147 318c15 88 56 144 113 151 57-7 98-63 113-151" fill="none"/>
+            <path d="M174 195c18-10 41-9 58 2M288 197c17-11 40-12 58-2" fill="none" stroke="#46624f" stroke-width="3" stroke-linecap="round"/>
+            <path d="M176 211c18 13 38 13 57 0M287 211c19 13 39 13 57 0" fill="none" stroke="#46624f" stroke-width="2" stroke-linecap="round"/>
+            <path d="M259 205c-8 49-14 83-4 105 7 5 15 5 23 0" fill="none" stroke="#9e776c" stroke-width="2" stroke-linecap="round"/>
+            <path d="M229 365c19 13 43 14 63 0-19 23-44 24-63 0Z" fill="#d79c9c" opacity=".9"/>
+            <g fill="#a86e69"><circle cx="238" cy="411" r="4"/><circle cx="263" cy="426" r="4"/><circle cx="285" cy="407" r="4"/></g>
+            <g fill="#8b765e" opacity=".7"><circle cx="250" cy="267" r="2.5"/><circle cx="263" cy="259" r="2.5"/><circle cx="274" cy="277" r="2.5"/><circle cx="257" cy="288" r="2.5"/></g>
+            <g class="map-callouts" fill="#31503d" font-family="Inter, sans-serif">
+                <path d="M182 142H72"/><circle cx="182" cy="142" r="4"/><text x="16" y="138">FOREHEAD</text><text class="callout-note" x="16" y="155">oil-prone</text>
+                <path d="M147 270H72"/><circle cx="147" cy="270" r="4"/><text x="16" y="266">CHEEKS</text><text class="callout-note" x="16" y="283">sensitive</text>
+                <path d="M174 219H88"/><circle cx="174" cy="219" r="4"/><text x="16" y="210">UNDER EYES</text><text class="callout-note" x="16" y="227">delicate</text>
+                <path d="M295 274h137"/><circle cx="295" cy="274" r="4"/><text x="438" y="270">NOSE</text><text class="callout-note" x="438" y="287">visible pores</text>
+                <path d="M304 418h128"/><circle cx="304" cy="418" r="4"/><text x="438" y="414">CHIN</text><text class="callout-note" x="438" y="431">acne-prone</text>
+                <path d="M352 354h80"/><circle cx="352" cy="354" r="4"/><text x="438" y="350">JAWLINE</text><text class="callout-note" x="438" y="367">monitor</text>
+            </g>
+        </svg>
+    </div>
+    <div class="skin-map-key" aria-label="Skin map color key">
+        <div class="map-key-item"><span class="map-key-swatch oil"></span><span><strong>Oiliness</strong><small id="foreheadNote">Forehead &amp; T-zone</small></span></div>
+        <div class="map-key-item"><span class="map-key-swatch sensitive"></span><span><strong>Sensitivity</strong><small id="cheeksNote">Cheeks</small></span></div>
+        <div class="map-key-item"><span class="map-key-swatch pores"></span><span><strong>Visible pores</strong><small id="noseNote">Nose</small></span></div>
+        <div class="map-key-item"><span class="map-key-swatch dry"></span><span><strong>Dry or delicate</strong><small id="eyesNote">Under eyes</small></span></div>
+        <div class="map-key-item"><span class="map-key-swatch acne"></span><span><strong>Acne-prone</strong><small id="jawlineNote">Chin &amp; jawline</small></span></div>
+        <span id="lipsNote" class="visually-hidden">Lips: smooth</span>
+    </div>
+</div>
