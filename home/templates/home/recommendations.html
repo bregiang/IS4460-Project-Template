@@ -638,9 +638,20 @@
     updateUI();
   });
 
+  function applyFiltersFromQuery() {
+    const params = new URLSearchParams(window.location.search);
+    Object.keys(optionGroups).forEach((group) => {
+      const raw = params.get(group);
+      if (!raw) return;
+      const requested = raw.split(',').map((value) => value.trim().toLowerCase());
+      state.selected[group] = optionGroups[group].filter((value) => requested.includes(value));
+    });
+  }
+
   Object.keys(optionGroups).forEach((group) => buildFilterButtons(group, group));
   populateSelect('brandSelect', 'brand');
   populateSelect('retailerSelect', 'retailer');
+  applyFiltersFromQuery();
   updateUI();
 </script>
 {% endblock %}
