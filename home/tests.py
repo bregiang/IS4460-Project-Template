@@ -1,3 +1,8 @@
+import io
+import json
+from urllib import error
+from unittest.mock import patch
+
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
@@ -99,6 +104,142 @@ class SkinIdentifierAuthTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "AI routine coach")
         self.assertContains(response, "Generate AI plan")
+
+    def test_ai_recommendation_endpoint_returns_json_payload(self):
+        response = self.client.post(
+            reverse("generate_ai_recommendation"),
+            data=json.dumps({"profile_type": "dry", "product_goal": "reduce tightness", "concern_hint": "fragrance-free only"}),
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIn("recommendation", data)
+        self.assertIn("source", data)
+        self.assertIn(data["source"], {"gemini", "fallback"})
+        self.assertTrue(isinstance(data["recommendation"], str) and bool(data["recommendation"].strip()))
+
+    def test_ai_recommendation_endpoint_returns_gemini_branch_when_http_call_succeeds(self):
+        class FakeResponse:
+            def __init__(self, payload):
+                self._payload = payload
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self):
+                return json.dumps(self._payload).encode("utf-8")
+
+            def __iter__(self):
+                yield self.read()
+
+        fake_payload = {
+            "candidates": [
+                {
+                    "content": {
+                        "parts": [{"text": "A tailored serum and moisturizer plan."}]
+                    }
+                }
+            ]
+        }
+
+        with patch("home.views.urllib_request.urlopen", return_value=FakeResponse(fake_payload)) as mocked_urlopen:
+            response = self.client.post(
+                reverse("generate_ai_recommendation"),
+                data=json.dumps({"profile_type": "sensitive", "product_goal": "calm irritation", "concern_hint": "fragrance-free only"}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["source"], "gemini")
+        self.assertEqual(data["recommendation"], "A tailored serum and moisturizer plan.")
+        mocked_urlopen.assert_called_once()
+
+    def test_ai_recommendation_sends_user_role_in_gemini_payload(self):
+        class FakeResponse:
+            def __init__(self, payload):
+                self._payload = payload
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+            def read(self):
+                return json.dumps(self._payload).encode("utf-8")
+
+            def __iter__(self):
+                yield self.read()
+
+        fake_payload = {
+            "candidates": [
+                {
+                    "content": {
+                        "parts": [{"text": "A tailored serum and moisturizer plan."}]
+                    }
+                }
+            ]
+        }
+
+        with patch("home.views.urllib_request.urlopen", return_value=FakeResponse(fake_payload)) as mocked_urlopen:
+            self.client.post(
+                reverse("generate_ai_recommendation"),
+                data=json.dumps({"profile_type": "dry", "product_goal": "hydration", "concern_hint": "fragrance-free only"}),
+                content_type="application/json",
+            )
+
+        request = mocked_urlopen.call_args.args[0]
+        payload = json.loads(request.data.decode("utf-8"))
+        self.assertEqual(payload["contents"][0]["role"], "user")
+        self.assertIn("at least 120 words", payload["contents"][0]["parts"][0]["text"])
+        self.assertIn("do not start with a greeting", payload["contents"][0]["parts"][0]["text"])
+
+    def test_ai_recommendation_endpoint_falls_back_when_http_call_errors(self):
+        with patch.dict("os.environ", {"GEMINI_MODEL": "gemini-2.5-flash"}, clear=False), patch(
+            "home.views.urllib_request.urlopen", side_effect=Exception("boom")
+        ):
+            response = self.client.post(
+                reverse("generate_ai_recommendation"),
+                data=json.dumps({"profile_type": "oily", "product_goal": "control shine", "concern_hint": "lightweight only"}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["source"], "fallback")
+        self.assertEqual(data["model"], "gemini-2.5-flash")
+        self.assertIn("gentle cleanser", data["recommendation"])
+        self.assertIn("moisturizer", data["recommendation"])
+
+    def test_ai_recommendation_endpoint_reports_model_name_on_unsupported_model_error(self):
+        payload = json.dumps({"error": {"status": "NOT_FOUND", "message": "models/gemini-3.5-flash is not found"}}).encode("utf-8")
+        http_error = error.HTTPError(
+            url="https://example.test",
+            code=404,
+            msg="Not Found",
+            hdrs=None,
+            fp=io.BytesIO(payload),
+        )
+
+        with patch.dict("os.environ", {"GEMINI_MODEL": "gemini-3.5-flash"}, clear=False), patch(
+            "home.views.urllib_request.urlopen", side_effect=http_error
+        ):
+            response = self.client.post(
+                reverse("generate_ai_recommendation"),
+                data=json.dumps({"profile_type": "dry", "product_goal": "hydration", "concern_hint": "fragrance-free only"}),
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data["source"], "fallback")
+        self.assertIn("gemini-3.5-flash", data["error"])
+        self.assertNotIn("The Gemini model name is not supported", data["error"])
 
     def test_homepage_includes_botanical_and_skin_mapping_visuals(self):
         response = self.client.get(reverse("home"))

@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from urllib import error, request as urllib_request
 from urllib.parse import urlparse
 
@@ -11,6 +12,7 @@ from django.contrib.auth.models import Group, User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from dotenv import load_dotenv
 
 from .forms import (
     CustomUserCreationForm,
@@ -20,6 +22,9 @@ from .forms import (
     SkincareProfileForm,
 )
 from .models import InventoryItem, Message, SkincareProfile
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 def home_page(request):
@@ -47,19 +52,24 @@ def generate_ai_recommendation(request):
     product_goal = (payload.get("product_goal") or "balanced routine").strip() or "balanced routine"
 
     prompt = (
-        f"You are a skincare retail advisor. Create a concise, practical product recommendation plan for a user with {profile_type} skin. "
+        f"You are a skincare retail advisor. Create a complete, practical product recommendation plan for a user with {profile_type} skin. "
         f"Their stated goal is {product_goal}. "
-        f"Keep the advice useful for a skincare shopping experience and include 3 product categories with clear reasons. "
-        f"Mention one calming ingredient for each recommendation. "
+        "Write a full answer with 3 product categories, using clear reasons and one calming ingredient for each. "
+        "Make the plan feel helpful and retail-ready, use at least 120 words, and do not start with a greeting or stop halfway through. "
         f"If the user added details, use them: {concern_hint or 'No extra details provided.'}"
     )
 
     api_key = os.getenv("GEMINI_API_KEY")
+    model = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
+    timeout_seconds = int(os.getenv("GEMINI_TIMEOUT_SECONDS", "20"))
+    max_output_tokens = int(os.getenv("GEMINI_MAX_OUTPUT_TOKENS", "260"))
+
     if api_key:
         try:
             gemini_payload = {
                 "contents": [
                     {
+                        "role": "user",
                         "parts": [
                             {"text": prompt}
                         ]
@@ -67,16 +77,19 @@ def generate_ai_recommendation(request):
                 ],
                 "generationConfig": {
                     "temperature": 0.7,
-                    "maxOutputTokens": 260,
+                    "maxOutputTokens": max_output_tokens,
                 },
             }
             req = urllib_request.Request(
-                f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={api_key}",
+                f"https://aiplatform.googleapis.com/v1/publishers/google/models/{model}:generateContent",
                 data=json.dumps(gemini_payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
+                headers={
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": api_key,
+                },
                 method="POST",
             )
-            with urllib_request.urlopen(req, timeout=20) as response:
+            with urllib_request.urlopen(req, timeout=timeout_seconds) as response:
                 result = json.load(response)
             candidates = result.get("candidates") or []
             if candidates:
@@ -84,15 +97,53 @@ def generate_ai_recommendation(request):
                 text = "".join(part.get("text", "") for part in parts if isinstance(part, dict))
                 if text.strip():
                     return JsonResponse({"recommendation": text.strip(), "source": "gemini"})
-        except (error.HTTPError, error.URLError, TimeoutError, ValueError, KeyError):
-            pass
+        except Exception as exc:
+            raw_error_message = str(exc)
+            friendly_error_message = f"The Gemini request failed while using model '{model}'. Please verify the model name, API key, and Gemini API access for your Google project."
+            if isinstance(exc, error.HTTPError):
+                try:
+                    raw_error_message = exc.read().decode("utf-8", errors="ignore")
+                except Exception:
+                    raw_error_message = str(exc)
+
+                try:
+                    payload = json.loads(raw_error_message)
+                    error_info = payload.get("error", {})
+                    status = error_info.get("status", "")
+                    message = error_info.get("message", "")
+                    raw_error_message = message or raw_error_message
+                    if status == "UNAUTHENTICATED" or "invalid authentication credentials" in message.lower():
+                        friendly_error_message = (
+                            f"Your Gemini API key is not being accepted for model '{model}'. "
+                            "Please verify the key and make sure the Gemini API is enabled for the Google project."
+                        )
+                    elif status == "PERMISSION_DENIED" or "blocked" in message.lower():
+                        friendly_error_message = (
+                            f"The Gemini API is blocked for model '{model}'. "
+                            "Please check the project permissions and API enablement."
+                        )
+                    elif "not found" in message.lower() or "model" in message.lower():
+                        friendly_error_message = (
+                            f"The Gemini request failed while using model '{model}'. "
+                            "The model or endpoint may be unsupported for this project, so please verify the model name and Gemini API enablement."
+                        )
+                    elif message:
+                        friendly_error_message = f"The Gemini request failed while using model '{model}': {message}"
+                except Exception:
+                    friendly_error_message = f"The Gemini request failed while using model '{model}': {raw_error_message}"
+            fallback = (
+                f"For {profile_type} skin, start with a gentle cleanser, a lightweight moisturizer, and daily sunscreen. "
+                f"If your goal is {product_goal}, choose fragrance-free formulas with barrier-friendly ingredients like ceramides, niacinamide, or hyaluronic acid. "
+                f"{concern_hint if concern_hint else 'Keep the routine simple, patch test new products, and increase actives slowly.'}"
+            )
+            return JsonResponse({"recommendation": fallback, "source": "fallback", "error": raw_error_message, "friendly_error": friendly_error_message, "model": model})
 
     fallback = (
         f"For {profile_type} skin, start with a gentle cleanser, a lightweight moisturizer, and daily sunscreen. "
         f"If your goal is {product_goal}, choose fragrance-free formulas with barrier-friendly ingredients like ceramides, niacinamide, or hyaluronic acid. "
         f"{concern_hint if concern_hint else 'Keep the routine simple, patch test new products, and increase actives slowly.'}"
     )
-    return JsonResponse({"recommendation": fallback, "source": "fallback"})
+    return JsonResponse({"recommendation": fallback, "source": "fallback", "model": model})
 
 
 def about_page(request):
