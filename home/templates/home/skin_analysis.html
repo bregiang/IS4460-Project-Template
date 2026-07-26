@@ -496,6 +496,44 @@
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
+    const escapeHtml = (value) => {
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/\"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    };
+
+    const formatRecommendationText = (text) => {
+        const normalized = String(text || "")
+            .replace(/\*\*(.*?)\*\*/g, "$1")
+            .replace(/\*(?!\s)(.*?)\*/g, "$1")
+            .trim();
+
+        if (!normalized) {
+            return '<div class="text-secondary">No recommendation text was returned.</div>';
+        }
+
+        const lines = normalized
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter(Boolean);
+
+        return lines.map((line) => {
+            if (/^\d+\./.test(line)) {
+                return `<div class="fw-semibold mt-3" style="color: var(--forest);">${escapeHtml(line)}</div>`;
+            }
+            if (/^[-*]\s+/.test(line)) {
+                return `<div class="ms-3 mb-1">• ${escapeHtml(line.replace(/^[-*]\s+/, ""))}</div>`;
+            }
+            if (/^Retail Advisor Tip:/i.test(line)) {
+                return `<div class="mt-3 small fw-semibold" style="color: var(--forest);">${escapeHtml(line)}</div>`;
+            }
+            return `<div class="mb-2">${escapeHtml(line)}</div>`;
+        }).join("");
+    };
+
     aiPlanBtn.addEventListener("click", async () => {
         const profileType = resultName.textContent.replace("Skin", "").trim().toLowerCase();
         const goal = aiGoalInput.value.trim() || "balanced routine";
@@ -521,7 +559,10 @@
             });
 
             const data = await response.json();
-            aiPlanOutput.innerHTML = `<div class="fw-semibold mb-2" style="color: var(--forest);">${data.source === "gemini" ? "Gemini-powered plan" : "Fallback plan"}</div><div class="text-secondary">${data.recommendation.replace(/\n/g, "<br>")}</div>`;
+            aiPlanOutput.innerHTML = `
+                <div class="fw-semibold mb-3" style="color: var(--forest);">${data.source === "gemini" ? "Gemini-powered plan" : "Fallback plan"}</div>
+                <div class="text-secondary">${formatRecommendationText(data.recommendation)}</div>
+            `;
             if (data.source === "gemini") {
                 aiPlanStatus.textContent = "Your AI plan is based on Gemini and tailored to the result above.";
                 aiDiagnostic.style.display = "none";

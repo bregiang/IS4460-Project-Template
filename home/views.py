@@ -55,6 +55,8 @@ def generate_ai_recommendation(request):
         f"You are a skincare retail advisor. Create a complete, practical product recommendation plan for a user with {profile_type} skin. "
         f"Their stated goal is {product_goal}. "
         "Write a full answer with 3 product categories, using clear reasons and one calming ingredient for each. "
+        "Format it as plain text with 3 numbered sections, short paragraphs, and bullet points using hyphens. "
+        "Do not use markdown bold markers, asterisks, or tables. "
         "Make the plan feel helpful and retail-ready, use at least 120 words, and do not start with a greeting or stop halfway through. "
         f"If the user added details, use them: {concern_hint or 'No extra details provided.'}"
     )
