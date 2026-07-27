@@ -185,6 +185,19 @@
     font-weight: 600;
   }
 
+  .product-card-title {
+    min-width: 0;
+  }
+
+  .product-card-title h3 {
+    overflow-wrap: break-word;
+  }
+
+  .product-rating-pill {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
   @media (max-width: 767px) {
     .filter-panel { padding: 0.95rem; }
     .result-card .card-body { padding: 1rem; }
@@ -891,11 +904,11 @@
             ${product.amazonOfficial ? '<span class="retailer-badge official-badge">✓ Official brand storefront</span>' : ''}
           </div>
           <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-            <div>
+            <div class="product-card-title">
               <p class="eyebrow mb-1">${product.product_type}</p>
               <h3 class="h5 mb-1">${product.name}</h3>
             </div>
-            <span class="stats-pill">★ ${product.rating.toFixed(1)}</span>
+            <span class="stats-pill product-rating-pill">★ ${product.rating.toFixed(1)}</span>
           </div>
           <p class="text-muted small mb-3">${product.description}</p>
           <div class="d-flex justify-content-between align-items-center mb-3">

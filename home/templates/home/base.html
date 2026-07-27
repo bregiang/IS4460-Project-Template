@@ -95,6 +95,12 @@
             transform: translateY(-1px);
         }
 
+        .nav-link.active {
+            background: rgba(143, 166, 136, 0.32);
+            color: var(--forest) !important;
+            font-weight: 800;
+        }
+
         .card,
         .hero-card,
         .luxury-card {
@@ -292,27 +298,27 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto ms-3">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'skin_analysis' %}">Skin Analysis</a>
+                        <a class="nav-link{% if request.resolver_match.url_name == 'skin_analysis' %} active{% endif %}" href="{% url 'skin_analysis' %}">Skin Analysis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile' %}">Profile</a>
+                        <a class="nav-link{% if request.resolver_match.url_name == 'profile' %} active{% endif %}" href="{% url 'profile' %}">Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'recommendations' %}">Recommendations</a>
+                        <a class="nav-link{% if request.resolver_match.url_name == 'recommendations' %} active{% endif %}" href="{% url 'recommendations' %}">Recommendations</a>
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_messages' %}">Messages</a>
+                            <a class="nav-link{% if request.resolver_match.url_name == 'user_messages' %} active{% endif %}" href="{% url 'user_messages' %}">Messages</a>
                         </li>
                     {% endif %}
                     {% if user.is_authenticated and user.groups.all.0.name == 'dermatologist' %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dermatologist_dashboard' %}">Clinical</a>
+                            <a class="nav-link{% if request.resolver_match.url_name == 'dermatologist_dashboard' %} active{% endif %}" href="{% url 'dermatologist_dashboard' %}">Clinical</a>
                         </li>
                     {% endif %}
                     {% if user.is_authenticated and user.groups.all.0.name == 'admin' %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'admin_dashboard' %}">Admin</a>
+                            <a class="nav-link{% if request.resolver_match.url_name == 'admin_dashboard' %} active{% endif %}" href="{% url 'admin_dashboard' %}">Admin</a>
                         </li>
                     {% endif %}
                     {% if not user.is_authenticated %}
