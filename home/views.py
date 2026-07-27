@@ -243,6 +243,8 @@ def register_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Ensure a SkincareProfile is created for every new user
+            SkincareProfile.objects.get_or_create(user=user)
             login(request, user)
             messages.success(request, "Registration successful. Welcome to SkinIdentifier.")
             return redirect(next_url)
@@ -303,7 +305,12 @@ def profile_view(request):
 @login_required(login_url="access_restricted")
 def skin_history_view(request):
     """Show a secure skin-history view for the current user or a patient when viewed by a dermatologist."""
-    profile = get_object_or_404(SkincareProfile, user=request.user)
+    # Ensure a profile exists for the requesting user instead of raising 404
+    try:
+        profile, _ = SkincareProfile.objects.get_or_create(user=request.user)
+    except Exception:
+        return render(request, "home/profile_missing.html", {"user_obj": request.user, "role": get_user_role(request.user)})
+
     return render(request, "home/skin_history.html", {"profile": profile, "role": get_user_role(request.user)})
 
 
@@ -320,7 +327,14 @@ def dermatologist_dashboard(request):
 def dermatologist_patient_view(request, user_id):
     """Allow dermatologists to review a patient's skin profile and history."""
     patient = get_object_or_404(User, pk=user_id)
-    profile = get_object_or_404(SkincareProfile, user=patient)
+    # Create the patient's SkincareProfile if it does not exist to avoid 404s
+    try:
+        profile, created = SkincareProfile.objects.get_or_create(user=patient)
+    except Exception:
+        return render(request, "home/profile_missing.html", {"user_obj": patient, "role": get_user_role(request.user)})
+
+    if created:
+        messages.info(request, "A skincare profile was created for this patient.")
     messages_for_patient = Message.objects.filter(recipient=patient)
     if request.method == "POST":
         form = ProfessionalNoteForm(request.POST, instance=profile)
@@ -393,6 +407,19 @@ def user_messages(request):
         return redirect("admin_dashboard")
     messages_received = Message.objects.filter(recipient=request.user)
     return render(request, "home/user_messages.html", {"messages_received": messages_received, "role": get_user_role(request.user)})
+
+
+@login_required(login_url="access_restricted")
+@role_required("admin", "dermatologist")
+def create_profile_for_user(request, user_id):
+    """Create a SkincareProfile for another user (admin/dermatologist action)."""
+    patient = get_object_or_404(User, pk=user_id)
+    profile, created = SkincareProfile.objects.get_or_create(user=patient)
+    if created:
+        messages.success(request, "Skincare profile created for the user.")
+    else:
+        messages.info(request, "User already has a skincare profile.")
+    return redirect("dermatologist_patient", user_id=patient.pk)
 
 
 @login_required

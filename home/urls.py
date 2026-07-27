@@ -19,6 +19,7 @@ urlpatterns = [
     path("skin-history/", views.skin_history_view, name="skin_history"),
     path("dermatologist-dashboard/", views.dermatologist_dashboard, name="dermatologist_dashboard"),
     path("dermatologist-patient/<int:user_id>/", views.dermatologist_patient_view, name="dermatologist_patient"),
+    path("create-profile/<int:user_id>/", views.create_profile_for_user, name="create_profile_for_user"),
     path("dermatologist-messages/", views.dermatologist_messages, name="dermatologist_messages"),
     path("send-message/<int:user_id>/", views.send_message_to_patient, name="send_message"),
     path("admin-dashboard/", views.admin_dashboard, name="admin_dashboard"),
