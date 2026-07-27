@@ -26,16 +26,19 @@
                 <path class="map-zone zone-jawline" data-region="jawline" role="button" tabindex="0" aria-label="Jawline: sensitivity and hormonal breakouts" d="M111 403Q135 548 260 564Q385 548 409 403L391 407Q361 524 260 547Q159 524 129 407Z"/>
             </g>
         </svg>
-        <div class="zone-pills" role="list" aria-label="Facial regions">
-            <button type="button" data-region="forehead">Forehead</button>
-            <button type="button" data-region="nose">Nose</button>
-            <button type="button" data-region="leftCheek">Left cheek</button>
-            <button type="button" data-region="rightCheek">Right cheek</button>
-            <button type="button" data-region="underLeftEye">Left under eye</button>
-            <button type="button" data-region="underRightEye">Right under eye</button>
-            <button type="button" data-region="chin">Chin</button>
-            <button type="button" data-region="jawline">Jawline</button>
-            <button type="button" data-region="tzone">T-zone</button>
+        <div class="zone-selector">
+            <p class="zone-selector-label">Explore by area</p>
+            <div class="zone-pills" role="group" aria-label="Facial regions">
+                <button class="zone-pill" type="button" data-region="forehead">Forehead</button>
+                <button class="zone-pill" type="button" data-region="nose">Nose</button>
+                <button class="zone-pill" type="button" data-region="leftCheek">Left cheek</button>
+                <button class="zone-pill" type="button" data-region="rightCheek">Right cheek</button>
+                <button class="zone-pill" type="button" data-region="underLeftEye">Left under eye</button>
+                <button class="zone-pill" type="button" data-region="underRightEye">Right under eye</button>
+                <button class="zone-pill" type="button" data-region="chin">Chin</button>
+                <button class="zone-pill" type="button" data-region="jawline">Jawline</button>
+                <button class="zone-pill" type="button" data-region="tzone">T-zone</button>
+            </div>
         </div>
     </div>
 
@@ -89,7 +92,7 @@
         map.querySelectorAll("[data-region]").forEach(el => {
             const selected = el.dataset.region === name;
             el.classList.toggle("is-selected", selected);
-            if (el.getAttribute("role") === "button") el.setAttribute("aria-pressed", String(selected));
+            if (el.matches("button, [role='button']")) el.setAttribute("aria-pressed", String(selected));
         });
         map.querySelector(".zone-title").textContent = data.title;
         map.querySelector(".zone-summary").textContent = data.summary;

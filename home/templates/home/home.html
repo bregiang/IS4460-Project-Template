@@ -4,8 +4,9 @@
 {% block title %}SkinIdentifier | AI Skincare Guidance{% endblock %}
 
 {% block content %}
+<div class="home-page">
 <div class="card hero-card editorial-hero">
-    <div class="row align-items-center g-4">
+    <div class="row align-items-center">
         <div class="col-lg-6 hero-copy">
             <span class="botanical-eyebrow"><span aria-hidden="true">✦</span> Dermatology meets botanical ritual</span>
             <h1 class="display-4 fw-bold mb-3">Understand your skin, beautifully.</h1>
@@ -18,7 +19,7 @@
             </div>
             <div class="hero-trust"><span>Personalized zones</span><span>Ingredient guidance</span><span>Accessible by design</span></div>
         </div>
-        <div class="col-lg-6">
+        <div class="col-lg-6 hero-media">
             <figure class="editorial-image botanical-artwork">
                 <img src="{% static 'home/images/editorial-skin-ritual.png' %}" alt="Woman with healthy natural skin in a softly lit botanical skincare studio beside eucalyptus and glass serum bottles">
                 <figcaption><span>Skin consultation</span><strong>Calm · visual · personal</strong></figcaption>
@@ -96,5 +97,6 @@
         </div>
     </div>
 </section>
+</div>
 
 {% endblock %}
