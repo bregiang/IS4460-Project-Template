@@ -1,40 +1,143 @@
-<div class="skin-map-visual">
+<div class="skin-map-visual js-skin-map" data-profile="combination">
     <div class="face-map-canvas">
-        <svg viewBox="0 0 520 560" role="img" aria-labelledby="face-map-title face-map-desc">
-            <title id="face-map-title">Example facial skin analysis map</title>
-            <desc id="face-map-desc">A face diagram highlights an oily forehead and T-zone, sensitive cheeks, visible pores on the nose, delicate under eyes, an acne-prone chin, and the jawline.</desc>
-            <path d="M211 470c-5 36-21 56-45 72h188c-25-16-40-36-45-72" fill="#f0d8cd" opacity=".78"/>
-            <path d="M260 42c-99 0-151 75-144 195 7 119 63 252 144 252s137-133 144-252C411 117 359 42 260 42Z" fill="#faeee7" stroke="#46624f" stroke-width="3"/>
-            <path d="M122 225c-20-12-29 5-22 36 6 29 20 46 38 44M398 225c20-12 29 5 22 36-6 29-20 46-38 44" fill="#faeee7" stroke="#46624f" stroke-width="3"/>
-            <path d="M150 163c23-49 67-77 110-77s87 28 110 77" fill="none" stroke="#d9c4b6" stroke-width="3" stroke-linecap="round"/>
-            <path class="zone zone-oil" d="M174 116c50-30 122-30 172 0l-9 73H183Z"/>
-            <path class="zone zone-tzone" d="M235 116h50l18 211-43 34-43-34Z"/>
-            <path class="zone zone-sensitive" d="M143 241c19-31 57-46 91-26l-17 90c-28 30-70 10-74-64ZM377 241c-19-31-57-46-91-26l17 90c28 30 70 10 74-64Z"/>
-            <path class="zone zone-dry" d="M164 211c19-20 48-21 72-5-20 21-45 27-72 5ZM356 211c-19-20-48-21-72-5 20 21 45 27 72 5Z"/>
-            <path class="zone zone-acne" d="M213 394c31-17 63-17 94 0l-12 54c-21 20-49 20-70 0Z"/>
-            <path class="zone-jaw" d="M147 318c15 88 56 144 113 151 57-7 98-63 113-151" fill="none"/>
-            <path d="M174 195c18-10 41-9 58 2M288 197c17-11 40-12 58-2" fill="none" stroke="#46624f" stroke-width="3" stroke-linecap="round"/>
-            <path d="M176 211c18 13 38 13 57 0M287 211c19 13 39 13 57 0" fill="none" stroke="#46624f" stroke-width="2" stroke-linecap="round"/>
-            <path d="M259 205c-8 49-14 83-4 105 7 5 15 5 23 0" fill="none" stroke="#9e776c" stroke-width="2" stroke-linecap="round"/>
-            <path d="M229 365c19 13 43 14 63 0-19 23-44 24-63 0Z" fill="#d79c9c" opacity=".9"/>
-            <g fill="#a86e69"><circle cx="238" cy="411" r="4"/><circle cx="263" cy="426" r="4"/><circle cx="285" cy="407" r="4"/></g>
-            <g fill="#8b765e" opacity=".7"><circle cx="250" cy="267" r="2.5"/><circle cx="263" cy="259" r="2.5"/><circle cx="274" cy="277" r="2.5"/><circle cx="257" cy="288" r="2.5"/></g>
-            <g class="map-callouts" fill="#31503d" font-family="Inter, sans-serif">
-                <path d="M182 142H72"/><circle cx="182" cy="142" r="4"/><text x="16" y="138">FOREHEAD</text><text class="callout-note" x="16" y="155">oil-prone</text>
-                <path d="M147 270H72"/><circle cx="147" cy="270" r="4"/><text x="16" y="266">CHEEKS</text><text class="callout-note" x="16" y="283">sensitive</text>
-                <path d="M174 219H88"/><circle cx="174" cy="219" r="4"/><text x="16" y="210">UNDER EYES</text><text class="callout-note" x="16" y="227">delicate</text>
-                <path d="M295 274h137"/><circle cx="295" cy="274" r="4"/><text x="438" y="270">NOSE</text><text class="callout-note" x="438" y="287">visible pores</text>
-                <path d="M304 418h128"/><circle cx="304" cy="418" r="4"/><text x="438" y="414">CHIN</text><text class="callout-note" x="438" y="431">acne-prone</text>
-                <path d="M352 354h80"/><circle cx="352" cy="354" r="4"/><text x="438" y="350">JAWLINE</text><text class="callout-note" x="438" y="367">monitor</text>
+        <div class="map-toolbar" aria-label="Skin map display">
+            <span class="map-status"><span class="status-dot" aria-hidden="true"></span> Live facial map</span>
+            <span class="map-hint">Select a zone to explore</span>
+        </div>
+        <svg viewBox="0 0 520 560" role="group" aria-label="Interactive facial skin analysis map">
+            <defs>
+                <linearGradient id="skinTone" x1="0" x2="1" y1="0" y2="1">
+                    <stop offset="0" stop-color="#f9e9df"/><stop offset=".55" stop-color="#edcfc3"/><stop offset="1" stop-color="#e4bfb2"/>
+                </linearGradient>
+                <filter id="softGlow"><feGaussianBlur stdDeviation="9"/></filter>
+                <pattern id="porePattern" width="12" height="12" patternUnits="userSpaceOnUse">
+                    <circle cx="3" cy="3" r="1.5" fill="#735e4f" opacity=".48"/>
+                </pattern>
+            </defs>
+            <title>Example facial skin analysis map — interactive and personalized</title>
+            <desc>Choose the forehead, nose, chin, cheeks, under eyes, jawline, or T-zone for concern details and ingredient guidance.</desc>
+            <path d="M211 470c-5 36-21 56-45 72h188c-25-16-40-36-45-72" fill="#e9c8bc" opacity=".8"/>
+            <path class="face-base" d="M260 42c-99 0-151 75-144 195 7 119 63 252 144 252s137-133 144-252C411 117 359 42 260 42Z" fill="url(#skinTone)" stroke="#46624f" stroke-width="2.5"/>
+            <path d="M122 225c-20-12-29 5-22 36 6 29 20 46 38 44M398 225c20-12 29 5 22 36-6 29-20 46-38 44" fill="#edcfc3" stroke="#46624f" stroke-width="2.5"/>
+            <path d="M148 163c25-56 67-82 112-82s87 26 112 82" fill="none" stroke="#806a61" stroke-width="3" stroke-linecap="round" opacity=".65"/>
+
+            <g class="interactive-zones">
+                <path class="map-zone zone-forehead" data-region="forehead" role="button" tabindex="0" aria-label="Forehead: oiliness and texture" d="M174 116c50-30 122-30 172 0l-9 73H183Z"/>
+                <path class="map-zone zone-tzone" data-region="tzone" role="button" tabindex="0" aria-label="T-zone: oil and visible pores" d="M235 115h50l18 211-43 35-43-35Z"/>
+                <path class="map-zone zone-cheek" data-region="leftCheek" role="button" tabindex="0" aria-label="Left cheek: redness and sensitivity" d="M142 241c19-31 57-46 92-26l-17 91c-29 30-71 10-75-65Z"/>
+                <path class="map-zone zone-cheek" data-region="rightCheek" role="button" tabindex="0" aria-label="Right cheek: redness and sensitivity" d="M378 241c-19-31-57-46-92-26l17 91c29 30 71 10 75-65Z"/>
+                <path class="map-zone zone-eyes" data-region="underEyes" role="button" tabindex="0" aria-label="Under eyes: hydration and fine lines" d="M160 204c24-23 53-22 77-4-21 25-50 31-77 4Zm200 0c-24-23-53-22-77-4 21 25 50 31 77 4Z"/>
+                <path class="map-zone zone-nose" data-region="nose" role="button" tabindex="0" aria-label="Nose: pores and oiliness" d="M237 218c-2 54-12 87-4 111 16 13 38 13 54 0 8-24-2-57-4-111Z"/>
+                <path class="map-zone zone-chin" data-region="chin" role="button" tabindex="0" aria-label="Chin: acne and congestion" d="M211 390c33-17 65-17 98 0l-12 59c-23 20-51 20-74 0Z"/>
+                <path class="map-zone zone-jawline" data-region="jawline" role="button" tabindex="0" aria-label="Jawline: sensitivity and hormonal breakouts" d="M146 313c14 91 57 149 114 156 57-7 100-65 114-156l-25 7c-15 69-48 116-89 125-41-9-74-56-89-125Z"/>
+            </g>
+
+            <g class="face-features" pointer-events="none">
+                <path d="M174 194c18-10 41-9 58 2M288 196c17-11 40-12 58-2" fill="none" stroke="#654f47" stroke-width="3" stroke-linecap="round"/>
+                <path d="M176 210c18 13 38 13 57 0M287 210c19 13 39 13 57 0" fill="none" stroke="#654f47" stroke-width="2" stroke-linecap="round"/>
+                <path d="M259 205c-8 49-14 83-4 105 7 5 15 5 23 0" fill="none" stroke="#9e776c" stroke-width="2" stroke-linecap="round"/>
+                <path d="M228 365c20 13 44 14 65 0-20 23-46 24-65 0Z" fill="#bd7b7e" opacity=".78"/>
+                <g class="acne-markers" fill="#bd7169"><circle cx="238" cy="411" r="4"/><circle cx="263" cy="427" r="4"/><circle cx="286" cy="407" r="4"/></g>
+                <path class="pore-overlay" d="M240 238h40v79h-40z" fill="url(#porePattern)"/>
             </g>
         </svg>
+        <div class="zone-pills" role="list" aria-label="Facial regions">
+            <button type="button" data-region="forehead">Forehead</button>
+            <button type="button" data-region="nose">Nose</button>
+            <button type="button" data-region="leftCheek">Cheeks</button>
+            <button type="button" data-region="underEyes">Under eyes</button>
+            <button type="button" data-region="chin">Chin</button>
+            <button type="button" data-region="jawline">Jawline</button>
+            <button type="button" data-region="tzone">T-zone</button>
+        </div>
     </div>
-    <div class="skin-map-key" aria-label="Skin map color key">
-        <div class="map-key-item"><span class="map-key-swatch oil"></span><span><strong>Oiliness</strong><small id="foreheadNote">Forehead &amp; T-zone</small></span></div>
-        <div class="map-key-item"><span class="map-key-swatch sensitive"></span><span><strong>Sensitivity</strong><small id="cheeksNote">Cheeks</small></span></div>
-        <div class="map-key-item"><span class="map-key-swatch pores"></span><span><strong>Visible pores</strong><small id="noseNote">Nose</small></span></div>
-        <div class="map-key-item"><span class="map-key-swatch dry"></span><span><strong>Dry or delicate</strong><small id="eyesNote">Under eyes</small></span></div>
-        <div class="map-key-item"><span class="map-key-swatch acne"></span><span><strong>Acne-prone</strong><small id="jawlineNote">Chin &amp; jawline</small></span></div>
-        <span id="lipsNote" class="visually-hidden">Lips: smooth</span>
-    </div>
+
+    <aside class="zone-insight-card" aria-live="polite">
+        <div class="insight-topline">
+            <span class="concern-icon" aria-hidden="true"></span>
+            <span class="zone-severity"></span>
+        </div>
+        <p class="insight-kicker">Selected region</p>
+        <h3 class="zone-title">T-zone</h3>
+        <p class="zone-summary">This central area commonly produces more oil than the cheeks.</p>
+        <div class="metric-stack" aria-label="Region metrics"></div>
+        <div class="insight-detail">
+            <span>Why it happens</span>
+            <p class="zone-why"></p>
+        </div>
+        <div class="ingredient-recommendation">
+            <span>Ingredient pairing</span>
+            <strong class="zone-ingredient"></strong>
+            <small class="zone-product"></small>
+        </div>
+        <p class="map-disclaimer">Educational guidance, not a medical diagnosis.</p>
+    </aside>
 </div>
+
+<script>
+(() => {
+    const map = document.currentScript.previousElementSibling;
+    const regions = {
+        forehead: { title: "Forehead", icon: "oil", severity: "Moderate", summary: "Shine and uneven texture can build here as sebum mixes with sunscreen and makeup.", why: "The forehead has a high concentration of sebaceous glands and is affected by hair products and occlusion.", ingredient: "2% niacinamide", product: "Pair with a lightweight balancing serum.", metrics: [["Oiliness", 76], ["Texture", 44], ["Hydration", 58]] },
+        tzone: { title: "T-zone", icon: "oil", severity: "Priority zone", summary: "The forehead, nose, and chin often behave differently from the cheeks.", why: "Sebaceous glands are more concentrated through the center of the face.", ingredient: "Niacinamide + zinc PCA", product: "Try a non-stripping gel cleanser and fluid moisturizer.", metrics: [["Oiliness", 82], ["Pores", 68], ["Hydration", 51]] },
+        nose: { title: "Nose", icon: "pores", severity: "Visible pores", summary: "Pores are more visible where oil and cellular debris collect.", why: "Pores can appear larger with higher sebum output; they cannot be permanently opened or closed.", ingredient: "Salicylic acid", product: "Use a gentle BHA treatment 1–2 evenings weekly.", metrics: [["Pores", 72], ["Oiliness", 69], ["Texture", 48]] },
+        leftCheek: { title: "Left cheek", icon: "redness", severity: "Calm gently", summary: "Diffuse redness and dehydration can make this area feel reactive.", why: "Cheeks have fewer oil glands and may be more exposed to friction, weather, and barrier disruption.", ingredient: "Centella + panthenol", product: "Choose a fragrance-free barrier cream.", metrics: [["Redness", 63], ["Sensitivity", 71], ["Hydration", 46]] },
+        rightCheek: { title: "Right cheek", icon: "redness", severity: "Calm gently", summary: "Diffuse redness and dehydration can make this area feel reactive.", why: "Cheeks have fewer oil glands and may be more exposed to friction, weather, and barrier disruption.", ingredient: "Centella + panthenol", product: "Choose a fragrance-free barrier cream.", metrics: [["Redness", 58], ["Sensitivity", 66], ["Hydration", 49]] },
+        underEyes: { title: "Under eyes", icon: "hydration", severity: "Delicate area", summary: "Fine lines can appear more visible when this thin skin is dehydrated.", why: "Under-eye skin is thinner and has fewer sebaceous glands than most facial zones.", ingredient: "Hyaluronic acid + peptides", product: "Pat in a fragrance-free hydrating eye gel.", metrics: [["Hydration", 42], ["Fine lines", 54], ["Sensitivity", 62]] },
+        chin: { title: "Chin", icon: "acne", severity: "Monitor", summary: "Small blemishes and congestion often cluster around the chin.", why: "Hormonal fluctuation, occlusion, and touching can contribute to congestion here.", ingredient: "Azelaic acid", product: "Apply a gentle targeted treatment, then moisturize.", metrics: [["Acne", 61], ["Redness", 43], ["Texture", 57]] },
+        jawline: { title: "Jawline", icon: "sensitive", severity: "Low–moderate", summary: "This area can show friction sensitivity or recurring blemishes.", why: "Hormonal changes and contact from phones, collars, or hands may affect the jawline.", ingredient: "Azelaic acid + ceramides", product: "Support with a non-comedogenic barrier lotion.", metrics: [["Sensitivity", 52], ["Acne", 47], ["Texture", 39]] }
+    };
+    const profileOverrides = {
+        dry: { region: "underEyes", label: "Dry-skin focus", zones: ["zone-eyes", "zone-cheek"] },
+        oily: { region: "tzone", label: "Oil-control focus", zones: ["zone-tzone", "zone-forehead", "zone-nose"] },
+        combination: { region: "tzone", label: "Combination focus", zones: ["zone-tzone", "zone-cheek"] },
+        sensitive: { region: "leftCheek", label: "Sensitivity focus", zones: ["zone-cheek", "zone-jawline"] },
+        normal: { region: "forehead", label: "Balanced profile", zones: ["zone-forehead"] }
+    };
+
+    function selectRegion(name, focusControl = false) {
+        const data = regions[name] || regions.tzone;
+        map.querySelectorAll("[data-region]").forEach(el => {
+            const selected = el.dataset.region === name || (name === "leftCheek" && el.dataset.region === "rightCheek");
+            el.classList.toggle("is-selected", selected);
+            if (el.getAttribute("role") === "button") el.setAttribute("aria-pressed", String(selected));
+        });
+        map.querySelector(".zone-title").textContent = data.title;
+        map.querySelector(".zone-summary").textContent = data.summary;
+        map.querySelector(".zone-why").textContent = data.why;
+        map.querySelector(".zone-ingredient").textContent = data.ingredient;
+        map.querySelector(".zone-product").textContent = data.product;
+        map.querySelector(".zone-severity").textContent = data.severity;
+        map.querySelector(".concern-icon").className = `concern-icon icon-${data.icon}`;
+        map.querySelector(".metric-stack").innerHTML = data.metrics.map(([label, value]) =>
+            `<div class="map-metric"><div><span>${label}</span><strong>${value}%</strong></div><span class="metric-track"><i style="width:${value}%"></i></span></div>`
+        ).join("");
+        if (focusControl) map.querySelector(".zone-insight-card").scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    map.addEventListener("click", event => {
+        const control = event.target.closest("[data-region]");
+        if (control) selectRegion(control.dataset.region, control.tagName === "BUTTON");
+    });
+    map.addEventListener("keydown", event => {
+        const control = event.target.closest("[data-region]");
+        if (control && (event.key === "Enter" || event.key === " ")) {
+            event.preventDefault();
+            selectRegion(control.dataset.region, true);
+        }
+    });
+    map.addEventListener("mouseover", event => {
+        const zone = event.target.closest(".map-zone[data-region]");
+        if (zone) selectRegion(zone.dataset.region);
+    });
+    window.addEventListener("skinprofilechange", event => {
+        const type = event.detail?.type || "combination";
+        const config = profileOverrides[type] || profileOverrides.combination;
+        map.dataset.profile = type;
+        map.querySelector(".map-hint").textContent = config.label;
+        map.querySelectorAll(".map-zone").forEach(zone => zone.classList.toggle("is-profiled", config.zones.some(token => zone.classList.contains(token))));
+        selectRegion(config.region);
+    });
+    selectRegion("tzone");
+})();
+</script>

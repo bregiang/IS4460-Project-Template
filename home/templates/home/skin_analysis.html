@@ -128,9 +128,22 @@
                 </div>
             </div>
         </div>
+
+        <div class="personalized-map-result mt-4">
+            <div class="visual-section-heading">
+                <div>
+                    <span class="botanical-eyebrow"><span aria-hidden="true">✦</span> Your personalized visual</span>
+                    <h3 class="h2 mb-2">Your analysis, mapped by region</h3>
+                    <p>Colors and metrics update to emphasize the areas most relevant to your profile.</p>
+                </div>
+                <span class="science-badge" id="mapProfileBadge">Dynamic result</span>
+            </div>
+            {% include 'home/partials/face_map.html' %}
+        </div>
     </section>
 
     <div id="ritualResultsSection" hidden>
+        {% include 'home/partials/skin_science_visuals.html' %}
         {% include 'home/partials/routine_visuals.html' %}
     </div>
 </div>
@@ -413,9 +426,9 @@
                 <h3 class="mb-3">${question.prompt}</h3>
                 <div class="options-list">
                     ${question.options.map((option, index) => `
-                        <div class="question-option ${selectedValue === index ? "selected" : ""}" data-index="${index}">
+                        <button type="button" class="question-option ${selectedValue === index ? "selected" : ""}" data-index="${index}" aria-pressed="${selectedValue === index}">
                             ${option.label}
-                        </div>
+                        </button>
                     `).join("")}
                 </div>
             </div>
@@ -493,6 +506,8 @@
         quizSection.style.display = "none";
         resultsSection.style.display = "block";
         ritualResultsSection.hidden = false;
+        document.getElementById("mapProfileBadge").textContent = `${profile.title} focus`;
+        window.dispatchEvent(new CustomEvent("skinprofilechange", { detail: { type: resultType } }));
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 

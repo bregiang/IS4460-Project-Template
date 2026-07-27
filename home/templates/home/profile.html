@@ -428,12 +428,7 @@
     document.getElementById("oilValue").textContent = `${selectedProfile.oiliness}%`;
     document.getElementById("sensitivityValue").textContent = `${selectedProfile.sensitivity}%`;
 
-    document.getElementById("foreheadNote").textContent = selectedProfile.forehead;
-    document.getElementById("cheeksNote").textContent = selectedProfile.cheeks;
-    document.getElementById("noseNote").textContent = selectedProfile.nose;
-    document.getElementById("eyesNote").textContent = selectedProfile.eyes;
-    document.getElementById("jawlineNote").textContent = selectedProfile.jawline;
-    document.getElementById("lipsNote").textContent = selectedProfile.lips;
+    window.dispatchEvent(new CustomEvent("skinprofilechange", { detail: { type: profileType } }));
     document.getElementById("textureNote").textContent = selectedProfile.textureNote;
     document.getElementById("glowNote").textContent = selectedProfile.glowNote;
     document.getElementById("barrierNote").textContent = selectedProfile.barrierNote;

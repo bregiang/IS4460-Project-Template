@@ -1,23 +1,28 @@
 {% extends 'home/base.html' %}
+{% load static %}
 
 {% block title %}SkinIdentifier | AI Skincare Guidance{% endblock %}
 
 {% block content %}
-<div class="card hero-card p-4 p-md-5">
+<div class="card hero-card editorial-hero">
     <div class="row align-items-center g-4">
-        <div class="col-lg-7">
-            <span class="badge mb-3">Calm, intelligent skincare guidance</span>
-            <h1 class="display-5 fw-bold mb-3">A gentler way to discover what your skin needs.</h1>
+        <div class="col-lg-6 hero-copy">
+            <span class="botanical-eyebrow"><span aria-hidden="true">✦</span> Dermatology meets botanical ritual</span>
+            <h1 class="display-4 fw-bold mb-3">Understand your skin, beautifully.</h1>
             <p class="lead text-secondary mb-4">
-                SkinIdentifier blends skincare science with a soft, ritual-led experience, helping you understand your skin with clarity and confidence.
+                A guided visual consultation that maps your complexion, explains every signal, and translates skin science into a ritual made for you.
             </p>
             <div class="d-flex flex-wrap gap-2">
-                <a href="{% url 'register' %}" class="btn btn-terra btn-lg">Start your ritual</a>
-                <a href="#how-it-works" class="btn btn-outline-primary btn-lg">How it works</a>
+                <a href="{% url 'skin_analysis' %}" class="btn btn-terra btn-lg">Begin skin consultation</a>
+                <a href="#skin-science" class="btn btn-outline-primary btn-lg">Explore the science</a>
             </div>
+            <div class="hero-trust"><span>Personalized zones</span><span>Ingredient guidance</span><span>Accessible by design</span></div>
         </div>
-        <div class="col-lg-5">
-            {% include 'home/partials/botanical_art.html' %}
+        <div class="col-lg-6">
+            <figure class="editorial-image botanical-artwork">
+                <img src="{% static 'home/images/editorial-skin-ritual.png' %}" alt="Woman with healthy natural skin in a softly lit botanical skincare studio beside eucalyptus and glass serum bottles">
+                <figcaption><span>Skin consultation</span><strong>Calm · visual · personal</strong></figcaption>
+            </figure>
         </div>
     </div>
 </div>
@@ -36,6 +41,10 @@
         </div>
     </div>
 </section>
+
+<div id="skin-science">
+    {% include 'home/partials/skin_science_visuals.html' %}
+</div>
 
 <section id="how-it-works" class="mt-4">
     <div class="row g-4">
