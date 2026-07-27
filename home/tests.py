@@ -393,12 +393,52 @@ class DermatologistWorkflowTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Jordan Lee")
-        self.assertContains(response, "Redness and dryness")
+        self.assertContains(response, "@patient")
+        self.assertContains(response, "Prefers a short routine")
+        self.assertNotContains(response, "Skin concerns")
+        self.assertNotContains(response, "<dt class=\"col-sm-5 mb-2\">Goals</dt>")
+        self.assertNotContains(response, "Allergies")
         self.assertContains(response, "Questionnaire results")
         self.assertContains(response, "I need to introduce new products slowly")
         self.assertContains(response, "AI-generated recommendation")
         self.assertContains(response, "Soothing moisturizer")
         self.assertContains(response, "These products prioritize barrier support.")
+
+    def test_dashboard_review_link_opens_the_selected_patient_workspace(self):
+        dashboard = self.client.get(reverse("dermatologist_dashboard"))
+        patient_url = reverse("dermatologist_patient", args=[self.patient.pk])
+
+        self.assertContains(dashboard, f'href="{patient_url}"')
+        self.assertNotContains(
+            dashboard, f'href="{reverse("dermatologist_messages")}"'
+        )
+
+        review_page = self.client.get(patient_url)
+        self.assertEqual(review_page.context["patient"], self.patient)
+        self.assertEqual(review_page.context["profile"], self.profile)
+
+    def test_patient_review_handles_an_empty_profile(self):
+        empty_patient = User.objects.create_user(
+            username="newpatient", password="StrongPass123!"
+        )
+        empty_patient.groups.add(Group.objects.get(name="user"))
+
+        response = self.client.get(
+            reverse("dermatologist_patient", args=[empty_patient.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "@newpatient")
+        self.assertContains(response, "Not provided")
+        self.assertContains(response, "Not completed")
+        self.assertNotContains(response, "<dt class=\"col-sm-5 mb-2\">Notes</dt>")
+        self.assertContains(
+            response,
+            "No saved questionnaire responses are available for this patient.",
+        )
+        self.assertContains(
+            response, "No generated recommendation has been saved for this patient."
+        )
 
     def test_professional_recommendation_can_be_created_and_edited(self):
         url = reverse("dermatologist_patient", args=[self.patient.pk])

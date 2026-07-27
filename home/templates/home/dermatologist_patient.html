@@ -37,16 +37,14 @@
       <dl class="row mb-0">
         <dt class="col-sm-5 mb-2">Patient name</dt>
         <dd class="col-sm-7 mb-2">{% if patient.first_name or patient.last_name %}{{ patient.get_full_name }}{% else %}{{ patient.username }}{% endif %}</dd>
+        <dt class="col-sm-5 mb-2">Username</dt>
+        <dd class="col-sm-7 mb-2">@{{ patient.username }}</dd>
         <dt class="col-sm-5 mb-2">Skin type</dt>
         <dd class="col-sm-7 mb-2">{{ profile.get_skin_type_display|default:"Not provided" }}</dd>
-        <dt class="col-sm-5 mb-2">Skin concerns</dt>
-        <dd class="col-sm-7 mb-2">{{ profile.concerns|default:"Not provided"|linebreaksbr }}</dd>
-        <dt class="col-sm-5 mb-2">Goals</dt>
-        <dd class="col-sm-7 mb-2">{{ profile.goals|default:"Not provided"|linebreaksbr }}</dd>
-        <dt class="col-sm-5 mb-2">Allergies</dt>
-        <dd class="col-sm-7 mb-2">{{ profile.allergies|default:"Not provided"|linebreaksbr }}</dd>
-        <dt class="col-sm-5 mb-2">Notes</dt>
-        <dd class="col-sm-7 mb-2">{{ profile.notes|default:"Not provided"|linebreaksbr }}</dd>
+        {% if profile.notes %}
+          <dt class="col-sm-5 mb-2">Notes</dt>
+          <dd class="col-sm-7 mb-2">{{ profile.notes|linebreaksbr }}</dd>
+        {% endif %}
         <dt class="col-sm-5 mb-0">Last questionnaire</dt>
         <dd class="col-sm-7 mb-0">
           {% if profile.last_questionnaire_at %}
