@@ -30,6 +30,55 @@
         </div>
     </div>
 
+    <section class="card p-4 mb-4 profile-picture-card">
+        <div class="d-flex align-items-center gap-4 flex-wrap">
+            <div class="user-avatar-lg" id="profilePictureAvatar">
+                {% if profile.profile_picture %}
+                    <img src="{{ profile.profile_picture.url }}" alt="Your profile picture">
+                {% else %}
+                    <span>{{ initials }}</span>
+                {% endif %}
+            </div>
+            <div class="flex-grow-1">
+                <p class="small text-uppercase fw-semibold mb-1" style="letter-spacing: 0.2em; color: var(--muted);">Profile picture</p>
+                <h3 class="h5 mb-3">Update your photo</h3>
+                <form method="post" enctype="multipart/form-data" class="d-flex flex-wrap align-items-center gap-3">
+                    {% csrf_token %}
+                    {{ picture_form.profile_picture }}
+                    <button type="submit" class="btn btn-primary btn-sm">Save picture</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function () {
+            const fileInput = document.querySelector(".profile-picture-file-input");
+            const avatar = document.getElementById("profilePictureAvatar");
+            const clearCheckbox = document.querySelector(".profile-picture-clear-checkbox");
+            if (!fileInput || !avatar) return;
+
+            fileInput.addEventListener("change", function () {
+                const file = fileInput.files && fileInput.files[0];
+                if (!file) return;
+
+                if (clearCheckbox) {
+                    clearCheckbox.checked = false;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    avatar.innerHTML = "";
+                    const img = document.createElement("img");
+                    img.src = event.target.result;
+                    img.alt = "Selected profile picture";
+                    avatar.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        })();
+    </script>
+
     <div class="row g-4">
         <div class="col-lg-8">
             <section class="card p-4 mb-4">
@@ -176,6 +225,69 @@
     .feature-card:hover {
         transform: translateY(-2px);
         transition: transform 0.2s ease;
+    }
+
+    .user-avatar-lg {
+        width: 104px;
+        height: 104px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--sage);
+        color: var(--cream);
+        font-weight: 600;
+        font-size: 2rem;
+        box-shadow: 0 8px 20px rgba(31, 61, 46, 0.12);
+    }
+
+    .user-avatar-lg img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-picture-card {
+        background: rgba(250, 248, 243, 0.95);
+        border: 1px solid rgba(183, 173, 161, 0.2);
+    }
+
+    .profile-picture-input {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .profile-picture-choose-btn {
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .profile-picture-file-input.visually-hidden {
+        pointer-events: none;
+    }
+
+    .profile-picture-remove-link {
+        margin: 0;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--warm-gray);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        transition: color 0.15s ease;
+    }
+
+    .profile-picture-remove-link:hover {
+        color: var(--sage);
+    }
+
+    .profile-picture-clear-checkbox:checked ~ .profile-picture-remove-link {
+        color: #a8503f;
+        text-decoration: line-through;
     }
 </style>
 

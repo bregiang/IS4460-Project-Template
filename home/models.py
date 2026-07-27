@@ -14,6 +14,7 @@ class SkincareProfile(models.Model):
     ]
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="skincare_profile")
+    profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True, null=True)
     skin_type = models.CharField(max_length=20, choices=SKIN_TYPE_CHOICES, blank=True)
     concerns = models.TextField(blank=True)
     goals = models.TextField(blank=True)

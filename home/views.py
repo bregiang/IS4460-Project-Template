@@ -19,7 +19,7 @@ from .forms import (
     InventoryItemForm,
     MessageForm,
     ProfessionalNoteForm,
-    SkincareProfileForm,
+    ProfilePictureForm,
 )
 from .models import InventoryItem, Message, SkincareProfile
 
@@ -204,6 +204,22 @@ def recommendations_page(request):
     return render(request, "home/recommendations.html", {"profile_context": profile_context})
 
 
+def get_user_initials(user):
+    """Return up to two uppercase initials for a user, for use as an avatar fallback."""
+    first = (user.first_name or "").strip()
+    last = (user.last_name or "").strip()
+    if first and last:
+        return (first[0] + last[0]).upper()
+    if first:
+        return first[:2].upper()
+
+    username = user.username or ""
+    capitals = [char for char in username if char.isupper()]
+    if len(capitals) >= 2:
+        return (capitals[0] + capitals[1]).upper()
+    return (username[:2] or "?").upper()
+
+
 def get_user_role(user):
     """Return the highest-priority role name for a user."""
     if not user.is_authenticated:
@@ -273,14 +289,15 @@ def dashboard_view(request):
     """Display a role-aware dashboard for the authenticated user."""
     role = get_user_role(request.user)
     profile = SkincareProfile.objects.filter(user=request.user).first()
+    initials = get_user_initials(request.user)
     if role == "dermatologist":
         patients = User.objects.exclude(pk=request.user.pk).filter(groups__name="user")
-        return render(request, "home/dermatologist_dashboard.html", {"role": role, "profile": profile, "patients": patients})
+        return render(request, "home/dermatologist_dashboard.html", {"role": role, "profile": profile, "patients": patients, "initials": initials})
     if role == "admin":
         user_accounts = User.objects.all()
         inventory_items = InventoryItem.objects.all()
-        return render(request, "home/admin_dashboard.html", {"role": role, "profile": profile, "user_accounts": user_accounts, "inventory_items": inventory_items})
-    return render(request, "home/dashboard.html", {"role": role, "profile": profile})
+        return render(request, "home/admin_dashboard.html", {"role": role, "profile": profile, "user_accounts": user_accounts, "inventory_items": inventory_items, "initials": initials})
+    return render(request, "home/dashboard.html", {"role": role, "profile": profile, "initials": initials})
 
 
 @login_required(login_url="access_restricted")
@@ -289,15 +306,24 @@ def profile_view(request):
     profile, _ = SkincareProfile.objects.get_or_create(user=request.user)
 
     if request.method == "POST":
-        form = SkincareProfileForm(request.POST, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Your skincare profile has been saved.")
+        picture_form = ProfilePictureForm(request.POST, request.FILES, instance=profile)
+        if picture_form.is_valid():
+            picture_form.save()
+            messages.success(request, "Your profile picture has been updated.")
             return redirect("profile")
     else:
-        form = SkincareProfileForm(instance=profile)
+        picture_form = ProfilePictureForm(instance=profile)
 
-    return render(request, "home/profile.html", {"form": form, "profile": profile, "role": get_user_role(request.user)})
+    return render(
+        request,
+        "home/profile.html",
+        {
+            "picture_form": picture_form,
+            "profile": profile,
+            "role": get_user_role(request.user),
+            "initials": get_user_initials(request.user),
+        },
+    )
 
 
 @login_required(login_url="access_restricted")

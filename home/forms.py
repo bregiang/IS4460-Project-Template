@@ -57,13 +57,28 @@ class SkincareProfileForm(forms.ModelForm):
 
     class Meta:
         model = SkincareProfile
-        fields = ("skin_type", "concerns", "goals", "allergies", "notes")
+        fields = ("profile_picture", "skin_type", "concerns", "goals", "allergies", "notes")
         widgets = {
             "concerns": forms.Textarea(attrs={"rows": 3}),
             "goals": forms.Textarea(attrs={"rows": 3}),
             "allergies": forms.Textarea(attrs={"rows": 2}),
             "notes": forms.Textarea(attrs={"rows": 3}),
         }
+
+
+class ProfilePictureWidget(forms.ClearableFileInput):
+    """ClearableFileInput with a custom template for a styled upload control."""
+
+    template_name = "home/widgets/profile_picture_input.html"
+
+
+class ProfilePictureForm(forms.ModelForm):
+    """Allow a user to upload or replace their profile picture."""
+
+    class Meta:
+        model = SkincareProfile
+        fields = ("profile_picture",)
+        widgets = {"profile_picture": ProfilePictureWidget}
 
 
 class ProfessionalNoteForm(forms.ModelForm):

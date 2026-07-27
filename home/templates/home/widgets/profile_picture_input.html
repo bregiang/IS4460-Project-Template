@@ -1,0 +1,8 @@
+<div class="profile-picture-input">
+    <label for="{{ widget.attrs.id }}" class="btn btn-outline-primary btn-sm profile-picture-choose-btn">Change photo</label>
+    <input type="{{ widget.type }}" name="{{ widget.name }}" class="profile-picture-file-input visually-hidden"{% include "django/forms/widgets/attrs.html" %}>
+    {% if widget.is_initial and not widget.required %}
+    <input type="checkbox" name="{{ widget.checkbox_name }}" id="{{ widget.checkbox_id }}" class="visually-hidden profile-picture-clear-checkbox"{% if widget.attrs.disabled %} disabled{% endif %}>
+    <label for="{{ widget.checkbox_id }}" class="profile-picture-remove-link">Remove photo</label>
+    {% endif %}
+</div>
