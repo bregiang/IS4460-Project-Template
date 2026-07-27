@@ -1,44 +1,40 @@
+{% load static %}
 <div class="skin-map-visual js-skin-map" data-profile="combination">
     <div class="face-map-canvas">
         <div class="map-toolbar" aria-label="Skin map display">
             <span class="map-status"><span class="status-dot" aria-hidden="true"></span> Live facial map</span>
             <span class="map-hint">Select a zone to explore</span>
         </div>
-        <svg viewBox="0 0 520 560" role="group" aria-label="Interactive facial skin analysis map">
+        <svg viewBox="0 0 520 700" role="group" aria-label="Interactive facial skin analysis map">
             <defs>
-                <linearGradient id="skinTone" x1="0" x2="1" y1="0" y2="1">
-                    <stop offset="0" stop-color="#f9e9df"/><stop offset=".55" stop-color="#edcfc3"/><stop offset="1" stop-color="#e4bfb2"/>
+                <clipPath id="portraitClip"><rect x="26" y="0" width="468" height="700" rx="32"/></clipPath>
+                <linearGradient id="portraitShade" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0" stop-color="#31503d" stop-opacity="0"/><stop offset="1" stop-color="#31503d" stop-opacity=".1"/>
                 </linearGradient>
-                <filter id="softGlow"><feGaussianBlur stdDeviation="9"/></filter>
                 <pattern id="porePattern" width="12" height="12" patternUnits="userSpaceOnUse">
                     <circle cx="3" cy="3" r="1.5" fill="#735e4f" opacity=".48"/>
                 </pattern>
             </defs>
             <title>Example facial skin analysis map — interactive and personalized</title>
-            <desc>Choose the forehead, nose, chin, cheeks, under eyes, jawline, or T-zone for concern details and ingredient guidance.</desc>
-            <path d="M211 470c-5 36-21 56-45 72h188c-25-16-40-36-45-72" fill="#e9c8bc" opacity=".8"/>
-            <path class="face-base" d="M260 42c-99 0-151 75-144 195 7 119 63 252 144 252s137-133 144-252C411 117 359 42 260 42Z" fill="url(#skinTone)" stroke="#46624f" stroke-width="2.5"/>
-            <path d="M122 225c-20-12-29 5-22 36 6 29 20 46 38 44M398 225c20-12 29 5 22 36-6 29-20 46-38 44" fill="#edcfc3" stroke="#46624f" stroke-width="2.5"/>
-            <path d="M148 163c25-56 67-82 112-82s87 26 112 82" fill="none" stroke="#806a61" stroke-width="3" stroke-linecap="round" opacity=".65"/>
+            <desc>A realistic front-facing consultation portrait. Choose the forehead, nose, chin, cheeks, under eyes, jawline, or T-zone for concern details and ingredient guidance.</desc>
+            <image class="consultation-portrait" href="{% static 'home/images/consultation-face-v2.png' %}" x="26" y="0" width="468" height="700" preserveAspectRatio="xMidYMid meet" clip-path="url(#portraitClip)"/>
+            <rect x="26" y="0" width="468" height="700" rx="32" fill="url(#portraitShade)" pointer-events="none"/>
+            <rect class="portrait-frame" x="26" y="0" width="468" height="700" rx="32" fill="none"/>
 
             <g class="interactive-zones">
-                <path class="map-zone zone-forehead" data-region="forehead" role="button" tabindex="0" aria-label="Forehead: oiliness and texture" d="M174 116c50-30 122-30 172 0l-9 73H183Z"/>
-                <path class="map-zone zone-tzone" data-region="tzone" role="button" tabindex="0" aria-label="T-zone: oil and visible pores" d="M235 115h50l18 211-43 35-43-35Z"/>
-                <path class="map-zone zone-cheek" data-region="leftCheek" role="button" tabindex="0" aria-label="Left cheek: redness and sensitivity" d="M142 241c19-31 57-46 92-26l-17 91c-29 30-71 10-75-65Z"/>
-                <path class="map-zone zone-cheek" data-region="rightCheek" role="button" tabindex="0" aria-label="Right cheek: redness and sensitivity" d="M378 241c-19-31-57-46-92-26l17 91c29 30 71 10 75-65Z"/>
-                <path class="map-zone zone-eyes" data-region="underEyes" role="button" tabindex="0" aria-label="Under eyes: hydration and fine lines" d="M160 204c24-23 53-22 77-4-21 25-50 31-77 4Zm200 0c-24-23-53-22-77-4 21 25 50 31 77 4Z"/>
-                <path class="map-zone zone-nose" data-region="nose" role="button" tabindex="0" aria-label="Nose: pores and oiliness" d="M237 218c-2 54-12 87-4 111 16 13 38 13 54 0 8-24-2-57-4-111Z"/>
-                <path class="map-zone zone-chin" data-region="chin" role="button" tabindex="0" aria-label="Chin: acne and congestion" d="M211 390c33-17 65-17 98 0l-12 59c-23 20-51 20-74 0Z"/>
-                <path class="map-zone zone-jawline" data-region="jawline" role="button" tabindex="0" aria-label="Jawline: sensitivity and hormonal breakouts" d="M146 313c14 91 57 149 114 156 57-7 100-65 114-156l-25 7c-15 69-48 116-89 125-41-9-74-56-89-125Z"/>
+                <path class="map-zone zone-forehead" data-region="forehead" role="button" tabindex="0" aria-label="Forehead: oiliness and texture" d="M147 145c65-34 161-34 226 0l-13 95H160Z"/>
+                <path class="map-zone zone-tzone" data-region="tzone" role="button" tabindex="0" aria-label="T-zone: oil and visible pores" d="M226 151h68l24 275-58 45-58-45Z"/>
+                <path class="map-zone zone-cheek" data-region="leftCheek" role="button" tabindex="0" aria-label="Left cheek: redness and sensitivity" d="M97 318c33-36 99-45 143-10l-16 132c-57 37-117 8-127-122Z"/>
+                <path class="map-zone zone-cheek" data-region="rightCheek" role="button" tabindex="0" aria-label="Right cheek: redness and sensitivity" d="M423 318c-33-36-99-45-143-10l16 132c57 37 117 8 127-122Z"/>
+                <path class="map-zone zone-eyes" data-region="underEyes" role="button" tabindex="0" aria-label="Under eyes: hydration and fine lines" d="M126 284c34-27 79-25 111-3-31 31-76 36-111 3Zm268 0c-34-27-79-25-111-3 31 31 76 36 111 3Z"/>
+                <path class="map-zone zone-nose" data-region="nose" role="button" tabindex="0" aria-label="Nose: pores and oiliness" d="M224 294c-3 64-14 105-5 133 23 15 59 15 82 0 9-28-2-69-5-133Z"/>
+                <path class="map-zone zone-chin" data-region="chin" role="button" tabindex="0" aria-label="Chin: acne and congestion" d="M187 454c49-22 97-22 146 0l-18 75c-35 27-75 27-110 0Z"/>
+                <path class="map-zone zone-jawline" data-region="jawline" role="button" tabindex="0" aria-label="Jawline: sensitivity and hormonal breakouts" d="M101 397c17 112 79 180 159 183 80-3 142-71 159-183l-31 13c-21 82-67 132-128 141-61-9-107-59-128-141Z"/>
             </g>
 
             <g class="face-features" pointer-events="none">
-                <path d="M174 194c18-10 41-9 58 2M288 196c17-11 40-12 58-2" fill="none" stroke="#654f47" stroke-width="3" stroke-linecap="round"/>
-                <path d="M176 210c18 13 38 13 57 0M287 210c19 13 39 13 57 0" fill="none" stroke="#654f47" stroke-width="2" stroke-linecap="round"/>
-                <path d="M259 205c-8 49-14 83-4 105 7 5 15 5 23 0" fill="none" stroke="#9e776c" stroke-width="2" stroke-linecap="round"/>
-                <path d="M228 365c20 13 44 14 65 0-20 23-46 24-65 0Z" fill="#bd7b7e" opacity=".78"/>
-                <g class="acne-markers" fill="#bd7169"><circle cx="238" cy="411" r="4"/><circle cx="263" cy="427" r="4"/><circle cx="286" cy="407" r="4"/></g>
-                <path class="pore-overlay" d="M240 238h40v79h-40z" fill="url(#porePattern)"/>
+                <g class="acne-markers" fill="#bd7169"><circle cx="224" cy="489" r="4"/><circle cx="263" cy="507" r="4"/><circle cx="298" cy="485" r="4"/></g>
+                <path class="pore-overlay" d="M231 338h58v91h-58z" fill="url(#porePattern)"/>
             </g>
         </svg>
         <div class="zone-pills" role="list" aria-label="Facial regions">
