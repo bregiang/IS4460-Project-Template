@@ -67,13 +67,20 @@ class SkincareProfileForm(forms.ModelForm):
 
 
 class ProfessionalNoteForm(forms.ModelForm):
-    """Allow dermatologists to attach professional notes to a patient's profile."""
+    """Allow dermatologists to attach professional recommendations to a patient."""
 
     class Meta:
         model = SkincareProfile
         fields = ("professional_notes",)
+        labels = {"professional_notes": "Professional recommendation"}
         widgets = {
-            "professional_notes": forms.Textarea(attrs={"rows": 4}),
+            "professional_notes": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 7,
+                    "placeholder": "Add routine guidance, product cautions, and follow-up recommendations.",
+                }
+            ),
         }
 
 
@@ -86,6 +93,27 @@ class MessageForm(forms.ModelForm):
         widgets = {
             "body": forms.Textarea(attrs={"rows": 4}),
             "professional_note": forms.Textarea(attrs={"rows": 3}),
+        }
+
+
+class PatientMessageForm(forms.ModelForm):
+    """Send a message within a selected patient's conversation."""
+
+    class Meta:
+        model = Message
+        fields = ("subject", "body")
+        labels = {"body": "Message"}
+        widgets = {
+            "subject": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "Optional subject"}
+            ),
+            "body": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 3,
+                    "placeholder": "Write a message to the patient.",
+                }
+            ),
         }
 
 

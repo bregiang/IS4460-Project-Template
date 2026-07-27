@@ -7,6 +7,7 @@ urlpatterns = [
     path("access-restricted/", views.access_restricted_view, name="access_restricted"),
     path("skin-analysis/", views.skin_analysis_view, name="skin_analysis"),
     path("ai-recommendation/", views.generate_ai_recommendation, name="generate_ai_recommendation"),
+    path("questionnaire-results/", views.save_questionnaire_results, name="save_questionnaire_results"),
     path("about/", views.about_page, name="about"),
     path("privacy/", views.privacy_page, name="privacy"),
     path("contact/", views.contact_page, name="contact"),

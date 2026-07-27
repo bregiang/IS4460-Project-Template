@@ -20,6 +20,13 @@ class SkincareProfile(models.Model):
     allergies = models.TextField(blank=True)
     notes = models.TextField(blank=True)
     professional_notes = models.TextField(blank=True)
+    questionnaire_responses = models.JSONField(default=list, blank=True)
+    last_questionnaire_at = models.DateTimeField(null=True, blank=True)
+    ai_morning_routine = models.TextField(blank=True)
+    ai_evening_routine = models.TextField(blank=True)
+    ai_recommended_products = models.TextField(blank=True)
+    ai_recommendation_explanation = models.TextField(blank=True)
+    ai_recommendation_updated_at = models.DateTimeField(null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -4,79 +4,164 @@
 
 {% block content %}
 <div class="card hero-card p-4 p-md-5">
-  <div class="row g-4">
-    <div class="col-lg-7">
+  <div class="row g-4 align-items-center">
+    <div class="col-lg-8">
       <span class="badge mb-3">Patient review</span>
-      <h1 class="display-6 mb-3">{% if patient.first_name %}{{ patient.first_name }} {{ patient.last_name }}{% else %}{{ patient.username }}{% endif %}'s profile</h1>
-      <p class="lead text-secondary mb-0">View saved profile details, add professional guidance, and keep continuity across care.</p>
+      <h1 class="display-6 mb-3">
+        {% if patient.first_name or patient.last_name %}{{ patient.get_full_name }}{% else %}{{ patient.username }}{% endif %}
+      </h1>
+      <p class="lead text-secondary mb-0">Review the patient’s profile, questionnaire, and generated routine before providing professional guidance.</p>
     </div>
-    <div class="col-lg-5">
+    <div class="col-lg-4">
       <div class="soft-panel p-4">
-        <p class="mb-2 fw-semibold">Clinical notes</p>
-        <p class="text-secondary mb-0">{{ profile.professional_notes|default:"No note yet." }}</p>
+        <p class="small text-uppercase fw-semibold text-secondary mb-2">Review status</p>
+        {% if is_reviewed %}
+          <span class="badge">Reviewed</span>
+        {% else %}
+          <span class="badge" style="background: rgba(181, 131, 163, 0.14) !important;">Pending</span>
+        {% endif %}
+        {% if role == "admin" %}
+          <a class="d-block mt-3" href="{% url 'admin_dashboard' %}">← Back to dashboard</a>
+        {% else %}
+          <a class="d-block mt-3" href="{% url 'dermatologist_dashboard' %}">← Back to patient list</a>
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
 <div class="row g-4 mt-1">
-  <div class="col-lg-7">
-    <div class="card p-4">
-      <h3 class="h5 mb-3">Patient information</h3>
-      <ul class="list-unstyled mb-0">
-        <li class="mb-2"><strong>Account:</strong> {{ patient.username }}</li>
-        {% if patient.first_name or patient.last_name %}
-        <li class="mb-2"><strong>Full name:</strong> {{ patient.first_name }} {{ patient.last_name }}</li>
-        {% endif %}
-        {% if patient.email %}
-        <li class="mb-2"><strong>Email:</strong> {{ patient.email }}</li>
-        {% endif %}
-        <li class="mb-2"><strong>Account created:</strong> {{ patient.date_joined|date:"M d, Y" }}</li>
-      </ul>
-    </div>
-    
-    <div class="card p-4 mt-4">
-      <h3 class="h5 mb-3">Skincare profile</h3>
-      <ul class="list-unstyled mb-0">
-        <li class="mb-2"><strong>Skin type:</strong> {{ profile.skin_type|title|default:"Not provided" }}</li>
-        <li class="mb-2"><strong>Concerns:</strong> {{ profile.concerns|default:"Not provided" }}</li>
-        <li class="mb-2"><strong>Goals:</strong> {{ profile.goals|default:"Not provided" }}</li>
-        <li class="mb-2"><strong>Allergies:</strong> {{ profile.allergies|default:"Not provided" }}</li>
-        <li class="mb-2"><strong>Patient notes:</strong> {{ profile.notes|default:"Not provided" }}</li>
-        <li class="text-secondary small"><em>Last updated: {{ profile.updated_at|date:"M d, Y \a\t g:i A" }}</em></li>
-      </ul>
-    </div>
-  </div>
-  
   <div class="col-lg-5">
-    <div class="card p-4">
-      <h3 class="h5 mb-3">Add professional note</h3>
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-terra mt-2" type="submit">Save note</button>
-      </form>
-    </div>
+    <section class="card p-4 h-100" aria-labelledby="patient-info-heading">
+      <h2 class="h5 mb-3" id="patient-info-heading">Patient information</h2>
+      <dl class="row mb-0">
+        <dt class="col-sm-5 mb-2">Patient name</dt>
+        <dd class="col-sm-7 mb-2">{% if patient.first_name or patient.last_name %}{{ patient.get_full_name }}{% else %}{{ patient.username }}{% endif %}</dd>
+        <dt class="col-sm-5 mb-2">Skin type</dt>
+        <dd class="col-sm-7 mb-2">{{ profile.get_skin_type_display|default:"Not provided" }}</dd>
+        <dt class="col-sm-5 mb-2">Skin concerns</dt>
+        <dd class="col-sm-7 mb-2">{{ profile.concerns|default:"Not provided"|linebreaksbr }}</dd>
+        <dt class="col-sm-5 mb-2">Goals</dt>
+        <dd class="col-sm-7 mb-2">{{ profile.goals|default:"Not provided"|linebreaksbr }}</dd>
+        <dt class="col-sm-5 mb-2">Allergies</dt>
+        <dd class="col-sm-7 mb-2">{{ profile.allergies|default:"Not provided"|linebreaksbr }}</dd>
+        <dt class="col-sm-5 mb-2">Notes</dt>
+        <dd class="col-sm-7 mb-2">{{ profile.notes|default:"Not provided"|linebreaksbr }}</dd>
+        <dt class="col-sm-5 mb-0">Last questionnaire</dt>
+        <dd class="col-sm-7 mb-0">
+          {% if profile.last_questionnaire_at %}
+            {{ profile.last_questionnaire_at|date:"M d, Y \a\t g:i A" }}
+          {% else %}
+            Not completed
+          {% endif %}
+        </dd>
+      </dl>
+    </section>
+  </div>
+
+  <div class="col-lg-7">
+    <section class="card p-4 h-100" aria-labelledby="questionnaire-heading">
+      <div class="section-heading">
+        <div>
+          <p class="text-uppercase small fw-semibold mb-1 text-secondary">Read-only</p>
+          <h2 class="h5 mb-0" id="questionnaire-heading">Questionnaire results</h2>
+        </div>
+        {% if profile.last_questionnaire_at %}<span class="badge">{{ profile.last_questionnaire_at|date:"M d, Y" }}</span>{% endif %}
+      </div>
+      {% if profile.questionnaire_responses %}
+        <div class="d-grid gap-2">
+          {% for response in profile.questionnaire_responses %}
+            <div class="soft-panel p-3">
+              <p class="fw-semibold mb-1">{{ forloop.counter }}. {{ response.question }}</p>
+              <p class="text-secondary mb-0">{{ response.answer }}</p>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-secondary mb-0">No saved questionnaire responses are available for this patient.</p>
+      {% endif %}
+    </section>
   </div>
 </div>
 
-<div class="card p-4 mt-4">
-  <h3 class="h5 mb-3">Messages for this patient</h3>
-  {% if messages_for_patient %}
-    {% for item in messages_for_patient %}
-      <div class="soft-panel p-3 mb-2">
-        <p class="fw-semibold mb-1">{{ item.subject|default:"Follow-up" }}</p>
-        <p class="text-secondary mb-1">{{ item.body }}</p>
-        <p class="small text-muted mb-0">
-          {% if item.sender %}
-            From: <strong>{{ item.sender.get_full_name|default:item.sender.username }}</strong> • 
-          {% endif %}
-          {{ item.created_at|date:"M d, Y \a\t g:i A" }}
-        </p>
+<section class="card p-4 mt-4" aria-labelledby="ai-recommendation-heading">
+  <div class="section-heading">
+    <div>
+      <p class="text-uppercase small fw-semibold mb-1 text-secondary">Application generated · Read-only</p>
+      <h2 class="h5 mb-0" id="ai-recommendation-heading">AI-generated recommendation</h2>
+    </div>
+    {% if profile.ai_recommendation_updated_at %}<span class="badge">{{ profile.ai_recommendation_updated_at|date:"M d, Y" }}</span>{% endif %}
+  </div>
+  {% if profile.ai_morning_routine or profile.ai_evening_routine or profile.ai_recommended_products or profile.ai_recommendation_explanation %}
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="soft-panel p-3 h-100">
+          <h3 class="h6 mb-2">Morning skincare routine</h3>
+          <p class="text-secondary mb-0">{{ profile.ai_morning_routine|default:"Not available"|linebreaksbr }}</p>
+        </div>
       </div>
-    {% endfor %}
+      <div class="col-md-6">
+        <div class="soft-panel p-3 h-100">
+          <h3 class="h6 mb-2">Evening skincare routine</h3>
+          <p class="text-secondary mb-0">{{ profile.ai_evening_routine|default:"Not available"|linebreaksbr }}</p>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="soft-panel p-3 h-100">
+          <h3 class="h6 mb-2">Recommended products</h3>
+          <p class="text-secondary mb-0">{{ profile.ai_recommended_products|default:"Not available"|linebreaksbr }}</p>
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="soft-panel p-3 h-100">
+          <h3 class="h6 mb-2">Why these products were recommended</h3>
+          <p class="text-secondary mb-0">{{ profile.ai_recommendation_explanation|default:"Not available"|linebreaksbr }}</p>
+        </div>
+      </div>
+    </div>
   {% else %}
-    <p class="text-secondary mb-0">No messages yet.</p>
+    <p class="text-secondary mb-0">No generated recommendation has been saved for this patient.</p>
   {% endif %}
+</section>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-5">
+    <section class="card p-4 h-100" aria-labelledby="professional-recommendation-heading">
+      <h2 class="h5 mb-2" id="professional-recommendation-heading">Professional Recommendation</h2>
+      <p class="small text-secondary">Create or update guidance associated with this patient.</p>
+      <form method="post">
+        {% csrf_token %}
+        <input name="action" type="hidden" value="save_recommendation">
+        {{ form.as_p }}
+        <button class="btn btn-terra" type="submit">Save recommendation</button>
+      </form>
+    </section>
+  </div>
+
+  <div class="col-lg-7">
+    <section class="card p-4 h-100" aria-labelledby="patient-messages-heading">
+      <h2 class="h5 mb-3" id="patient-messages-heading">Messages</h2>
+      <div class="mb-4" style="max-height: 360px; overflow-y: auto;">
+        {% for item in conversation %}
+          <div class="soft-panel p-3 mb-2 {% if item.sender == request.user %}ms-md-5{% else %}me-md-5{% endif %}">
+            <div class="d-flex justify-content-between gap-3 mb-1">
+              <span class="fw-semibold">{% if item.sender == request.user %}You{% else %}{{ item.sender.get_full_name|default:item.sender.username }}{% endif %}</span>
+              <span class="small text-muted">{{ item.created_at|date:"M d, Y \a\t g:i A" }}</span>
+            </div>
+            {% if item.subject %}<p class="small fw-semibold mb-1">{{ item.subject }}</p>{% endif %}
+            <p class="text-secondary mb-0">{{ item.body|linebreaksbr }}</p>
+          </div>
+        {% empty %}
+          <p class="text-secondary">No conversation history yet.</p>
+        {% endfor %}
+      </div>
+      <form method="post">
+        {% csrf_token %}
+        <input name="action" type="hidden" value="send_message">
+        {{ message_form.as_p }}
+        <button class="btn btn-primary" type="submit">Send message</button>
+      </form>
+    </section>
+  </div>
 </div>
 {% endblock %}

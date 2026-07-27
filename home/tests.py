@@ -6,8 +6,9 @@ from unittest.mock import patch
 from django.contrib.auth.models import Group, User
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 
-from .models import SkincareProfile
+from .models import Message, SkincareProfile
 
 
 class SkinIdentifierAuthTests(TestCase):
@@ -329,3 +330,171 @@ class SkinIdentifierAuthTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Admin Dashboard")
+
+
+class DermatologistWorkflowTests(TestCase):
+    def setUp(self):
+        patient_group = Group.objects.create(name="user")
+        dermatologist_group = Group.objects.create(name="dermatologist")
+        self.dermatologist = User.objects.create_user(
+            username="doctor",
+            password="StrongPass123!",
+            first_name="Drew",
+        )
+        self.dermatologist.groups.add(dermatologist_group)
+        self.patient = User.objects.create_user(
+            username="patient",
+            password="StrongPass123!",
+            first_name="Jordan",
+            last_name="Lee",
+        )
+        self.patient.groups.add(patient_group)
+        self.profile = SkincareProfile.objects.create(
+            user=self.patient,
+            skin_type="sensitive",
+            concerns="Redness and dryness",
+            goals="Support the skin barrier",
+            allergies="Fragrance",
+            notes="Prefers a short routine",
+            questionnaire_responses=[
+                {
+                    "question": "How sensitive is your skin to new products?",
+                    "answer": "I need to introduce new products slowly",
+                }
+            ],
+            last_questionnaire_at=timezone.now(),
+            ai_morning_routine="Gentle cleanser\nSoothing moisturizer\nSPF 30+",
+            ai_evening_routine="Gentle cleanser\nBarrier moisturizer",
+            ai_recommended_products="Fragrance-free cleanser\nCeramide moisturizer",
+            ai_recommendation_explanation="These products prioritize barrier support.",
+            ai_recommendation_updated_at=timezone.now(),
+        )
+        self.client.force_login(self.dermatologist)
+
+    def test_dashboard_shows_summary_patient_data_and_search(self):
+        response = self.client.get(reverse("dermatologist_dashboard"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Total Patients")
+        self.assertContains(response, "Pending Reviews")
+        self.assertContains(response, "Jordan Lee")
+        self.assertContains(response, "Sensitive")
+        self.assertContains(response, "Pending")
+
+        no_match = self.client.get(
+            reverse("dermatologist_dashboard"), {"q": "someone else"}
+        )
+        self.assertNotContains(no_match, "Jordan Lee")
+
+    def test_patient_review_displays_profile_questionnaire_and_ai_recommendation(self):
+        response = self.client.get(
+            reverse("dermatologist_patient", args=[self.patient.pk])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Jordan Lee")
+        self.assertContains(response, "Redness and dryness")
+        self.assertContains(response, "Questionnaire results")
+        self.assertContains(response, "I need to introduce new products slowly")
+        self.assertContains(response, "AI-generated recommendation")
+        self.assertContains(response, "Soothing moisturizer")
+        self.assertContains(response, "These products prioritize barrier support.")
+
+    def test_professional_recommendation_can_be_created_and_edited(self):
+        url = reverse("dermatologist_patient", args=[self.patient.pk])
+        response = self.client.post(
+            url,
+            {
+                "action": "save_recommendation",
+                "professional_notes": "Begin with a fragrance-free barrier routine.",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, url)
+        self.profile.refresh_from_db()
+        self.assertEqual(
+            self.profile.professional_notes,
+            "Begin with a fragrance-free barrier routine.",
+        )
+        self.assertContains(response, "Reviewed")
+
+        self.client.post(
+            url,
+            {
+                "action": "save_recommendation",
+                "professional_notes": "Updated professional guidance.",
+            },
+        )
+        self.profile.refresh_from_db()
+        self.assertEqual(
+            self.profile.professional_notes, "Updated professional guidance."
+        )
+
+    def test_dermatologist_can_view_conversation_and_send_message(self):
+        Message.objects.create(
+            sender=self.patient,
+            recipient=self.dermatologist,
+            subject="Routine question",
+            body="Should I patch test first?",
+        )
+        url = reverse("dermatologist_patient", args=[self.patient.pk])
+
+        response = self.client.post(
+            url,
+            {
+                "action": "send_message",
+                "subject": "Re: Routine question",
+                "body": "Yes, patch test each new product.",
+            },
+            follow=True,
+        )
+
+        self.assertRedirects(response, url)
+        self.assertContains(response, "Should I patch test first?")
+        self.assertContains(response, "Yes, patch test each new product.")
+        sent = Message.objects.get(
+            sender=self.dermatologist, recipient=self.patient
+        )
+        self.assertEqual(sent.subject, "Re: Routine question")
+
+    def test_questionnaire_and_generated_recommendation_are_saved_for_patient(self):
+        self.client.force_login(self.patient)
+        questionnaire_response = self.client.post(
+            reverse("save_questionnaire_results"),
+            data=json.dumps(
+                {
+                    "skin_type": "dry",
+                    "responses": [
+                        {
+                            "question": "How does your skin feel after cleansing?",
+                            "answer": "A little tight or dry",
+                        }
+                    ],
+                }
+            ),
+            content_type="application/json",
+        )
+        recommendation_response = self.client.post(
+            reverse("generate_ai_recommendation"),
+            data=json.dumps(
+                {
+                    "profile_type": "dry",
+                    "product_goal": "reduce tightness",
+                    "concern_hint": "fragrance-free",
+                }
+            ),
+            content_type="application/json",
+        )
+
+        self.assertEqual(questionnaire_response.status_code, 200)
+        self.assertEqual(recommendation_response.status_code, 200)
+        self.profile.refresh_from_db()
+        self.assertEqual(self.profile.skin_type, "dry")
+        self.assertEqual(
+            self.profile.questionnaire_responses[0]["answer"],
+            "A little tight or dry",
+        )
+        self.assertIsNotNone(self.profile.last_questionnaire_at)
+        self.assertIn("Cream cleanser", self.profile.ai_morning_routine)
+        self.assertTrue(self.profile.ai_recommendation_explanation)

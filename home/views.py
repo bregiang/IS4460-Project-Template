@@ -9,15 +9,18 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import Group, User
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
 from dotenv import load_dotenv
 
 from .forms import (
     CustomUserCreationForm,
     InventoryItemForm,
     MessageForm,
+    PatientMessageForm,
     ProfessionalNoteForm,
     SkincareProfileForm,
 )
@@ -25,6 +28,97 @@ from .models import InventoryItem, Message, SkincareProfile
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
+
+
+ROUTINE_DETAILS = {
+    "normal": {
+        "morning": "Gentle cleanser\nLightweight moisturizer\nBroad-spectrum SPF 30+",
+        "evening": "Gentle cleanser\nHydrating serum\nLightweight moisturizer",
+        "products": "Mild gel or cream cleanser\nHyaluronic acid serum\nLight moisturizer\nBroad-spectrum sunscreen",
+    },
+    "dry": {
+        "morning": "Cream cleanser or water rinse\nHydrating serum\nRich moisturizer\nBroad-spectrum SPF 30+",
+        "evening": "Cream cleanser\nBarrier-support serum\nCeramide-rich moisturizer",
+        "products": "Cream cleanser\nHyaluronic acid or glycerin serum\nCeramide moisturizer\nMoisturizing sunscreen",
+    },
+    "oily": {
+        "morning": "Gentle gel cleanser\nNiacinamide serum\nOil-free moisturizer\nBroad-spectrum SPF 30+",
+        "evening": "Gentle gel cleanser\nSalicylic acid treatment two to three times weekly\nLightweight moisturizer",
+        "products": "Gentle gel cleanser\nNiacinamide serum\nSalicylic acid treatment\nOil-free moisturizer\nNon-comedogenic sunscreen",
+    },
+    "combination": {
+        "morning": "Gentle foaming cleanser\nLight hydrating serum\nLightweight moisturizer\nBroad-spectrum SPF 30+",
+        "evening": "Gentle cleanser\nTargeted treatment on the T-zone\nMoisturizer, layered more generously on dry areas",
+        "products": "Balanced foaming cleanser\nHydrating serum\nLight lotion\nTargeted BHA treatment\nLightweight sunscreen",
+    },
+    "sensitive": {
+        "morning": "Fragrance-free gentle cleanser or water rinse\nSoothing moisturizer\nMineral or sensitive-skin SPF 30+",
+        "evening": "Fragrance-free gentle cleanser\nCalming serum\nBarrier-support moisturizer",
+        "products": "Fragrance-free cleanser\nCentella, oat, or panthenol serum\nBarrier moisturizer\nSensitive-skin sunscreen",
+    },
+}
+
+
+def save_recommendation_for_user(request, profile_type, recommendation):
+    """Persist the application's latest generated routine for an authenticated user."""
+    if not request.user.is_authenticated:
+        return
+    details = ROUTINE_DETAILS.get(profile_type, ROUTINE_DETAILS["normal"])
+    profile, _ = SkincareProfile.objects.get_or_create(user=request.user)
+    profile.skin_type = profile_type if profile_type in ROUTINE_DETAILS else profile.skin_type
+    profile.ai_morning_routine = details["morning"]
+    profile.ai_evening_routine = details["evening"]
+    profile.ai_recommended_products = details["products"]
+    profile.ai_recommendation_explanation = recommendation
+    profile.ai_recommendation_updated_at = timezone.now()
+    profile.save()
+
+
+def patient_dashboard_context(request):
+    """Build the searchable patient review summary used by dermatologist dashboards."""
+    query = request.GET.get("q", "").strip()
+    patients = (
+        User.objects.filter(groups__name="user")
+        .select_related("skincare_profile")
+        .distinct()
+        .order_by("first_name", "last_name", "username")
+    )
+    if query:
+        patients = patients.filter(
+            Q(first_name__icontains=query)
+            | Q(last_name__icontains=query)
+            | Q(username__icontains=query)
+        )
+
+    patient_rows = []
+    for patient in patients:
+        try:
+            profile = patient.skincare_profile
+        except SkincareProfile.DoesNotExist:
+            profile = None
+        patient_rows.append(
+            {
+                "user": patient,
+                "profile": profile,
+                "is_reviewed": bool(profile and profile.professional_notes.strip()),
+            }
+        )
+
+    all_profiles = SkincareProfile.objects.filter(user__groups__name="user").distinct()
+    total_patients = (
+        User.objects.filter(groups__name="user").distinct().count()
+    )
+    reviewed_patients = sum(
+        1 for notes in all_profiles.values_list("professional_notes", flat=True) if notes.strip()
+    )
+    return {
+        "patient_rows": patient_rows,
+        "total_patients": total_patients,
+        "reviewed_patients": reviewed_patients,
+        "pending_reviews": total_patients - reviewed_patients,
+        "search_query": query,
+        "role": get_user_role(request.user),
+    }
 
 
 def home_page(request):
@@ -98,7 +192,9 @@ def generate_ai_recommendation(request):
                 parts = candidates[0].get("content", {}).get("parts") or []
                 text = "".join(part.get("text", "") for part in parts if isinstance(part, dict))
                 if text.strip():
-                    return JsonResponse({"recommendation": text.strip(), "source": "gemini"})
+                    recommendation = text.strip()
+                    save_recommendation_for_user(request, profile_type, recommendation)
+                    return JsonResponse({"recommendation": recommendation, "source": "gemini"})
         except Exception as exc:
             raw_error_message = str(exc)
             friendly_error_message = f"The Gemini request failed while using model '{model}'. Please verify the model name, API key, and Gemini API access for your Google project."
@@ -138,6 +234,7 @@ def generate_ai_recommendation(request):
                 f"If your goal is {product_goal}, choose fragrance-free formulas with barrier-friendly ingredients like ceramides, niacinamide, or hyaluronic acid. "
                 f"{concern_hint if concern_hint else 'Keep the routine simple, patch test new products, and increase actives slowly.'}"
             )
+            save_recommendation_for_user(request, profile_type, fallback)
             return JsonResponse({"recommendation": fallback, "source": "fallback", "error": raw_error_message, "friendly_error": friendly_error_message, "model": model})
 
     fallback = (
@@ -145,7 +242,43 @@ def generate_ai_recommendation(request):
         f"If your goal is {product_goal}, choose fragrance-free formulas with barrier-friendly ingredients like ceramides, niacinamide, or hyaluronic acid. "
         f"{concern_hint if concern_hint else 'Keep the routine simple, patch test new products, and increase actives slowly.'}"
     )
+    save_recommendation_for_user(request, profile_type, fallback)
     return JsonResponse({"recommendation": fallback, "source": "fallback", "model": model})
+
+
+def save_questionnaire_results(request):
+    """Save a signed-in user's completed questionnaire for later professional review."""
+    if request.method != "POST":
+        return JsonResponse({"error": "Only POST requests are supported."}, status=405)
+    if not request.user.is_authenticated:
+        return JsonResponse({"saved": False, "error": "Sign in to save results."}, status=401)
+    try:
+        payload = json.loads(request.body.decode("utf-8") or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"saved": False, "error": "Invalid questionnaire data."}, status=400)
+
+    responses = payload.get("responses")
+    skin_type = str(payload.get("skin_type") or "").strip().lower()
+    if not isinstance(responses, list) or not responses or len(responses) > 50:
+        return JsonResponse({"saved": False, "error": "Questionnaire responses are required."}, status=400)
+
+    cleaned_responses = []
+    for response in responses:
+        if not isinstance(response, dict):
+            return JsonResponse({"saved": False, "error": "Invalid questionnaire response."}, status=400)
+        question = str(response.get("question") or "").strip()[:500]
+        answer = str(response.get("answer") or "").strip()[:500]
+        if not question or not answer:
+            return JsonResponse({"saved": False, "error": "Every response needs a question and answer."}, status=400)
+        cleaned_responses.append({"question": question, "answer": answer})
+
+    profile, _ = SkincareProfile.objects.get_or_create(user=request.user)
+    profile.questionnaire_responses = cleaned_responses
+    profile.last_questionnaire_at = timezone.now()
+    if skin_type in ROUTINE_DETAILS:
+        profile.skin_type = skin_type
+    profile.save()
+    return JsonResponse({"saved": True})
 
 
 def about_page(request):
@@ -276,8 +409,11 @@ def dashboard_view(request):
     role = get_user_role(request.user)
     profile = SkincareProfile.objects.filter(user=request.user).first()
     if role == "dermatologist":
-        patients = User.objects.exclude(pk=request.user.pk).filter(groups__name="user")
-        return render(request, "home/dermatologist_dashboard.html", {"role": role, "profile": profile, "patients": patients})
+        return render(
+            request,
+            "home/dermatologist_dashboard.html",
+            patient_dashboard_context(request),
+        )
     if role == "admin":
         user_accounts = User.objects.all()
         inventory_items = InventoryItem.objects.all()
@@ -318,15 +454,20 @@ def skin_history_view(request):
 @role_required("dermatologist")
 def dermatologist_dashboard(request):
     """Provide a professional dashboard for dermatologists."""
-    patients = User.objects.filter(groups__name="user")
-    return render(request, "home/dermatologist_dashboard.html", {"patients": patients, "role": get_user_role(request.user)})
+    return render(
+        request,
+        "home/dermatologist_dashboard.html",
+        patient_dashboard_context(request),
+    )
 
 
 @login_required(login_url="access_restricted")
 @role_required("admin", "dermatologist")
 def dermatologist_patient_view(request, user_id):
     """Allow dermatologists and admins to review a patient's skin profile and history."""
-    patient = get_object_or_404(User, pk=user_id)
+    patient = get_object_or_404(
+        User.objects.filter(groups__name="user").distinct(), pk=user_id
+    )
     # Create the patient's SkincareProfile if it does not exist to avoid 404s
     try:
         profile, created = SkincareProfile.objects.get_or_create(user=patient)
@@ -335,16 +476,45 @@ def dermatologist_patient_view(request, user_id):
 
     if created:
         messages.info(request, "A skincare profile was created for this patient.")
-    messages_for_patient = Message.objects.filter(recipient=patient)
+    conversation = Message.objects.filter(
+        Q(sender=request.user, recipient=patient)
+        | Q(sender=patient, recipient=request.user)
+    ).order_by("created_at")
     if request.method == "POST":
-        form = ProfessionalNoteForm(request.POST, instance=profile)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Professional note saved.")
-            return redirect("dermatologist_patient", user_id=patient.pk)
+        action = request.POST.get("action", "save_recommendation")
+        if action == "send_message":
+            form = ProfessionalNoteForm(instance=profile)
+            message_form = PatientMessageForm(request.POST)
+            if message_form.is_valid():
+                patient_message = message_form.save(commit=False)
+                patient_message.sender = request.user
+                patient_message.recipient = patient
+                patient_message.save()
+                messages.success(request, "Message sent successfully.")
+                return redirect("dermatologist_patient", user_id=patient.pk)
+        else:
+            form = ProfessionalNoteForm(request.POST, instance=profile)
+            message_form = PatientMessageForm()
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Professional recommendation saved.")
+                return redirect("dermatologist_patient", user_id=patient.pk)
     else:
         form = ProfessionalNoteForm(instance=profile)
-    return render(request, "home/dermatologist_patient.html", {"patient": patient, "profile": profile, "form": form, "messages_for_patient": messages_for_patient, "role": get_user_role(request.user)})
+        message_form = PatientMessageForm()
+    return render(
+        request,
+        "home/dermatologist_patient.html",
+        {
+            "patient": patient,
+            "profile": profile,
+            "form": form,
+            "message_form": message_form,
+            "conversation": conversation,
+            "is_reviewed": bool(profile.professional_notes.strip()),
+            "role": get_user_role(request.user),
+        },
+    )
 
 
 @login_required(login_url="access_restricted")

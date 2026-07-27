@@ -5,59 +5,115 @@
 {% block content %}
 <div class="card hero-card p-4 p-md-5">
   <div class="row g-4 align-items-center">
-    <div class="col-lg-7">
+    <div class="col-lg-8">
       <span class="badge mb-3">Dermatologist Portal</span>
       <h1 class="display-6 mb-3">Dermatologist Dashboard</h1>
-      <p class="lead text-secondary mb-0">Review patient profiles, leave professional notes, and coordinate follow-up care with a calm, secure workspace.</p>
+      <p class="lead text-secondary mb-0">Review patient information, evaluate saved routines, and provide professional skincare recommendations.</p>
     </div>
-    <div class="col-lg-5">
+    <div class="col-lg-4">
       <div class="soft-panel p-4">
         <p class="mb-2 fw-semibold">Professional tools</p>
-        <div class="d-flex flex-wrap gap-2">
-          <a class="btn btn-primary" href="{% url 'dermatologist_messages' %}">Messages</a>
-          <a class="btn btn-outline-primary" href="{% url 'send_message' user.id %}">Send note</a>
-        </div>
+        <a class="btn btn-primary" href="{% url 'dermatologist_messages' %}">View sent messages</a>
       </div>
     </div>
   </div>
 </div>
 
-<div class="row g-4 mt-1">
-  <div class="col-12">
-    <div class="card p-4">
-      <div class="section-heading">
-        <div>
-          <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">Patient overview</p>
-          <h3 class="h5 mb-0">Access patient history and recommendations</h3>
-        </div>
-        <span class="badge">Protected data</span>
-      </div>
-      <div class="row g-3">
-        {% for patient in patients %}
-        <div class="col-md-6 col-xl-4">
-          <div class="soft-panel p-3 h-100">
-            <p class="fw-semibold mb-1">
-              {% if patient.first_name %}{{ patient.first_name }} {{ patient.last_name }}{% else %}{{ patient.username }}{% endif %}
-            </p>
-            <p class="text-secondary small mb-1">@{{ patient.username }}</p>
-            {% if patient.email %}
-            <p class="text-secondary small mb-3">{{ patient.email }}</p>
-            {% else %}
-            <p class="text-secondary small mb-3">Patient account</p>
-            {% endif %}
-            <div class="d-flex flex-wrap gap-2">
-              <a class="btn btn-sm btn-outline-primary" href="{% url 'dermatologist_patient' patient.id %}">View profile</a>
-              <a class="btn btn-sm btn-terra" href="{% url 'send_message' patient.id %}">Message</a>
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-          <p class="text-secondary mb-0">No patient accounts are available yet.</p>
-        </div>
-        {% endfor %}
-      </div>
+<div class="row g-3 mt-1" aria-label="Patient review summary">
+  <div class="col-md-4">
+    <div class="card p-4 h-100">
+      <p class="text-uppercase small fw-semibold mb-2 text-secondary">Total Patients</p>
+      <p class="display-6 mb-0" style="color: var(--forest);">{{ total_patients }}</p>
     </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-4 h-100">
+      <p class="text-uppercase small fw-semibold mb-2 text-secondary">Patients Reviewed</p>
+      <p class="display-6 mb-0" style="color: var(--forest);">{{ reviewed_patients }}</p>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-4 h-100">
+      <p class="text-uppercase small fw-semibold mb-2 text-secondary">Pending Reviews</p>
+      <p class="display-6 mb-0" style="color: var(--forest);">{{ pending_reviews }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="card p-4 mt-4">
+  <div class="section-heading flex-wrap">
+    <div>
+      <p class="text-uppercase small fw-semibold mb-1" style="letter-spacing: 0.24em; color: var(--warm-gray);">Patient overview</p>
+      <h2 class="h5 mb-0">Patient reviews</h2>
+    </div>
+    <span class="badge">Protected data</span>
+  </div>
+
+  <form class="row g-2 mb-4" method="get" role="search">
+    <div class="col-md-9">
+      <label class="visually-hidden" for="patient-search">Search patients</label>
+      <input class="form-control" id="patient-search" name="q" type="search" value="{{ search_query }}" placeholder="Search by patient name or username">
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+      <button class="btn btn-primary flex-grow-1" type="submit">Search</button>
+      {% if search_query %}
+        <a class="btn btn-outline-primary" href="{% url 'dermatologist_dashboard' %}">Clear</a>
+      {% endif %}
+    </div>
+  </form>
+
+  <div class="table-responsive">
+    <table class="table align-middle mb-0">
+      <thead>
+        <tr>
+          <th scope="col">Patient Name</th>
+          <th scope="col">Skin Type</th>
+          <th scope="col">Last Questionnaire Date</th>
+          <th scope="col">Review Status</th>
+          <th scope="col" class="text-end">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in patient_rows %}
+          <tr>
+            <td>
+              <span class="fw-semibold d-block">
+                {% if row.user.first_name or row.user.last_name %}
+                  {{ row.user.get_full_name }}
+                {% else %}
+                  {{ row.user.username }}
+                {% endif %}
+              </span>
+              <span class="small text-secondary">@{{ row.user.username }}</span>
+            </td>
+            <td>{{ row.profile.get_skin_type_display|default:"Not provided" }}</td>
+            <td>
+              {% if row.profile.last_questionnaire_at %}
+                {{ row.profile.last_questionnaire_at|date:"M d, Y" }}
+              {% else %}
+                Not completed
+              {% endif %}
+            </td>
+            <td>
+              {% if row.is_reviewed %}
+                <span class="badge">Reviewed</span>
+              {% else %}
+                <span class="badge" style="background: rgba(181, 131, 163, 0.14) !important;">Pending</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'dermatologist_patient' row.user.id %}">Review</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="text-secondary py-4 text-center" colspan="5">
+              {% if search_query %}No patients match “{{ search_query }}”.{% else %}No patient accounts are available yet.{% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
 {% endblock %}

@@ -508,7 +508,30 @@
         ritualResultsSection.hidden = false;
         document.getElementById("mapProfileBadge").textContent = `${profile.title} focus`;
         window.dispatchEvent(new CustomEvent("skinprofilechange", { detail: { type: resultType } }));
+        saveQuestionnaire(resultType);
         resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    async function saveQuestionnaire(resultType) {
+        const isAuthenticated = {{ user.is_authenticated|yesno:"true,false" }};
+        if (!isAuthenticated) return;
+
+        const responses = answers.map((answerIndex, index) => ({
+            question: questions[index].prompt,
+            answer: questions[index].options[answerIndex].label
+        }));
+        try {
+            await fetch("{% url 'save_questionnaire_results' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || ""
+                },
+                body: JSON.stringify({ skin_type: resultType, responses })
+            });
+        } catch (error) {
+            // The result remains usable even if saving is temporarily unavailable.
+        }
     }
 
     const escapeHtml = (value) => {
