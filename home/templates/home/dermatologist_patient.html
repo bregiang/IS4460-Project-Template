@@ -7,7 +7,7 @@
   <div class="row g-4">
     <div class="col-lg-7">
       <span class="badge mb-3">Patient review</span>
-      <h1 class="display-6 mb-3">{{ patient.username }}'s profile history</h1>
+      <h1 class="display-6 mb-3">{% if patient.first_name %}{{ patient.first_name }} {{ patient.last_name }}{% else %}{{ patient.username }}{% endif %}'s profile</h1>
       <p class="lead text-secondary mb-0">View saved profile details, add professional guidance, and keep continuity across care.</p>
     </div>
     <div class="col-lg-5">
@@ -22,16 +22,32 @@
 <div class="row g-4 mt-1">
   <div class="col-lg-7">
     <div class="card p-4">
-      <h3 class="h5 mb-3">Profile details</h3>
+      <h3 class="h5 mb-3">Patient information</h3>
       <ul class="list-unstyled mb-0">
-        <li><strong>Skin type:</strong> {{ profile.skin_type|default:"Not provided" }}</li>
-        <li><strong>Concerns:</strong> {{ profile.concerns|default:"Not provided" }}</li>
-        <li><strong>Goals:</strong> {{ profile.goals|default:"Not provided" }}</li>
-        <li><strong>Allergies:</strong> {{ profile.allergies|default:"Not provided" }}</li>
-        <li><strong>Notes:</strong> {{ profile.notes|default:"Not provided" }}</li>
+        <li class="mb-2"><strong>Account:</strong> {{ patient.username }}</li>
+        {% if patient.first_name or patient.last_name %}
+        <li class="mb-2"><strong>Full name:</strong> {{ patient.first_name }} {{ patient.last_name }}</li>
+        {% endif %}
+        {% if patient.email %}
+        <li class="mb-2"><strong>Email:</strong> {{ patient.email }}</li>
+        {% endif %}
+        <li class="mb-2"><strong>Account created:</strong> {{ patient.date_joined|date:"M d, Y" }}</li>
+      </ul>
+    </div>
+    
+    <div class="card p-4 mt-4">
+      <h3 class="h5 mb-3">Skincare profile</h3>
+      <ul class="list-unstyled mb-0">
+        <li class="mb-2"><strong>Skin type:</strong> {{ profile.skin_type|title|default:"Not provided" }}</li>
+        <li class="mb-2"><strong>Concerns:</strong> {{ profile.concerns|default:"Not provided" }}</li>
+        <li class="mb-2"><strong>Goals:</strong> {{ profile.goals|default:"Not provided" }}</li>
+        <li class="mb-2"><strong>Allergies:</strong> {{ profile.allergies|default:"Not provided" }}</li>
+        <li class="mb-2"><strong>Patient notes:</strong> {{ profile.notes|default:"Not provided" }}</li>
+        <li class="text-secondary small"><em>Last updated: {{ profile.updated_at|date:"M d, Y \a\t g:i A" }}</em></li>
       </ul>
     </div>
   </div>
+  
   <div class="col-lg-5">
     <div class="card p-4">
       <h3 class="h5 mb-3">Add professional note</h3>
@@ -51,7 +67,12 @@
       <div class="soft-panel p-3 mb-2">
         <p class="fw-semibold mb-1">{{ item.subject|default:"Follow-up" }}</p>
         <p class="text-secondary mb-1">{{ item.body }}</p>
-        <p class="small text-muted mb-0">{{ item.created_at }}</p>
+        <p class="small text-muted mb-0">
+          {% if item.sender %}
+            From: <strong>{{ item.sender.get_full_name|default:item.sender.username }}</strong> • 
+          {% endif %}
+          {{ item.created_at|date:"M d, Y \a\t g:i A" }}
+        </p>
       </div>
     {% endfor %}
   {% else %}

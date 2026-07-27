@@ -323,9 +323,9 @@ def dermatologist_dashboard(request):
 
 
 @login_required(login_url="access_restricted")
-@role_required("dermatologist")
+@role_required("admin", "dermatologist")
 def dermatologist_patient_view(request, user_id):
-    """Allow dermatologists to review a patient's skin profile and history."""
+    """Allow dermatologists and admins to review a patient's skin profile and history."""
     patient = get_object_or_404(User, pk=user_id)
     # Create the patient's SkincareProfile if it does not exist to avoid 404s
     try:

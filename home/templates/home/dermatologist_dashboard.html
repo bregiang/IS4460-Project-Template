@@ -36,8 +36,15 @@
         {% for patient in patients %}
         <div class="col-md-6 col-xl-4">
           <div class="soft-panel p-3 h-100">
-            <p class="fw-semibold mb-1">{{ patient.username }}</p>
+            <p class="fw-semibold mb-1">
+              {% if patient.first_name %}{{ patient.first_name }} {{ patient.last_name }}{% else %}{{ patient.username }}{% endif %}
+            </p>
+            <p class="text-secondary small mb-1">@{{ patient.username }}</p>
+            {% if patient.email %}
+            <p class="text-secondary small mb-3">{{ patient.email }}</p>
+            {% else %}
             <p class="text-secondary small mb-3">Patient account</p>
+            {% endif %}
             <div class="d-flex flex-wrap gap-2">
               <a class="btn btn-sm btn-outline-primary" href="{% url 'dermatologist_patient' patient.id %}">View profile</a>
               <a class="btn btn-sm btn-terra" href="{% url 'send_message' patient.id %}">Message</a>

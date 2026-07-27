@@ -29,7 +29,10 @@
       {% for account in user_accounts %}
         <div class="soft-panel p-3 mb-2">
           <p class="fw-semibold mb-1">{{ account.username }}</p>
-          <p class="text-secondary small mb-0">Groups: {{ account.groups.all|join:", " }}</p>
+          <p class="text-secondary small mb-3">Groups: {{ account.groups.all|join:", "|default:"No role" }}</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a class="btn btn-sm btn-outline-primary" href="{% url 'dermatologist_patient' account.id %}">View profile</a>
+          </div>
         </div>
       {% empty %}
         <p class="text-secondary mb-0">No accounts available.</p>
