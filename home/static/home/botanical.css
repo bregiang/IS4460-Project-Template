@@ -107,18 +107,6 @@
 }
 
 .face-map-canvas svg { width: 100%; max-height: 540px; display: block; }
-.face-map-canvas .zone { stroke-width: 1.5; }
-.face-map-canvas .zone-oil { fill: #e1c883; fill-opacity: .52; stroke: #c3a653; }
-.face-map-canvas .zone-tzone { fill: #c9b873; fill-opacity: .38; stroke: #b29b48; }
-.face-map-canvas .zone-sensitive { fill: #ddaeb0; fill-opacity: .48; stroke: #c9898d; }
-.face-map-canvas .zone-dry { fill: #a7c4c4; fill-opacity: .55; stroke: #729b9b; }
-.face-map-canvas .zone-acne { fill: #cf8d83; fill-opacity: .46; stroke: #ad685f; }
-.face-map-canvas .zone-jaw { stroke: #76947b; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 7 9; opacity: .8; }
-.face-map-canvas .map-callouts path { fill: none; stroke: #75887a; stroke-width: 1.5; }
-.face-map-canvas .map-callouts circle { stroke: none; }
-.face-map-canvas .map-callouts text { font-size: 11px; font-weight: 800; letter-spacing: .07em; }
-.face-map-canvas .map-callouts .callout-note { fill: #81786f; font-size: 10px; font-weight: 500; letter-spacing: 0; }
-
 .skin-map-key { display: grid; gap: .7rem; }
 .map-key-item {
     display: flex;
@@ -308,28 +296,31 @@
     margin: 0 auto;
     border-radius: 1.1rem;
 }
-.face-map-canvas .portrait-frame { stroke: rgba(49,80,61,.22); stroke-width: 2; }
+.face-map-canvas .portrait-frame { stroke: rgba(255,255,255,.82); stroke-width: 1.5; }
 .face-map-canvas .map-zone {
+    fill: #fff;
+    fill-opacity: .15;
+    stroke: #fff;
     stroke-width: 1.5;
+    stroke-opacity: .75;
     cursor: pointer;
     outline: none;
-    transition: opacity .25s ease, filter .25s ease, stroke-width .25s ease, transform .25s ease;
+    transition: fill-opacity .22s ease, stroke-opacity .22s ease, filter .22s ease, stroke-width .22s ease;
     transform-box: fill-box;
     transform-origin: center;
 }
 .face-map-canvas .map-zone:hover,
 .face-map-canvas .map-zone:focus-visible,
-.face-map-canvas .map-zone.is-selected { opacity: .88; filter: saturate(1.08) drop-shadow(0 4px 7px rgba(49,80,61,.15)); stroke-width: 3; }
-.face-map-canvas .map-zone:focus-visible { stroke: #173627; stroke-dasharray: 6 4; }
-.face-map-canvas .zone-forehead, .face-map-canvas .zone-tzone { fill: #e0c379; fill-opacity: .24; stroke: #b59b53; }
-.face-map-canvas .zone-cheek { fill: #dda5a8; fill-opacity: .24; stroke: #c18086; }
-.face-map-canvas .zone-eyes { fill: #a8cbd2; fill-opacity: .27; stroke: #739da6; }
-.face-map-canvas .zone-nose { fill: #c9b574; fill-opacity: .22; stroke: #998549; }
-.face-map-canvas .zone-chin { fill: #dc887e; fill-opacity: .25; stroke: #af625b; }
-.face-map-canvas .zone-jawline { fill: #b8a8ce; fill-opacity: .16; stroke: #8d78a7; }
-.face-map-canvas .map-zone.is-profiled { fill-opacity: .58; animation: zoneBreathe 3.1s ease-in-out infinite; }
-.face-map-canvas .map-zone.is-selected { fill-opacity: .68; }
-.face-map-canvas .pore-overlay { opacity: .55; }
+.face-map-canvas .map-zone.is-selected {
+    fill-opacity: .28;
+    stroke-opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(255,255,255,.82));
+    stroke-width: 2;
+}
+.face-map-canvas .map-zone:hover:not(.is-selected) { fill-opacity: .22; stroke-opacity: .92; }
+.face-map-canvas .map-zone:focus-visible { stroke: #fff; stroke-dasharray: 5 4; }
+.face-map-canvas .map-zone.is-profiled { fill-opacity: .15; }
+.face-map-canvas .map-zone.is-profiled.is-selected { fill-opacity: .28; }
 
 .zone-pills { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; margin-top: .2rem; }
 .zone-pills button {
@@ -342,7 +333,12 @@
     font-weight: 700;
     transition: all .2s ease;
 }
-.zone-pills button:hover, .zone-pills button:focus-visible, .zone-pills button.is-selected { color: #fff; background: #31503d; border-color: #31503d; outline: none; }
+.zone-pills button:hover, .zone-pills button:focus-visible, .zone-pills button.is-selected {
+    color: #31503d;
+    background: rgba(143,166,136,.2);
+    border-color: rgba(49,80,61,.45);
+    outline: none;
+}
 
 .zone-insight-card {
     display: flex;
@@ -427,7 +423,6 @@
 .profile-shell .skin-map { overflow: visible; }
 
 @keyframes mapPulse { 50% { box-shadow: 0 0 0 8px rgba(102,139,118,0); } }
-@keyframes zoneBreathe { 50% { fill-opacity: .42; } }
 @keyframes meterGrow { from { width: 0; } }
 
 @media (max-width: 991px) {
@@ -454,6 +449,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .status-dot, .face-map-canvas .map-zone.is-profiled, .metric-track i, .hydration-meter span { animation: none; }
+    .status-dot, .metric-track i, .hydration-meter span { animation: none; }
     .face-map-canvas .map-zone { transition: none; }
 }

@@ -8,40 +8,31 @@
         <svg viewBox="0 0 520 700" role="group" aria-label="Interactive facial skin analysis map">
             <defs>
                 <clipPath id="portraitClip"><rect x="26" y="0" width="468" height="700" rx="32"/></clipPath>
-                <linearGradient id="portraitShade" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0" stop-color="#31503d" stop-opacity="0"/><stop offset="1" stop-color="#31503d" stop-opacity=".1"/>
-                </linearGradient>
-                <pattern id="porePattern" width="12" height="12" patternUnits="userSpaceOnUse">
-                    <circle cx="3" cy="3" r="1.5" fill="#735e4f" opacity=".48"/>
-                </pattern>
             </defs>
             <title>Example facial skin analysis map — interactive and personalized</title>
             <desc>A realistic front-facing consultation portrait. Choose the forehead, nose, chin, cheeks, under eyes, jawline, or T-zone for concern details and ingredient guidance.</desc>
             <image class="consultation-portrait" href="{% static 'home/images/consultation-face-v2.png' %}" x="26" y="0" width="468" height="700" preserveAspectRatio="xMidYMid meet" clip-path="url(#portraitClip)"/>
-            <rect x="26" y="0" width="468" height="700" rx="32" fill="url(#portraitShade)" pointer-events="none"/>
             <rect class="portrait-frame" x="26" y="0" width="468" height="700" rx="32" fill="none"/>
 
-            <g class="interactive-zones">
-                <path class="map-zone zone-forehead" data-region="forehead" role="button" tabindex="0" aria-label="Forehead: oiliness and texture" d="M147 145c65-34 161-34 226 0l-13 95H160Z"/>
-                <path class="map-zone zone-tzone" data-region="tzone" role="button" tabindex="0" aria-label="T-zone: oil and visible pores" d="M226 151h68l24 275-58 45-58-45Z"/>
-                <path class="map-zone zone-cheek" data-region="leftCheek" role="button" tabindex="0" aria-label="Left cheek: redness and sensitivity" d="M97 318c33-36 99-45 143-10l-16 132c-57 37-117 8-127-122Z"/>
-                <path class="map-zone zone-cheek" data-region="rightCheek" role="button" tabindex="0" aria-label="Right cheek: redness and sensitivity" d="M423 318c-33-36-99-45-143-10l16 132c57 37 117 8 127-122Z"/>
-                <path class="map-zone zone-eyes" data-region="underEyes" role="button" tabindex="0" aria-label="Under eyes: hydration and fine lines" d="M126 284c34-27 79-25 111-3-31 31-76 36-111 3Zm268 0c-34-27-79-25-111-3 31 31 76 36 111 3Z"/>
-                <path class="map-zone zone-nose" data-region="nose" role="button" tabindex="0" aria-label="Nose: pores and oiliness" d="M224 294c-3 64-14 105-5 133 23 15 59 15 82 0 9-28-2-69-5-133Z"/>
-                <path class="map-zone zone-chin" data-region="chin" role="button" tabindex="0" aria-label="Chin: acne and congestion" d="M187 454c49-22 97-22 146 0l-18 75c-35 27-75 27-110 0Z"/>
-                <path class="map-zone zone-jawline" data-region="jawline" role="button" tabindex="0" aria-label="Jawline: sensitivity and hormonal breakouts" d="M101 397c17 112 79 180 159 183 80-3 142-71 159-183l-31 13c-21 82-67 132-128 141-61-9-107-59-128-141Z"/>
-            </g>
-
-            <g class="face-features" pointer-events="none">
-                <g class="acne-markers" fill="#bd7169"><circle cx="224" cy="489" r="4"/><circle cx="263" cy="507" r="4"/><circle cx="298" cy="485" r="4"/></g>
-                <path class="pore-overlay" d="M231 338h58v91h-58z" fill="url(#porePattern)"/>
+            <g class="interactive-zones" fill="#fff" fill-opacity=".15" stroke="#fff" stroke-opacity=".75" stroke-width="1.5">
+                <path class="map-zone zone-forehead" data-region="forehead" role="button" tabindex="0" aria-label="Forehead: oiliness and texture" d="M180 160Q260 127 340 160L333 216Q260 200 187 216Z"/>
+                <path class="map-zone zone-tzone" data-region="tzone" role="button" tabindex="0" aria-label="T-zone: oil and visible pores" d="M206 178Q260 154 314 178L310 203Q286 198 279 220L287 399Q260 417 233 399L241 220Q234 198 210 203Z"/>
+                <path class="map-zone zone-cheek" data-region="leftCheek" role="button" tabindex="0" aria-label="Left cheek: redness and sensitivity" d="M119 339Q165 310 215 334Q218 378 190 405Q142 411 119 374Z"/>
+                <path class="map-zone zone-cheek" data-region="rightCheek" role="button" tabindex="0" aria-label="Right cheek: redness and sensitivity" d="M401 339Q355 310 305 334Q302 378 330 405Q378 411 401 374Z"/>
+                <path class="map-zone zone-eyes" data-region="underLeftEye" role="button" tabindex="0" aria-label="Under left eye: hydration and fine lines" d="M132 303Q182 281 232 300Q196 327 145 316Q136 313 132 303Z"/>
+                <path class="map-zone zone-eyes" data-region="underRightEye" role="button" tabindex="0" aria-label="Under right eye: hydration and fine lines" d="M388 303Q338 281 288 300Q324 327 375 316Q384 313 388 303Z"/>
+                <path class="map-zone zone-nose" data-region="nose" role="button" tabindex="0" aria-label="Nose: pores and oiliness" d="M239 317Q235 378 228 416Q260 432 292 416Q285 378 281 317Z"/>
+                <path class="map-zone zone-chin" data-region="chin" role="button" tabindex="0" aria-label="Chin: acne and congestion" d="M211 468Q260 449 309 468L298 519Q260 540 222 519Z"/>
+                <path class="map-zone zone-jawline" data-region="jawline" role="button" tabindex="0" aria-label="Jawline: sensitivity and hormonal breakouts" d="M111 403Q135 548 260 564Q385 548 409 403L391 407Q361 524 260 547Q159 524 129 407Z"/>
             </g>
         </svg>
         <div class="zone-pills" role="list" aria-label="Facial regions">
             <button type="button" data-region="forehead">Forehead</button>
             <button type="button" data-region="nose">Nose</button>
-            <button type="button" data-region="leftCheek">Cheeks</button>
-            <button type="button" data-region="underEyes">Under eyes</button>
+            <button type="button" data-region="leftCheek">Left cheek</button>
+            <button type="button" data-region="rightCheek">Right cheek</button>
+            <button type="button" data-region="underLeftEye">Left under eye</button>
+            <button type="button" data-region="underRightEye">Right under eye</button>
             <button type="button" data-region="chin">Chin</button>
             <button type="button" data-region="jawline">Jawline</button>
             <button type="button" data-region="tzone">T-zone</button>
@@ -79,12 +70,13 @@
         nose: { title: "Nose", icon: "pores", severity: "Visible pores", summary: "Pores are more visible where oil and cellular debris collect.", why: "Pores can appear larger with higher sebum output; they cannot be permanently opened or closed.", ingredient: "Salicylic acid", product: "Use a gentle BHA treatment 1–2 evenings weekly.", metrics: [["Pores", 72], ["Oiliness", 69], ["Texture", 48]] },
         leftCheek: { title: "Left cheek", icon: "redness", severity: "Calm gently", summary: "Diffuse redness and dehydration can make this area feel reactive.", why: "Cheeks have fewer oil glands and may be more exposed to friction, weather, and barrier disruption.", ingredient: "Centella + panthenol", product: "Choose a fragrance-free barrier cream.", metrics: [["Redness", 63], ["Sensitivity", 71], ["Hydration", 46]] },
         rightCheek: { title: "Right cheek", icon: "redness", severity: "Calm gently", summary: "Diffuse redness and dehydration can make this area feel reactive.", why: "Cheeks have fewer oil glands and may be more exposed to friction, weather, and barrier disruption.", ingredient: "Centella + panthenol", product: "Choose a fragrance-free barrier cream.", metrics: [["Redness", 58], ["Sensitivity", 66], ["Hydration", 49]] },
-        underEyes: { title: "Under eyes", icon: "hydration", severity: "Delicate area", summary: "Fine lines can appear more visible when this thin skin is dehydrated.", why: "Under-eye skin is thinner and has fewer sebaceous glands than most facial zones.", ingredient: "Hyaluronic acid + peptides", product: "Pat in a fragrance-free hydrating eye gel.", metrics: [["Hydration", 42], ["Fine lines", 54], ["Sensitivity", 62]] },
+        underLeftEye: { title: "Left under eye", icon: "hydration", severity: "Delicate area", summary: "Fine lines can appear more visible when this thin skin is dehydrated.", why: "Under-eye skin is thinner and has fewer sebaceous glands than most facial zones.", ingredient: "Hyaluronic acid + peptides", product: "Pat in a fragrance-free hydrating eye gel.", metrics: [["Hydration", 42], ["Fine lines", 54], ["Sensitivity", 62]] },
+        underRightEye: { title: "Right under eye", icon: "hydration", severity: "Delicate area", summary: "Fine lines can appear more visible when this thin skin is dehydrated.", why: "Under-eye skin is thinner and has fewer sebaceous glands than most facial zones.", ingredient: "Hyaluronic acid + peptides", product: "Pat in a fragrance-free hydrating eye gel.", metrics: [["Hydration", 44], ["Fine lines", 51], ["Sensitivity", 60]] },
         chin: { title: "Chin", icon: "acne", severity: "Monitor", summary: "Small blemishes and congestion often cluster around the chin.", why: "Hormonal fluctuation, occlusion, and touching can contribute to congestion here.", ingredient: "Azelaic acid", product: "Apply a gentle targeted treatment, then moisturize.", metrics: [["Acne", 61], ["Redness", 43], ["Texture", 57]] },
         jawline: { title: "Jawline", icon: "sensitive", severity: "Low–moderate", summary: "This area can show friction sensitivity or recurring blemishes.", why: "Hormonal changes and contact from phones, collars, or hands may affect the jawline.", ingredient: "Azelaic acid + ceramides", product: "Support with a non-comedogenic barrier lotion.", metrics: [["Sensitivity", 52], ["Acne", 47], ["Texture", 39]] }
     };
     const profileOverrides = {
-        dry: { region: "underEyes", label: "Dry-skin focus", zones: ["zone-eyes", "zone-cheek"] },
+        dry: { region: "underLeftEye", label: "Dry-skin focus", zones: ["zone-eyes", "zone-cheek"] },
         oily: { region: "tzone", label: "Oil-control focus", zones: ["zone-tzone", "zone-forehead", "zone-nose"] },
         combination: { region: "tzone", label: "Combination focus", zones: ["zone-tzone", "zone-cheek"] },
         sensitive: { region: "leftCheek", label: "Sensitivity focus", zones: ["zone-cheek", "zone-jawline"] },
@@ -93,8 +85,9 @@
 
     function selectRegion(name, focusControl = false) {
         const data = regions[name] || regions.tzone;
+        map.dataset.activeRegion = name;
         map.querySelectorAll("[data-region]").forEach(el => {
-            const selected = el.dataset.region === name || (name === "leftCheek" && el.dataset.region === "rightCheek");
+            const selected = el.dataset.region === name;
             el.classList.toggle("is-selected", selected);
             if (el.getAttribute("role") === "button") el.setAttribute("aria-pressed", String(selected));
         });
